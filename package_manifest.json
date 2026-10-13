@@ -8,7 +8,7 @@
   "files": {
     ".gitattributes": "f3b83fa6dd1322e693b202cdec41cdf168dd8ae13c728b34dbe39427f7f282ac",
     ".gitignore": "513d0bf4e2133dd931a7cb763f5e2be14d6385766e0d49e8d0a51d7e01a0cec1",
-    "README.md": "b2811ce9f78bbc44136cc3241dc489a5d569596daa5ba8c1d1f54955b3199621",
+    "README.md": "84fcbb7b848bf9dc8923491b23a40412b0e322d4ddfffbadc975d8125de2a62d",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "fixtures/compute_contract_small.json": "696c99bfd06d84c912ccec985bb97b93a70814856e36672f9796d7593038bde9",
@@ -30,6 +30,9 @@
     "npu_prototype/prepare_sdk_overlay.py": "b7a4be7c6b678708503247952765acea25e8781d1ac2c495cfa5977dd65c934d",
     "rebuild_manifest.py": "20c260e3b62dbb64eff657173811870af1d88f1978c6b93b86684f1d669e4f4a",
     "requirements.txt": "43089def480102076d30e02dfe40f349cddd0bc42b67e059e4241d19f7cd7e1c",
+    "standalone/README.md": "5fead4b15b5159252619c57321c640e30f4e5917b034c37f4cd76cf67b22da4e",
+    "standalone/create_project.py": "b0e054d65508085da4dd0bc48bcdf0880da839b6db81bc08b71b09823b6f84ae",
+    "standalone/operator.json": "7f0eee29078e2146f82b24d5dfdb1ab26cad1e7ccac31397e23af21e08f9707f",
     "verify_package.py": "214d02a263dd06c95ac17429a4836ac961898191dbcb533f9220778d4090e038"
   },
   "text_line_endings": "LF"

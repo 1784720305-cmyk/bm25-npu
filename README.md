@@ -1,5 +1,7 @@
 # BM25 A5 贡献计算原型
 
+**最新路线：独立CANN工程，不依赖IndexSDK/Faiss。IndexSDK仅供参考。先读 [standalone/README.md](standalone/README.md)。下面原SDK接入步骤保留为历史参考，当前不要执行prepare/apply SDK覆盖脚本。**
+
 这是可独立上传Git、再传入黄区的源码快照。包含自研Ascend C贡献算子、IndexSDK接入工具、最小ACL主机调用器和22条已核对的合成小样本。
 
 **状态：本机样本及Python接入工具已检查；C++/算子尚未用CANN编译，尚未在A5执行。文章分数累加和Top-K尚未实现。它不是完整BM25检索系统或加速成果。**
@@ -39,7 +41,7 @@ python3 check_npu_environment.py --output results/npu_environment.json
 
 普通运行和检查不需要NumPy。只有重新生成样本才需要Python3.10及以上与requirements.txt中的NumPy；黄区如不能联网，应使用组内已有环境/获准的离线依赖，已打包样本可直接使用。
 
-## 接入组内SDK
+## 旧方案：接入组内SDK（当前不执行）
 
 修改以下路径为黄区真实的、属于你的SDK工作副本：
 
