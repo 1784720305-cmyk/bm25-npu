@@ -1,0 +1,3 @@
+# Optional: only needed to regenerate fixtures with contribution_fixture.py.
+# Normal environment checks and result checks use Python standard library.
+numpy==2.2.6

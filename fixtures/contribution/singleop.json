@@ -1,0 +1,38 @@
+[
+  {
+    "op": "Bm25Contribution",
+    "input_desc": [
+      {
+        "format": "ND",
+        "shape": [
+          22
+        ],
+        "type": "float32"
+      },
+      {
+        "format": "ND",
+        "shape": [
+          22
+        ],
+        "type": "float32"
+      },
+      {
+        "format": "ND",
+        "shape": [
+          22
+        ],
+        "type": "float32"
+      }
+    ],
+    "output_desc": [
+      {
+        "format": "ND",
+        "shape": [
+          22
+        ],
+        "type": "float32"
+      }
+    ],
+    "attr": []
+  }
+]
