@@ -115,4 +115,6 @@ git push -u origin main
 
 工程接入参考组内IndexSDK的CAGRA/IVFPQ A5实现；数值样本对照过原版BM25S。两个项目源码未打包进来。脚本生成的覆盖材料可能包含SDK原CMake内容，按组内仓库和许可证要求处理。
 
-package_manifest.json记录此源码快照的文件SHA256，方便确认传输是否完整；代码修改后需重新生成，不能继续当作最新版本指纹。
+package_manifest.json记录此源码快照的原始文件字节SHA256，方便确认传输是否完整。文本统一为LF，.gitattributes要求Git检出也使用LF；.bin/.npz保持二进制原始字节，校验器不忽略换行差异。
+
+修改代码后先保持文本为LF，再执行 `python3 rebuild_manifest.py` 和 `python3 verify_package.py`。重建工具拒绝含CR换行的文本，不会改写二进制样本。新增发布文件需明确加入清单文件列表，缓存和运行输出不在其中。
