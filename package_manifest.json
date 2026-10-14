@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "A5 BM25 contribution prototype only; not hardware verified",
+  "scope": "A5 BM25 contribution and accumulation prototype; contribution small-fixture device verified; accumulation runner pending A5 compilation/execution; Top-K pending",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -8,7 +8,7 @@
   "files": {
     ".gitattributes": "f3b83fa6dd1322e693b202cdec41cdf168dd8ae13c728b34dbe39427f7f282ac",
     ".gitignore": "513d0bf4e2133dd931a7cb763f5e2be14d6385766e0d49e8d0a51d7e01a0cec1",
-    "README.md": "e1585fca2251dbb1defa521d700346c58d2504f15274228565f4c53d23658273",
+    "README.md": "db8e13b583c527f136827ee769e8df4ceb1d2dc6365f859ff9ed16924ca84acd",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "fixtures/compute_contract_small.json": "696c99bfd06d84c912ccec985bb97b93a70814856e36672f9796d7593038bde9",
@@ -22,7 +22,8 @@
     "npu_prototype/apply_sdk_overlay.py": "3f0b2cc670bc10bec53b22ae432c8a11310ae34247d8e6c35862e3296eb22540",
     "npu_prototype/contribution_fixture.py": "7793f776bcbecb90735bd6f6f5e2eb2f90840ec657551d5a03321f44517d3669",
     "npu_prototype/generate_model.py": "1fba23ee23509181b9b16bcaf7edd56f0f39c3c5067641adee831faaf989f32f",
-    "npu_prototype/host/CMakeLists.txt": "c4279af5ab6b2b7662ce50253c4aa37504ef2faf444cfeddc77635a2aa606e8a",
+    "npu_prototype/host/CMakeLists.txt": "74c5bff6ef2357a08fde45c59c651a87108a23267ff79e90bd00e8de1ec56b03",
+    "npu_prototype/host/accumulate_runner.cpp": "04c1e06325f7b4b0e6c75763ee561884fff99d2dcbf5b66d82d228a3cf42574c",
     "npu_prototype/host/contribution_runner.cpp": "3985281342157b23d0dd2f29e204a7264ff00e5ea2b1f679517bd17edb2e25b5",
     "npu_prototype/op_host/bm25_accumulate.cpp": "4e28e0c406646326ec6f70f379f37258a7f20dc6db2fae0799cb26a423a029ee",
     "npu_prototype/op_host/bm25_accumulate_tiling.h": "7ce6aac1edef965b86460080767f2378d2d2c75d1bf619e04d42c3aa7f62e26c",
@@ -35,13 +36,13 @@
     "requirements.txt": "43089def480102076d30e02dfe40f349cddd0bc42b67e059e4241d19f7cd7e1c",
     "standalone/A5贡献验证记录.md": "e9ed1769c7cdd0c1f4509e2e915429610243fec2dc7ddab3034a37a7841c5361",
     "standalone/ACLNN路线.md": "68b1fd1e01a535557b9b6043b5f75a922d25d074ee45d398c1c6b43d2d3fd322",
-    "standalone/README.md": "8a638b62fbcf3e292c94fef15f2d1edf62f783293d7c74a5eca21fa47b6bdfff",
+    "standalone/README.md": "afd9ce45b3830d7da351f59652819c0c3762218d09fc53c1c6fc08750b339e27",
     "standalone/accumulate_fixture.py": "0b0d7a38d9e43eec6ad291f70dd28f16856d43cbba279a7d4c04bf70b4111f08",
     "standalone/accumulate_operator.json": "3814a922b1102eb06802211315fa71ef69217d30f566481906c143eda63272c2",
     "standalone/create_project.py": "dbd261fca7145b58e8eca4fe6b6c663a39c12bb12881557655c349e37eef7de7",
     "standalone/operator.json": "7f0eee29078e2146f82b24d5dfdb1ab26cad1e7ccac31397e23af21e08f9707f",
     "standalone/repair_project_presets.py": "1131cca75722be7c9e4b311e4ec75728419dce0df53cacd1f70ae3cd71d0ccab",
-    "standalone/累加步骤.md": "79517172a62e233727616516c63a245a658059fc3b49d6eb0b1a3d890bb8e257",
+    "standalone/累加步骤.md": "b37951838051ebe680355f5999b509d1a76f64ae538709206cdcbff550d72559",
     "verify_package.py": "214d02a263dd06c95ac17429a4836ac961898191dbcb533f9220778d4090e038"
   },
   "text_line_endings": "LF"
