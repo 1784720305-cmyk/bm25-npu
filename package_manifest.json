@@ -38,9 +38,10 @@
     "standalone/README.md": "8a638b62fbcf3e292c94fef15f2d1edf62f783293d7c74a5eca21fa47b6bdfff",
     "standalone/accumulate_fixture.py": "0b0d7a38d9e43eec6ad291f70dd28f16856d43cbba279a7d4c04bf70b4111f08",
     "standalone/accumulate_operator.json": "3814a922b1102eb06802211315fa71ef69217d30f566481906c143eda63272c2",
-    "standalone/create_project.py": "53425972c0a6b09e70cd8e90832ef41cded02adb92bd7fdf7e7e2f67063e181f",
+    "standalone/create_project.py": "dbd261fca7145b58e8eca4fe6b6c663a39c12bb12881557655c349e37eef7de7",
     "standalone/operator.json": "7f0eee29078e2146f82b24d5dfdb1ab26cad1e7ccac31397e23af21e08f9707f",
-    "standalone/累加步骤.md": "c5b8a61806bc61eeda87d85fb27ed0c28128bef5e8ff3abd33d0f86d45292ea9",
+    "standalone/repair_project_presets.py": "1131cca75722be7c9e4b311e4ec75728419dce0df53cacd1f70ae3cd71d0ccab",
+    "standalone/累加步骤.md": "79517172a62e233727616516c63a245a658059fc3b49d6eb0b1a3d890bb8e257",
     "verify_package.py": "214d02a263dd06c95ac17429a4836ac961898191dbcb533f9220778d4090e038"
   },
   "text_line_endings": "LF"

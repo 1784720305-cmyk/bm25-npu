@@ -30,8 +30,13 @@ def populate(project, compute_unit, vendor, operator='contribution'):
             if isinstance(old, dict):
                 old['value'] = compute_unit
             else:
-                variables['ASCEND_COMPUTE_UNIT'] = compute_unit
-            variables['vendor_name'] = vendor
+                variables['ASCEND_COMPUTE_UNIT'] = {'type': 'STRING', 'value': compute_unit}
+            # CANN preset_parse.py expects cache values as {type, value}, not bare strings.
+            old_vendor = variables.get('vendor_name')
+            if isinstance(old_vendor, dict):
+                old_vendor['value'] = vendor
+            else:
+                variables['vendor_name'] = {'type': 'STRING', 'value': vendor}
             changed += 1
     if not changed:
         raise RuntimeError('模板未提供ASCEND_COMPUTE_UNIT，需核对生成工程，未替换源码')
