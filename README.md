@@ -1,10 +1,10 @@
 # BM25 A5 贡献计算原型
 
-**最新路线：独立CANN工程，不依赖IndexSDK/Faiss。IndexSDK仅供参考。先读 [standalone/README.md](standalone/README.md)。下面原SDK接入步骤保留为历史参考，当前不要执行prepare/apply SDK覆盖脚本。**
+**最新路线：自研Ascend C算子 + 实际自动生成的aclnn接口直接调用，不经过ATC或OM，不依赖IndexSDK/Faiss。先读 [standalone/ACLNN路线.md](standalone/ACLNN路线.md)。原SDK接入、ATC与ACL句柄步骤保留为历史参考，当前不执行。**
 
 这是可独立上传Git、再传入黄区的源码快照。包含自研Ascend C贡献算子、IndexSDK接入工具、最小ACL主机调用器和22条已核对的合成小样本。
 
-**状态：本机样本及Python接入工具已检查；C++/算子尚未用CANN编译，尚未在A5执行。文章分数累加和Top-K尚未实现。它不是完整BM25检索系统或加速成果。**
+**状态：根据黄区日志，贡献算子已经编译、打包并安装；实际生成aclnn签名已确认，新直接调用器和CMake已实现，尚待黄区编译与设备执行验证。文章分数累加和Top-K尚未实现。它不是完整BM25检索系统或加速成果。**
 
 ## 先理解这一步
 
@@ -18,7 +18,7 @@
 |---|---|
 | npu_prototype/op_host | 算子注册、输入输出和任务分配 |
 | npu_prototype/op_kernel | A5 SIMT贡献公式 |
-| npu_prototype/host | CMake工程和最小设备调用程序 |
+| npu_prototype/host | 最新aclnn直接调用器及CMake，无ATC/OM依赖 |
 | npu_prototype/*.py | 生成/校验/合入SDK材料、生成ATC模型；可选样本重建 |
 | fixtures/contribution | 三组输入、期望值、22条记录说明和singleop.json |
 | fixtures/compute_contract_small.* | 原始小合同样本，供可选重建使用 |
@@ -63,7 +63,7 @@ bash build.sh Ascend950
 
 该组内入口会重建工作副本的build_out。生成算子包后按组内实际安装/加载流程处理，确认Bm25Contribution注册和实现映射正确。本文不假定固定安装包名称或权限。
 
-## 生成模型和编译调用器
+## 旧ATC/OM方案（当前不执行）：生成模型和编译调用器
 
 回到本仓库根目录。SoC和TOOLKIT_HOME应按实际环境确认；下方SoC是当前SDK的映射示例：
 
@@ -75,9 +75,9 @@ cmake --build results/host_build -j
 
 模型入口使用已打包的singleop.json，输出results/contribution_models并保存ATC日志。要求新目录，避免误用旧模型。主机调用器使用C++17，建议g++9以上；旧编译器需要按环境调整。
 
-调用器直接沿用SDK内部的ACL句柄执行API，并未链接SDK完整包装类。它用于隔离初次链路问题，正式接入再使用组内资源管理。任何设备调用错误都会停止，没有CPU替代输出。
+此节描述旧ACL句柄路线。当前host源码已改为aclnn，接口和命令均见standalone/ACLNN路线.md，不再接受模型目录参数。
 
-## 真正执行并检查
+## 旧ACL句柄方案（当前不执行）：执行并检查
 
 ```bash
 results/host_build/bm25_contribution_runner results/contribution_models fixtures/contribution results/actual_run1.bin 0
@@ -94,6 +94,7 @@ python3 check_result.py --actual results/actual_run1.bin
 - Tiling：依据输入长度和设备核数分配任务。
 - Read / Require：读输入、检查长度与ACL错误。
 - Runtime / Resources：管理设备、内存和句柄，退出前等待并释放。
+- 当前调用器管理的是aclTensor与workspace，通过两阶段aclnn执行，不创建ACL单算子句柄或读取OM。
 - runner的main：上传→执行→同步→下载；不读取CPU期望值。
 - check_result：独立检查公式/文件，再核对设备输出。
 
