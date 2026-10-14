@@ -9,14 +9,15 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def populate(project, compute_unit, vendor):
+def populate(project, compute_unit, vendor, operator='contribution'):
     # 只接受生成器已建立的预期结构，模板变化时停止而非假定成功。
     if not (project / 'build.sh').is_file():
         raise RuntimeError('生成工程没有build.sh，需检查当前工具模板')
-    pairs = [('op_host/bm25_contribution.cpp', 'op_host/bm25_contribution.cpp'),
-             ('op_host/bm25_contribution_tiling.h', 'op_host/bm25_contribution_tiling.h'),
-             ('op_kernel/bm25_contribution.cpp', 'op_kernel/bm25_contribution.cpp')]
-    for relative in ('op_host/bm25_contribution.cpp', 'op_kernel/bm25_contribution.cpp'):
+    stem = 'bm25_contribution' if operator == 'contribution' else 'bm25_accumulate'
+    pairs = [(f'op_host/{stem}.cpp', f'op_host/{stem}.cpp'),
+             (f'op_host/{stem}_tiling.h', f'op_host/{stem}_tiling.h'),
+             (f'op_kernel/{stem}.cpp', f'op_kernel/{stem}.cpp')]
+    for relative in (f'op_host/{stem}.cpp', f'op_kernel/{stem}.cpp'):
         if not (project / relative).is_file():
             raise RuntimeError(f'生成器没有预期的{relative}，需核对命名规则')
     presets_path = project / 'CMakePresets.json'
@@ -49,6 +50,7 @@ def populate(project, compute_unit, vendor):
     metadata = {
         'status': 'project_generated_not_compiled_not_device_verified',
         'compute_unit': compute_unit, 'vendor_name': vendor,
+        'operator': operator,
         'source_sha256': {dest: hashlib.sha256((project / dest).read_bytes()).hexdigest()
                           for _, dest in pairs},
     }
@@ -60,11 +62,14 @@ def main():
     parser.add_argument('--compute-resource', required=True,
                         help='当前msopgen支持的ai_core-...目标，先核对工具帮助，不猜型号')
     parser.add_argument('--compute-unit', default='ascend950')
-    parser.add_argument('--vendor', default='bm25')
+    parser.add_argument('--vendor', help='默认贡献为bm25，累加为bm25_accumulate，避免覆盖已安装包')
+    parser.add_argument('--operator', choices=['contribution', 'accumulate'], default='contribution')
     parser.add_argument('--msopgen', default='msopgen')
-    parser.add_argument('--output', default=str(ROOT / 'results/Bm25Contribution'))
+    parser.add_argument('--output')
     args = parser.parse_args()
-    project = Path(args.output).resolve()
+    vendor = args.vendor or ('bm25' if args.operator == 'contribution' else 'bm25_accumulate')
+    project_name = 'Bm25Contribution' if args.operator == 'contribution' else 'Bm25Accumulate'
+    project = Path(args.output or ROOT / 'results' / project_name).resolve()
     if project.exists():
         parser.error('输出已存在，停止避免覆盖；请指定新的工作目录')
     executable = shutil.which(args.msopgen)
@@ -72,12 +77,13 @@ def main():
         parser.error('未找到msopgen，请先加载CANN环境并确认工具位置')
     if not args.compute_resource.startswith('ai_core-'):
         parser.error('compute-resource应为工具支持的ai_core-...目标')
-    command = [executable, 'gen', '-i', str(ROOT / 'standalone/operator.json'),
+    spec = 'operator.json' if args.operator == 'contribution' else 'accumulate_operator.json'
+    command = [executable, 'gen', '-i', str(ROOT / 'standalone' / spec),
                '-f', 'aclnn', '-c', args.compute_resource, '-lan', 'cpp', '-out', str(project)]
     project.parent.mkdir(parents=True, exist_ok=True)
     print('创建独立CANN工程：', command, flush=True)
     subprocess.run(command, check=True, timeout=300)
-    populate(project, args.compute_unit, args.vendor)
+    populate(project, args.compute_unit, vendor, args.operator)
     print('工程及自研源码已准备：', project)
     print('下一步使用生成的build.sh编译。尚未编译、安装或执行NPU。')
 
