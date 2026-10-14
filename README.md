@@ -1,6 +1,6 @@
 # BM25 A5 自研计算原型
 
-三个自研算子均已通过小样本实机核对：贡献22条、累加36组（设备0/1输出一致）、Top-K在设备2通过6×6/K=3及513×40/K=32，后者16,416项完全一致。见[Top-K验证记录](standalone/A5TopK验证记录.md)。现在按[Top-K步骤](standalone/TopK步骤.md)运行K=1/全部文章/重复运行三项补验，再串联完整设备查询；尚无性能达标结论。
+三个自研算子均已通过小样本实机核对，Top-K也完成513×40/K=32及K=1/K=全部文章/重复运行补验。见[Top-K验证记录](standalone/A5TopK验证记录.md)。现在已补[同进程串联程序](standalone/同进程串联步骤.md)：输入预分组，贡献→累加→Top-K在同一Stream使用设备缓冲，等待黄区编译、库来源检查和设备验证。尚无完整查询或性能达标结论。
 
 **最新路线：自研Ascend C算子 + 实际自动生成的aclnn接口直接调用，不经过ATC或OM，不依赖IndexSDK/Faiss。先读 [standalone/ACLNN路线.md](standalone/ACLNN路线.md)。原SDK接入、ATC与ACL句柄步骤保留为历史参考，当前不执行。**
 
@@ -21,8 +21,10 @@
 | npu_prototype/op_host | 贡献/累加/Top-K注册、输入输出和任务分配 |
 | npu_prototype/op_kernel | 自研A5 SIMT贡献、累加与Top-K |
 | npu_prototype/host | 三个算子的aclnn直接调用器及CMake，均已通过小样本实机核对 |
+| npu_prototype/pipeline_host | 新增同进程串联调用器及独立CMake；尚待黄区编译/运行 |
 | standalone/run_topk.py | 从已准备元信息读取尺寸/指纹，启动实际C++ Top-K调用器 |
 | standalone/validate_topk.py | 自动执行剩余三项Top-K边界/重复实机补验，失败停止并保存报告 |
+| standalone/pipeline_fixture.py、run_pipeline.py | 串联输入准备、四个输出核对及实际调用入口 |
 | npu_prototype/*.py | 生成/校验/合入SDK材料、生成ATC模型；可选样本重建 |
 | fixtures/contribution | 三组输入、期望值、22条记录说明和singleop.json |
 | fixtures/compute_contract_small.* | 原始小合同样本，供可选重建使用 |
@@ -102,7 +104,7 @@ python3 check_result.py --actual results/actual_run1.bin
 - runner的main：上传→执行→同步→下载；不读取CPU期望值。
 - check_result：独立检查公式/文件，再核对设备输出。
 
-下一阶段：扩大三个算子的正确性测试、串联设备计算，最后测相同流程CPU/NPU及完整NPU/BM25S两类比较。
+下一阶段：在黄区编译和验证新串联程序，扩大三个算子的正确性测试，最后测相同流程CPU/NPU及完整NPU/BM25S两类比较。
 
 ## 上传Git
 
