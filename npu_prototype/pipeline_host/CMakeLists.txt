@@ -29,11 +29,14 @@ foreach(vendor bm25 bm25_accumulate bm25_topk)
     endif()
 endforeach()
 add_executable(bm25_pipeline_runner pipeline_runner.cpp)
-target_include_directories(bm25_pipeline_runner PRIVATE "${ACL_INCLUDE}" "${ACL_META_INCLUDE}"
-    "${CONTRIBUTION_INCLUDE}" "${ACCUMULATE_INCLUDE}" "${TOPK_INCLUDE}")
-# Do not link the three identically-named cust_opapi libraries: load their absolute paths separately.
-target_link_libraries(bm25_pipeline_runner PRIVATE "${NNOP_LIBRARY}" "${ACL_LIBRARY}" ${CMAKE_DL_LIBS})
-target_compile_options(bm25_pipeline_runner PRIVATE -Wall -Wextra -O2)
-set_target_properties(bm25_pipeline_runner PROPERTIES BUILD_RPATH "${TOOLKIT_HOME}/lib64")
+add_executable(bm25_pipeline_benchmark pipeline_benchmark.cpp)
+foreach(target bm25_pipeline_runner bm25_pipeline_benchmark)
+    target_include_directories(${target} PRIVATE "${ACL_INCLUDE}" "${ACL_META_INCLUDE}"
+        "${CONTRIBUTION_INCLUDE}" "${ACCUMULATE_INCLUDE}" "${TOPK_INCLUDE}")
+    # Three identically-named API libraries are loaded by absolute paths and owner-checked.
+    target_link_libraries(${target} PRIVATE "${NNOP_LIBRARY}" "${ACL_LIBRARY}" ${CMAKE_DL_LIBS})
+    target_compile_options(${target} PRIVATE -Wall -Wextra -O2)
+    set_target_properties(${target} PROPERTIES BUILD_RPATH "${TOOLKIT_HOME}/lib64")
+endforeach()
 message(STATUS "Pipeline generated headers: ${CONTRIBUTION_INCLUDE};${ACCUMULATE_INCLUDE};${TOPK_INCLUDE}")
 message(STATUS "Runtime API library parent: ${BM25_VENDOR_DIR}; absolute-path loading and symbol-owner checks required")
