@@ -2,7 +2,7 @@
 
 前提：贡献22条已通过设备0实机核对，累加36组分别在设备0/1通过核对，run1/run2由cmp确认字节一致。这是两个独立进程的跨设备小样本一致性，不代表同进程复用或大规模验收。
 
-最新黄区日志：Top-K算子已成功编译、打包，并于2026-10-14 19:57:25安装到`results/custom_opp/vendors/bm25_topk`，安装输出SUCCESS。真实头文件和接口库依赖已收到；按实际签名补齐调用器与CMake。本机调用工具检查通过，调用器尚待黄区编译，Top-K尚未设备执行。BM25S仍作为独立参考与性能对手，不参与设备选取。
+最新黄区日志：设备2的6×6/K=3和513×40/K=32均已实际执行并严格核对通过，后者16,416个编号及对应分数全部一致。见[A5Top-K验证记录](A5TopK验证记录.md)。设备1初始化中断原因仍未确定。现在执行本文的三项补验脚本，不重新编译算子或调用器；通过后转入完整设备调用流程。BM25S仍作为独立参考与性能对手。
 
 ## 先理解输入、处理、输出与验收
 
@@ -67,7 +67,7 @@ aclnnStatus aclnnBm25TopK(
 
 三个vendor的接口库都可能叫libcust_opapi.so，当前分开运行并把当前vendor的op_api/lib放在LD_LIBRARY_PATH最前。完整同进程查询还需处理同名库与设备缓冲串联，本轮不假装已经完成。
 
-## 现在执行：编译调用器
+## 首次编译调用器（已完成）
 
 更新独立Git代码后，从根目录执行下面的单行命令；每条成功才继续。使用新构建目录，已有贡献/累加程序不重建。
 
@@ -79,7 +79,7 @@ cmake -S npu_prototype/host -B results/aclnn_topk_host_build -DBM25_RUNNER=topk 
 cmake --build results/aclnn_topk_host_build -j 2>&1 | tee results/aclnn_topk_build.log
 ```
 
-## 调用器编译成功后：依赖检查、运行和核对
+## 首次依赖检查、运行和核对（设备2已通过）
 
 ```bash
 source /usr/local/Ascend/cann-9.2.0/set_env.sh
@@ -115,7 +115,7 @@ results/aclnn_topk_host_build/bm25_topk_runner results/topk_input results/topk_d
 
 单次时间仅记录提交/同步与输入上传至结果下载，未预热、有阶段打印，不含Python指纹检查、全部初始化、前两阶段及完整查询，不用于加速结论。
 
-## 小样本通过后的扩展设备验收
+## 扩展设备验收（513×40/K=32已通过）
 
 先通过6×6、K=3的真实累加输入，再用同一输入验证K=1和K=6。负向边界K=0、K>文章数、K>32在准备或调用层拒绝；输入NaN、无穷大、负分同样拒绝。
 
@@ -128,11 +128,32 @@ python3 standalone/topk_fixture.py edge --k 32 --output results/topk_edge_k32
 边界样本也使用run_topk.py调用同一实际程序，再用check指定对应输入与实际输出目录。比如K=32合成输入准备完成且小样本通过后：
 
 ```bash
-python3 standalone/run_topk.py --input results/topk_edge_k32 --output results/topk_edge_k32_run1 --device 1
-python3 standalone/topk_fixture.py check --directory results/topk_edge_k32 --actual-scores results/topk_edge_k32_run1/top_scores.bin --actual-ids results/topk_edge_k32_run1/top_ids.bin
+python3 standalone/run_topk.py --input results/topk_edge_k32 --output results/topk_edge_k32_run1 --device 2 2>&1 | tee results/aclnn_topk_edge_k32_run1.log
+python3 standalone/topk_fixture.py check --directory results/topk_edge_k32 --actual-scores results/topk_edge_k32_run1/top_scores.bin --actual-ids results/topk_edge_k32_run1/top_ids.bin 2>&1 | tee results/aclnn_topk_edge_k32_check1.log
 ```
 
 检查器会重新对输入排序，不直接相信expected文件；篡改编号、选中分数或输入会被检测。CPU排序只作小数据正确性标准，不能作为正式性能对手。
+
+## 现在执行：三项补验脚本
+
+输入为已准备的results/topk_input（6条查询×6篇文章），以及设备2先前的results/topk_run1。补验不修改这两份材料，会在新目录生成各用例的输入、实际NPU输出、run.log/check.log和总报告report.json。
+
+步骤是K=1（只选一篇）、K=6（按排名返回全部文章）、K=3再运行一次。每项都调用现有C++ NPU程序，独立核对编号和分数字节；最后比较K=3新输出与先前topk_run1，要求两个bin文件分别字节一致。任意失败或手动中断立即停止，保留失败报告，不在CPU算替代输出。
+
+同步新增Python文件及清单后，在当前已加载bm25_topk环境的终端执行：
+
+```bash
+cd /test/w50066029/bm25-npu
+python3 verify_package.py
+set -o pipefail
+python3 standalone/validate_topk.py --input results/topk_input --previous results/topk_run1 --output results/topk_validation1 --device 2 2>&1 | tee results/topk_validation1.log
+```
+
+成功标准是输出“三项补验全部通过”，且results/topk_validation1/report.json中整体status与三项case.status均为passed。脚本调用子进程会把设备阶段实时打印，同时保存每项run.log；初始已完成的检查不会代替这三次新设备调用。
+
+已有输出目录会停止，不覆盖；重跑需要指定新目录。若停在初始化阶段，用该项run.log定位，不误记为通过。脚本只支持文章数<=32的小样本，以便合法测试K=全部文章；最大K=32、513条查询的另一项扩展验证已有日志证据，不重复强制运行。
+
+这三项运行仍是独立进程，不是同一进程内反复调用或正式性能统计。本机只用明确CPU模拟测试检查了脚本编排、失败停止、报告与日志，不把本机测试记为NPU验证。补验通过后进入同进程的贡献→累加→Top-K设备缓冲串联，当前尚未实现该完整调用路径。
 
 ## 关键函数和当前性能限制
 
@@ -143,6 +164,8 @@ python3 standalone/topk_fixture.py check --directory results/topk_edge_k32 --act
 - prepare/write_input：核对实际总分、导出同一FP32输入与元信息；期望数组只给检查使用，不作为设备输出。
 - check：校验输入指纹、编号和选中分数字节；不能单凭输出文件证明设备执行，仍需实机日志。
 - run_topk.prepare_command：从元信息读取查询数/文章数/K，验证形状、同分规则与输入指纹，准备真实调用命令。
+- validate_topk.run_suite：使用同一份FP32总分依次组织三项实际设备调用，每项check通过才继续；更新总体报告，失败立即停止。
+- validate_topk.execute/compare_repeat：启动并记录实际C++程序，比较重复输出的原始字节；不计算设备替代输出。
 - C++ Resources::Describe：把连续二维数组的形状、步长与类型告诉CANN；分数FP32、编号int32。
 - C++ ValidateOutput：只核对下载记录的基本合法性、是否重复、顺序和对应输入分数字节，不在CPU选取替代结果。
 - C++ main：初始化→上传总分→执行准备→临时设备内存分配→执行→同步→下载两个数组→释放→保存；不读CPU期望文件。

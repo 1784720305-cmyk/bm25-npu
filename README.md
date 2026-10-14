@@ -1,12 +1,12 @@
 # BM25 A5 自研计算原型
 
-贡献与累加小样本实机验证已通过：设备0的22条贡献对齐，累加36组在设备0/1通过核对，两次输出文件一致。见[累加验证记录](standalone/A5累加验证记录.md)。Top-K算子已在黄区编译安装，真实接口与依赖已确认，调用器源码已按实际签名补齐；现在按[Top-K步骤](standalone/TopK步骤.md)编译调用器、运行核对，Top-K尚未设备执行。
+三个自研算子均已通过小样本实机核对：贡献22条、累加36组（设备0/1输出一致）、Top-K在设备2通过6×6/K=3及513×40/K=32，后者16,416项完全一致。见[Top-K验证记录](standalone/A5TopK验证记录.md)。现在按[Top-K步骤](standalone/TopK步骤.md)运行K=1/全部文章/重复运行三项补验，再串联完整设备查询；尚无性能达标结论。
 
 **最新路线：自研Ascend C算子 + 实际自动生成的aclnn接口直接调用，不经过ATC或OM，不依赖IndexSDK/Faiss。先读 [standalone/ACLNN路线.md](standalone/ACLNN路线.md)。原SDK接入、ATC与ACL句柄步骤保留为历史参考，当前不执行。**
 
-这是可独立上传Git、再传入黄区的源码快照。包含自研Ascend C贡献、累加、Top-K源码，已验证的贡献/累加调用器、数据工具与小样本；历史SDK接入工具仅保留作参考。
+这是可独立上传Git、再传入黄区的源码快照。包含自研Ascend C贡献、累加、Top-K源码、三个已通过小样本实机核对的调用器、数据工具与样本；历史SDK接入工具仅保留作参考。
 
-**状态：依据黄区日志，贡献最大绝对误差0，累加最大绝对误差1.1920929e-07且两次跨设备输出一致。Top-K算子已编译安装，调用器待黄区编译与执行核对；大规模、完整查询和正式性能验收未完成。**
+**状态：依据黄区日志，贡献最大绝对误差0，累加最大绝对误差1.1920929e-07且两次跨设备输出一致，Top-K小样本排名和分数字节完全一致。大规模、完整查询和正式性能验收未完成；设备1初始化停顿与公共vendor运行库问题仍需独立定位。**
 
 ## 先理解这一步
 
@@ -20,8 +20,9 @@
 |---|---|
 | npu_prototype/op_host | 贡献/累加/Top-K注册、输入输出和任务分配 |
 | npu_prototype/op_kernel | 自研A5 SIMT贡献、累加与Top-K |
-| npu_prototype/host | 三个算子的aclnn直接调用器及CMake；Top-K调用器待实机编译 |
+| npu_prototype/host | 三个算子的aclnn直接调用器及CMake，均已通过小样本实机核对 |
 | standalone/run_topk.py | 从已准备元信息读取尺寸/指纹，启动实际C++ Top-K调用器 |
+| standalone/validate_topk.py | 自动执行剩余三项Top-K边界/重复实机补验，失败停止并保存报告 |
 | npu_prototype/*.py | 生成/校验/合入SDK材料、生成ATC模型；可选样本重建 |
 | fixtures/contribution | 三组输入、期望值、22条记录说明和singleop.json |
 | fixtures/compute_contract_small.* | 原始小合同样本，供可选重建使用 |
@@ -101,7 +102,7 @@ python3 check_result.py --actual results/actual_run1.bin
 - runner的main：上传→执行→同步→下载；不读取CPU期望值。
 - check_result：独立检查公式/文件，再核对设备输出。
 
-下一阶段：在黄区编译Top-K调用器并执行核对；通过后扩大正确性测试、串联设备计算，最后测相同流程CPU/NPU及完整NPU/BM25S两类比较。
+下一阶段：扩大三个算子的正确性测试、串联设备计算，最后测相同流程CPU/NPU及完整NPU/BM25S两类比较。
 
 ## 上传Git
 
