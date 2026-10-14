@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "A5 BM25 contribution and accumulation prototype; contribution small-fixture device verified; accumulation runner pending A5 compilation/execution; Top-K pending",
+  "scope": "A5 BM25 self-developed prototype; contribution and accumulation small-fixture device verified; accumulation outputs match devices 0/1; Top-K source/tooling prepared, pending A5 compilation and real interface; no performance claim",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -8,7 +8,7 @@
   "files": {
     ".gitattributes": "f3b83fa6dd1322e693b202cdec41cdf168dd8ae13c728b34dbe39427f7f282ac",
     ".gitignore": "513d0bf4e2133dd931a7cb763f5e2be14d6385766e0d49e8d0a51d7e01a0cec1",
-    "README.md": "db8e13b583c527f136827ee769e8df4ceb1d2dc6365f859ff9ed16924ca84acd",
+    "README.md": "52e7dbd9dd2eb7f4c8952764a055ed3b7e125b12253a8af11a4dca922e10a4a7",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "fixtures/compute_contract_small.json": "696c99bfd06d84c912ccec985bb97b93a70814856e36672f9796d7593038bde9",
@@ -29,20 +29,27 @@
     "npu_prototype/op_host/bm25_accumulate_tiling.h": "7ce6aac1edef965b86460080767f2378d2d2c75d1bf619e04d42c3aa7f62e26c",
     "npu_prototype/op_host/bm25_contribution.cpp": "32a4e54cabbbcd2d7098a0f861be72b0eb5cd483bf126d98b8685cd772a895cb",
     "npu_prototype/op_host/bm25_contribution_tiling.h": "1cdddb3c4be46ff95e5c63a858b7c77b0495df6b6968d7bdf81929ce80a66380",
+    "npu_prototype/op_host/bm25_top_k.cpp": "045ab09d8bfa39d206c9ab6b3619a11574c5b8ff65512e5af6ac32c059b776d7",
+    "npu_prototype/op_host/bm25_top_k_tiling.h": "2e7663dcaf7dacb3f7cbb1447ca3cf7e4e6338cf951f6e90ebe086e321c41723",
     "npu_prototype/op_kernel/bm25_accumulate.cpp": "bb4779a713e4f52bd8ec381a2883e74f13326ab1b926883c64dc7ebe4dc3e262",
     "npu_prototype/op_kernel/bm25_contribution.cpp": "dcd4533ec3d29092f7935cf9876769d20ef0495775d3b8ab3ea7699af72f9c91",
+    "npu_prototype/op_kernel/bm25_top_k.cpp": "b7b4035218405b74f7224e7f990dc245aa91b2660e1a3c8e937f65f13d6be5dd",
     "npu_prototype/prepare_sdk_overlay.py": "b7a4be7c6b678708503247952765acea25e8781d1ac2c495cfa5977dd65c934d",
     "rebuild_manifest.py": "20c260e3b62dbb64eff657173811870af1d88f1978c6b93b86684f1d669e4f4a",
     "requirements.txt": "43089def480102076d30e02dfe40f349cddd0bc42b67e059e4241d19f7cd7e1c",
+    "standalone/A5累加验证记录.md": "de2a9c2dc168f0deddc00ce1f334feb32032b48da3707bc5646234ae2457ebe5",
     "standalone/A5贡献验证记录.md": "e9ed1769c7cdd0c1f4509e2e915429610243fec2dc7ddab3034a37a7841c5361",
     "standalone/ACLNN路线.md": "68b1fd1e01a535557b9b6043b5f75a922d25d074ee45d398c1c6b43d2d3fd322",
-    "standalone/README.md": "afd9ce45b3830d7da351f59652819c0c3762218d09fc53c1c6fc08750b339e27",
+    "standalone/README.md": "ff8956fe47df901e8d573adf4fc3ee83d847b6c2f59b34c6fe53bda5a453604d",
+    "standalone/TopK步骤.md": "075f6411f29063bd671e2cfc1ff5e15aa3ae98d5614540539f688918dccf0e16",
     "standalone/accumulate_fixture.py": "0b0d7a38d9e43eec6ad291f70dd28f16856d43cbba279a7d4c04bf70b4111f08",
     "standalone/accumulate_operator.json": "3814a922b1102eb06802211315fa71ef69217d30f566481906c143eda63272c2",
-    "standalone/create_project.py": "dbd261fca7145b58e8eca4fe6b6c663a39c12bb12881557655c349e37eef7de7",
+    "standalone/create_project.py": "38a1d937567422de046d8cac4a0974da3a8ca93a373ea61df12f1ccae5760a58",
     "standalone/operator.json": "7f0eee29078e2146f82b24d5dfdb1ab26cad1e7ccac31397e23af21e08f9707f",
     "standalone/repair_project_presets.py": "1131cca75722be7c9e4b311e4ec75728419dce0df53cacd1f70ae3cd71d0ccab",
-    "standalone/累加步骤.md": "b37951838051ebe680355f5999b509d1a76f64ae538709206cdcbff550d72559",
+    "standalone/topk_fixture.py": "af3607c31c8ccedc0b864142aef5b3cca220195b5789da170b753ec87bd149b2",
+    "standalone/topk_operator.json": "5cb70bdb3f756ca1fd79bc2ee40f22adf5ed4c487f091597e4a31088f9620f65",
+    "standalone/累加步骤.md": "e09fdd9d3b91ceb47de0778a6920f8e9b9843106f5b8c058ac9988135384c4ba",
     "verify_package.py": "214d02a263dd06c95ac17429a4836ac961898191dbcb533f9220778d4090e038"
   },
   "text_line_endings": "LF"

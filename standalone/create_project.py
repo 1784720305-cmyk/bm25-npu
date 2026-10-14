@@ -1,4 +1,4 @@
-"""用设备端msopgen建立独立CANN工程，替换为自研贡献算子；不安装、不运行。"""
+"""用设备端msopgen建立独立CANN工程，替换为自研算子；不安装、不运行。"""
 import argparse
 import hashlib
 import json
@@ -7,13 +7,20 @@ import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+OPERATORS = {
+    'contribution': ('Bm25Contribution', 'bm25_contribution', 'operator.json', 'bm25'),
+    'accumulate': ('Bm25Accumulate', 'bm25_accumulate', 'accumulate_operator.json', 'bm25_accumulate'),
+    'topk': ('Bm25TopK', 'bm25_top_k', 'topk_operator.json', 'bm25_topk'),
+}
 
 
 def populate(project, compute_unit, vendor, operator='contribution'):
     # 只接受生成器已建立的预期结构，模板变化时停止而非假定成功。
     if not (project / 'build.sh').is_file():
         raise RuntimeError('生成工程没有build.sh，需检查当前工具模板')
-    stem = 'bm25_contribution' if operator == 'contribution' else 'bm25_accumulate'
+    if operator not in OPERATORS:
+        raise ValueError(f'不支持的算子：{operator}')
+    stem = OPERATORS[operator][1]
     pairs = [(f'op_host/{stem}.cpp', f'op_host/{stem}.cpp'),
              (f'op_host/{stem}_tiling.h', f'op_host/{stem}_tiling.h'),
              (f'op_kernel/{stem}.cpp', f'op_kernel/{stem}.cpp')]
@@ -67,13 +74,13 @@ def main():
     parser.add_argument('--compute-resource', required=True,
                         help='当前msopgen支持的ai_core-...目标，先核对工具帮助，不猜型号')
     parser.add_argument('--compute-unit', default='ascend950')
-    parser.add_argument('--vendor', help='默认贡献为bm25，累加为bm25_accumulate，避免覆盖已安装包')
-    parser.add_argument('--operator', choices=['contribution', 'accumulate'], default='contribution')
+    parser.add_argument('--vendor', help='默认使用各算子独立vendor，避免覆盖已安装包')
+    parser.add_argument('--operator', choices=list(OPERATORS), default='contribution')
     parser.add_argument('--msopgen', default='msopgen')
     parser.add_argument('--output')
     args = parser.parse_args()
-    vendor = args.vendor or ('bm25' if args.operator == 'contribution' else 'bm25_accumulate')
-    project_name = 'Bm25Contribution' if args.operator == 'contribution' else 'Bm25Accumulate'
+    project_name, _, spec, default_vendor = OPERATORS[args.operator]
+    vendor = args.vendor or default_vendor
     project = Path(args.output or ROOT / 'results' / project_name).resolve()
     if project.exists():
         parser.error('输出已存在，停止避免覆盖；请指定新的工作目录')
@@ -82,7 +89,6 @@ def main():
         parser.error('未找到msopgen，请先加载CANN环境并确认工具位置')
     if not args.compute_resource.startswith('ai_core-'):
         parser.error('compute-resource应为工具支持的ai_core-...目标')
-    spec = 'operator.json' if args.operator == 'contribution' else 'accumulate_operator.json'
     command = [executable, 'gen', '-i', str(ROOT / 'standalone' / spec),
                '-f', 'aclnn', '-c', args.compute_resource, '-lan', 'cpp', '-out', str(project)]
     project.parent.mkdir(parents=True, exist_ok=True)
