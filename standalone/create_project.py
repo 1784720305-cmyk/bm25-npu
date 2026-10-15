@@ -15,6 +15,25 @@ OPERATORS = {
 }
 
 
+def generator_command(msopgen, python=None):
+    executable = shutil.which(msopgen)
+    if executable is None and python is not None and Path(msopgen).is_file():
+        executable = str(Path(msopgen).resolve())
+    if executable is None:
+        raise ValueError('未找到msopgen，请先加载CANN环境并确认工具位置')
+    if python is None:
+        return [executable]
+    interpreter = shutil.which(python)
+    if interpreter is None:
+        raise ValueError('指定的msopgen Python不存在或不可执行：' + python)
+    # Only a Python text entry can be invoked through an explicit Python interpreter.
+    with Path(executable).open('rb') as stream:
+        first = stream.readline(512)
+    if not first.startswith(b'#!') or b'python' not in first.lower():
+        raise ValueError('msopgen入口不是可识别的Python脚本，停止，不改安装文件')
+    return [interpreter, str(Path(executable).resolve())]
+
+
 def populate(project, compute_unit, vendor, operator='contribution'):
     # 只接受生成器已建立的预期结构，模板变化时停止而非假定成功。
     if not (project / 'build.sh').is_file():
@@ -81,6 +100,7 @@ def main():
     parser.add_argument('--vendor', help='默认使用各算子独立vendor，避免覆盖已安装包')
     parser.add_argument('--operator', choices=list(OPERATORS), default='contribution')
     parser.add_argument('--msopgen', default='msopgen')
+    parser.add_argument('--msopgen-python', help='显式运行msopgen的Python；先用该Python执行入口gen --help核对兼容性')
     parser.add_argument('--output')
     args = parser.parse_args()
     project_name, _, spec, default_vendor = OPERATORS[args.operator]
@@ -90,17 +110,27 @@ def main():
     project = Path(args.output or ROOT / 'results' / project_name).resolve()
     if project.exists():
         parser.error('输出已存在，停止避免覆盖；请指定新的工作目录')
-    executable = shutil.which(args.msopgen)
-    if executable is None:
-        parser.error('未找到msopgen，请先加载CANN环境并确认工具位置')
+    try:
+        prefix = generator_command(args.msopgen, args.msopgen_python)
+    except ValueError as error:
+        parser.error(str(error))
     if not args.compute_resource.startswith('ai_core-'):
         parser.error('compute-resource应为工具支持的ai_core-...目标')
-    command = [executable, 'gen', '-i', str(ROOT / 'standalone' / spec),
+    command = prefix + ['gen', '-i', str(ROOT / 'standalone' / spec),
                '-f', 'aclnn', '-c', args.compute_resource, '-lan', 'cpp', '-out', str(project)]
     project.parent.mkdir(parents=True, exist_ok=True)
     print('创建独立CANN工程：', command, flush=True)
-    subprocess.run(command, check=True, timeout=300)
+    try:
+        subprocess.run(command, check=True, timeout=300)
+    except FileNotFoundError as error:
+        raise RuntimeError('生成器未能启动。入口存在时，也可能是首行指定的解释器不存在；'
+                           '先用现有Python执行msopgen入口gen --help，通过后加--msopgen-python显式指定。'
+                           '本次未生成可用工程，不继续编译。') from error
     populate(project, args.compute_unit, vendor, args.operator)
+    metadata_path = project / 'bm25_project.json'
+    metadata = json.loads(metadata_path.read_text(encoding='utf-8'))
+    metadata['generator_command'] = command
+    metadata_path.write_bytes((json.dumps(metadata, indent=2) + '\n').encode('utf-8'))
     print('工程及自研源码已准备：', project)
     print('下一步使用生成的build.sh编译。尚未编译、安装或执行NPU。')
 

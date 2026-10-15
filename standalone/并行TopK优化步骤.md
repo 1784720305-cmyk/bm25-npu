@@ -16,6 +16,8 @@
 
 ## 第一阶段：现在先生成、编译独立实验包
 
+2026-10-15黄区发现msopgen入口指定 `/usr/local/python3.11.0/bin/python3.11`，该解释器不存在，尚未启动生成器。新增 `--msopgen-python` 可显式指定已经验证兼容的现有Python，保留CANN安装文件。先运行 `python3 /usr/local/Ascend/cann-9.2.0/bin/msopgen gen --help`；只有帮助成功，才能在下方生成命令追加 `--msopgen-python python3`。若出现依赖或版本错误，停下依据实际报错定位，不默认系统Python3.9能够运行全部CANN工具。
+
 同步代码后校验应为74个文件。每条成功才继续，失败停止并保留日志。新工程输出已存在时换新路径，并在后续命令相应修改。
 
 ```bash
