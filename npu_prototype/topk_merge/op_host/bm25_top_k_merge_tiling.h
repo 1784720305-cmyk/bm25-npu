@@ -1,0 +1,15 @@
+#ifndef BM25_TOP_K_MERGE_TILING_H
+#define BM25_TOP_K_MERGE_TILING_H
+#include <cstdint>
+#include "register/tilingdata_base.h"
+namespace optiling {
+BEGIN_TILING_DATA_DEF(Bm25TopKMergeTilingData)
+TILING_DATA_FIELD_DEF(uint32_t, queryCount);
+TILING_DATA_FIELD_DEF(uint32_t, shardCount);
+TILING_DATA_FIELD_DEF(uint32_t, docsPerShard);
+TILING_DATA_FIELD_DEF(uint32_t, k);
+TILING_DATA_FIELD_DEF(uint32_t, blockNum);
+END_TILING_DATA_DEF;
+REGISTER_TILING_DATA_CLASS(Bm25TopKMerge, Bm25TopKMergeTilingData)
+}
+#endif
