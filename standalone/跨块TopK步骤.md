@@ -48,11 +48,45 @@
 
 现有贡献、累加、并行Top-K和已安装vendor不改。新vendor固定为 `bm25_topk_merge`，新工程 `results/Bm25TopKMerge`。没有新增Faiss、IndexSDK或其他检索包依赖。
 
-尚未完成：黄区新算子编译、安装、真实接口核对、合并单算子设备验证、四段调用器和完整性能对照。新主机调用程序必须在读到黄区实际生成的头文件后编写，不能根据IR自行声明函数。当前 `benchmark_case.py` 仍测试旧三段版，不会自动切换到新四段实验。
+用户已在黄区完成新合并算子的A5编译、打包和独立安装，安装日志为2026-10-15 22:54:54。真实生成头文件已读取：准备接口依次接收两个候选张量、k、docCount、两个输出张量、workspaceSize及executor；执行接口接收workspace、大小、executor和stream。实际新API库的 `ldd -r` 未报告缺失库或未定义符号。这不代表ATC运行库问题已修复。
+
+已据此补上独立合并调用器和七组设备验收工具，代码在本机完成，尚未在黄区编译/运行。尚未完成合并设备正确性、四段调用器和完整性能对照。当前 `benchmark_case.py` 仍测试旧三段版，不会自动切换到新四段实验。
+
+## 现在执行：先验新合并算子
+
+这轮输入是用于单元测试的完整文章分数和各块前K候选。Python在CPU上准备这些已知候选，便于单独核对新合并算子；调用器只读取候选数组，不读取CPU期望输出。验收不代表第一阶段Top-K由NPU执行，也不作BM25性能比较。后续四段流程的候选必须由NPU生成并留在设备。
+
+测试有七种尺寸：S=1/2/3/8/16/32，K=1/3/10/32，含K=全部文章。每组65条查询，覆盖全零、全同分、升序、降序、随机同分、跨块最大值、相邻FP32值及正负零。查询多于前次实测56个工作块，检查循环处理；实际新算子的工作块数应由设备/tiling日志核对，不宣称已测整卡利用率。每组在同一进程运行三次，每次毒化输出、重新取得普通executor、执行、同步、下载，要求输出字节一致。
+
+同步最新Git源码后，校验应为85个文件。当前算子已安装，无需重新生成或覆盖旧vendor。逐条执行，上一条成功后再继续；输出目录已存在就换新名称：
+
+```bash
+cd /test/w50066029/bm25-npu
+source /usr/local/Ascend/cann-9.2.0/set_env.sh
+python3 verify_package.py
+set -o pipefail
+cmake -S npu_prototype/topk_merge_host -B results/topk_merge_host_build -DTOOLKIT_HOME=/usr/local/Ascend/cann-9.2.0 -DBM25_MERGE_OPP_ROOT=/test/w50066029/bm25-npu/results/custom_opp/vendors/bm25_topk_merge 2>&1 | tee results/topk_merge_host_configure1.log
+```
+
+配置成功后：
+
+```bash
+cmake --build results/topk_merge_host_build -j 2>&1 | tee results/topk_merge_host_build1.log
+```
+
+编译成功后，选择空闲卡，避开设备4。下面用设备1：
+
+```bash
+python3 standalone/validate_topk_merge.py --output results/topk_merge_validation1 --device 1 2>&1 | tee results/topk_merge_validation1.log
+```
+
+工具为子进程单独设置本次合并vendor路径；C++按绝对路径加载其API库，核对两个函数的实际所属库。任何输入指纹、实际头文件、工程源码、设备API、同步、下载或结果核对失败都会停止，不写总成功报告，不用CPU结果填充设备输出。每组实机日志保存为该组的 `device.log`，已通过的组保存 `checked.json`；全部通过后才写 `results/topk_merge_validation1/report.json`。
+
+验收标准：七组实际设备调用全部成功，全文章独立排序得到的编号、顺序及原FP32分数字节与输出一致，且每组同进程三次输出一致。本机已检查七组夹具、损坏输入/输出、尺寸/接口不符及进程失败不出成功报告；使用了测试替身验证编排，未编译C++或运行NPU，不能当作这轮设备验收。
 
 ## 当前先生成与编译新算子
 
-同步代码，校验应为82个文件。逐条成功后才继续，输出已存在时换新路径，不删旧工程/旧报告：
+以下保留新环境从零生成的步骤；当前黄区已经编译安装，不需重复执行。逐条成功后才继续，输出已存在时换新路径，不删旧工程/旧报告：
 
 ```bash
 cd /test/w50066029/bm25-npu
@@ -93,3 +127,7 @@ cat results/custom_opp/vendors/bm25_topk_merge/op_api/include/aclnn_bm25_top_k_m
 - `MergeTopKSimt`：每线程负责一块有序候选列表，只保存当前列表头；组内比较分数/原文章编号，输出一个赢家，只推进赢家所属列表，重复K次。
 - `asc_shfl_xor`：完整32线程组交换当前候选以找最优项；不足32块的线程提供哨兵，仍参加交换，没有失活来源。
 - 工程准备工具：使用实际生成模板、备份模板、复制新源码并保存指纹；不会编译、安装或运行设备。
+- `DescribeCandidates`：把连续候选数组描述为三维 `[查询数,块数,K]`，不在CPU重新排列候选。
+- `ValidateCandidates` / `ValidateSelected`：主机先检查候选合法，再检查设备输出的编号范围、顺序和候选归属；不替设备排序。
+- `validate_topk_merge.prepare` / `check`：前者只创建明确标记的CPU单元测试输入，后者用全部文章独立排序核对设备文件，二者不伪造NPU结果。
+- `validate_topk_merge.run`：逐组启动实际调用器、保存日志；设备程序内部三次覆写检查与外部独立完整排名检查都成功后才写总报告。

@@ -1,6 +1,6 @@
 # BM25 A5 自研计算原型
 
-**正常短查询最新实机结果：65536文章/单查询/K=10，最快已测CPU8线程0.041542ms，当前NPU设备1为0.474331ms，NPU约慢11.4倍，结果全部核对通过。当前单查询Top-K只用一个工作块，已开始“分块选候选+自研NPU合并”的实验。新合并算子源码及CPU模型681组检查完成，尚待A5编译/设备验证；四段调用器等实际生成头文件后接入。见[跨块Top-K步骤](standalone/跨块TopK步骤.md)。**
+**正常短查询最新实机结果：65536文章/单查询/K=10，最快已测CPU8线程0.041542ms，当前NPU设备1为0.474331ms，NPU约慢11.4倍，结果全部核对通过。当前单查询Top-K只用一个工作块，已开始“分块选候选+自研NPU合并”的实验。新合并算子已由用户在A5编译、安装，实际头文件及库依赖已核对。独立合并调用器和七组验收工具代码已完成，等待黄区编译/设备验证；正确后接四段流程。见[跨块Top-K步骤](standalone/跨块TopK步骤.md)。**
 
 **当前性能推进顺序已重排：先诊断新版和CPU实际资源，再建立正常查询的规模/批量曲线，按瓶颈选择融合算分或跨块Top-K，随后接常驻索引与完整查询。详见[950性能优化路线](standalone/950性能优化路线.md)。当前约1.5倍是相对指定4线程CPU的驻留计算初测，不作为最终性能交付。**
 
@@ -33,6 +33,7 @@ msprof第一轮已在设备1实际采集到三算子记录，op_summary有51条�
 | npu_prototype/op_host | 贡献/累加/Top-K注册、输入输出和任务分配 |
 | npu_prototype/op_kernel | 自研A5 SIMT贡献、累加与Top-K |
 | npu_prototype/topk_parallel | 并行Top-K的注册/任务分配、候选缓冲及组内归并源码；小样本及4096文章A5运行通过 |
+| npu_prototype/topk_merge_host、standalone/validate_topk_merge.py | 新合并算子独立调用及七组边界/重复验收；代码完成，尚未设备运行 |
 | npu_prototype/host | 三个算子的aclnn直接调用器及CMake，均已通过小样本实机核对 |
 | npu_prototype/pipeline_host | 诊断、普通resident重复及分段模式已实机通过；新版库来源和额外工作区保护已在A5运行核对 |
 | cpu_reference | 优化C++/OpenMP贡献、累加、候选堆Top-K；黄区GNU10.3.1/OpenMP4.5编译和4线程正确性通过 |

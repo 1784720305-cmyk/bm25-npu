@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "Self-developed Ascend 950 BM25 three-stage correctness and normal-query CPU thread scan passed per user logs. On the normal 65536-document/single-query workload, best tested CPU=8 threads at 0.041542 ms and current NPU=0.474331 ms; NPU is slower. New independent Bm25TopKMerge source/IR and 681-case CPU algorithm model prepared for document-sharded Top-K; pending A5 compilation, actual generated API header inspection, device correctness and four-stage host integration. No new speedup claim; binary fixtures unchanged.",
+  "scope": "Self-developed Ascend 950 BM25 normal single-query baseline is slower than best tested CPU. New Bm25TopKMerge compiled and installed per user logs; actual generated ACLNN header and ldd dependencies inspected. Independent merge host caller and seven-case device validation tooling prepared, locally fixture/failure-path checked only. Pending host compilation, merge device correctness, four-stage integration and performance measurement. No new speedup claim; original binary fixtures unchanged.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -8,7 +8,7 @@
   "files": {
     ".gitattributes": "f3b83fa6dd1322e693b202cdec41cdf168dd8ae13c728b34dbe39427f7f282ac",
     ".gitignore": "513d0bf4e2133dd931a7cb763f5e2be14d6385766e0d49e8d0a51d7e01a0cec1",
-    "README.md": "67036d756d6c32ee6dc431a1d1570c85ad0eb86d6d323be932aa3c04860ec49e",
+    "README.md": "970dc5c344ab027a12814c99b835cbf384f90fd2f24bb8c971bec1f0aa4d5d28",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "cpu_reference/CMakeLists.txt": "da98753c2f8c337c02a0ff0658368ba1ee302f0d3c6c2bd97ee6d46af0bf0c80",
@@ -45,6 +45,8 @@
     "npu_prototype/topk_merge/op_host/bm25_top_k_merge.cpp": "02f360fbe57c8a2eb0d1c668083f134f1419875b82e4cc735d488a1fca05d667",
     "npu_prototype/topk_merge/op_host/bm25_top_k_merge_tiling.h": "1d63163b600933ec27282dbc242b52533c97145a2ad34260e79b7505006b7ef7",
     "npu_prototype/topk_merge/op_kernel/bm25_top_k_merge.cpp": "85a2a9c43d5540ed315f88b64535e52309241669ce5effe30cf834f4000527e4",
+    "npu_prototype/topk_merge_host/CMakeLists.txt": "2391f5f5491ecf1cdec20a930d4fe50e19d58af223e0675bc1ed9f818002c57b",
+    "npu_prototype/topk_merge_host/merge_runner.cpp": "d0b1d5a900e07565d76a5cac8ff798e644d42d110cf7bfc75f71e2313f5a844f",
     "npu_prototype/topk_parallel/op_host/bm25_top_k.cpp": "72c8ac89029fa962f4cccbfb091a1a65d48d197ed0a9b1975310a308c86615d0",
     "npu_prototype/topk_parallel/op_host/bm25_top_k_tiling.h": "0d0ba411744d75d6298279a61907a7f372ee5e19bf77033d92ac9efafc6ed147",
     "npu_prototype/topk_parallel/op_kernel/bm25_top_k.cpp": "ef58c834b7b6297e430aa00b3cd5807f87ea7c1ebbdff1b8c69d083234ef157d",
@@ -80,13 +82,14 @@
     "standalone/topk_merge_operator.json": "5499e016b15f59456e55d4af2e07ffd277f27e813273311f7efd32b0648a66b6",
     "standalone/topk_operator.json": "5cb70bdb3f756ca1fd79bc2ee40f22adf5ed4c487f091597e4a31088f9620f65",
     "standalone/validate_topk.py": "d2e6c61227226685c1093f7e3f07eb1bcc4f2fa05e2fbdac7777768025d27cbc",
+    "standalone/validate_topk_merge.py": "0195b41356591db7dcf012e9c28dda45a01a05272433722f54735589fe8fdbda",
     "standalone/分段定位步骤.md": "8fa884d47b3f840f2d2b9ea56ff4a8cef8022905bd3bd36e05ef82bf88b5e91b",
     "standalone/同进程串联步骤.md": "729601c3aedafde80435d4f7804582650d95a3e0f487f142eccf1c1d7699153d",
     "standalone/并行TopK优化步骤.md": "22cdec6a4e639280ef62cfe5d39226dd80e8e53209b42cbc7edcca966faff76a",
     "standalone/扩大验证步骤.md": "78c5d3d4f5bc76a758542fdcd55fd07b0c7c8e5767e6be639ae7b68d1b4e6738",
     "standalone/稳态计时步骤.md": "33924640c6f52583851bff6ddc818673a43a9690ac62b412134463b398040f3c",
     "standalone/累加步骤.md": "e09fdd9d3b91ceb47de0778a6920f8e9b9843106f5b8c058ac9988135384c4ba",
-    "standalone/跨块TopK步骤.md": "a5d2a13c7111beb51a2c9e7c73fa9988124bf8a1809cbb92d7990aef13c2a8aa",
+    "standalone/跨块TopK步骤.md": "53301ada60ceb79828bc12ae30dbdac8905ad8cb4c8d4d98c358192064dbce90",
     "verify_package.py": "214d02a263dd06c95ac17429a4836ac961898191dbcb533f9220778d4090e038"
   },
   "text_line_endings": "LF"
