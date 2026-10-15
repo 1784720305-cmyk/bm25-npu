@@ -1,6 +1,7 @@
 #include "pipeline_common.h"
 #include <algorithm>
 #include <iomanip>
+#include <cstdlib>
 
 struct Sample {
     double path, prepare, launchSync;
@@ -96,6 +97,9 @@ int main(int argc, char **argv)
         const int64_t warmup = ParseInteger(argv[8], "warmup", 1, 10000);
         const int64_t repeats = ParseInteger(argv[9], "repeats", 1, 10000);
         const std::string timingMode(argv[10]);
+        const char *scratchEnv = std::getenv("BM25_EXPECT_TOPK_SCRATCH_BYTES");
+        const uint64_t expectedTopkScratch = scratchEnv == nullptr ? 0 :
+            static_cast<uint64_t>(ParseInteger(scratchEnv, "expected Top-K scratch", 1, INT64_MAX));
         if (timingMode != "resident" && timingMode != "with_transfers" && timingMode != "profile_stages")
             throw std::runtime_error("MODE must be resident, with_transfers or profile_stages");
         const uint64_t groupCount = static_cast<uint64_t>(queries) * static_cast<uint64_t>(docs);
@@ -207,6 +211,9 @@ int main(int argc, char **argv)
                                           &size[1], &executor[1]), "accumulate prepare");
             Require(api.prepareTopK(matrixScoreTensor, k, topScoreTensor, topIdTensor,
                                    &size[2], &executor[2]), "Top-K prepare");
+            if (expectedTopkScratch != 0 && (size[0] > UINT64_MAX - expectedTopkScratch ||
+                size[2] < size[0] + expectedTopkScratch))
+                throw std::runtime_error("Parallel Top-K workspace mismatch; expected new tiling plus scratch, stop before execution");
             for (int i = 0; i < 3; ++i) {
                 if (executor[i] == nullptr || size[i] > std::numeric_limits<size_t>::max())
                     throw std::runtime_error("Invalid executor/workspace");

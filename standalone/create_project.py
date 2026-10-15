@@ -11,6 +11,7 @@ OPERATORS = {
     'contribution': ('Bm25Contribution', 'bm25_contribution', 'operator.json', 'bm25'),
     'accumulate': ('Bm25Accumulate', 'bm25_accumulate', 'accumulate_operator.json', 'bm25_accumulate'),
     'topk': ('Bm25TopK', 'bm25_top_k', 'topk_operator.json', 'bm25_topk'),
+    'topk_parallel': ('Bm25TopKParallel', 'bm25_top_k', 'topk_operator.json', 'bm25_topk_parallel'),
 }
 
 
@@ -56,7 +57,10 @@ def populate(project, compute_unit, vendor, operator='contribution'):
             saved = backup / destination
             saved.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(target, saved)
-        shutil.copyfile(ROOT / 'npu_prototype' / source, target)
+        source_root = ROOT / 'npu_prototype'
+        if operator == 'topk_parallel':
+            source_root = source_root / 'topk_parallel'
+        shutil.copyfile(source_root / source, target)
     shutil.copyfile(presets_path, backup / 'CMakePresets.json')
     presets_path.write_bytes((json.dumps(presets, ensure_ascii=False, indent=2) + '\n').encode('utf-8'))
     metadata = {
@@ -81,6 +85,8 @@ def main():
     args = parser.parse_args()
     project_name, _, spec, default_vendor = OPERATORS[args.operator]
     vendor = args.vendor or default_vendor
+    if args.operator == 'topk_parallel' and vendor != 'bm25_topk_parallel':
+        parser.error('并行实验使用独立vendor bm25_topk_parallel，避免覆盖基线')
     project = Path(args.output or ROOT / 'results' / project_name).resolve()
     if project.exists():
         parser.error('输出已存在，停止避免覆盖；请指定新的工作目录')

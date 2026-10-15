@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import platform
 import subprocess
@@ -12,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from standalone.pipeline_fixture import check
 from standalone.run_pipeline import prepare_command
+from standalone.prepare_topk_parallel_runtime import validate_runtime
 
 OUTPUT_FILES = ('contributions.bin', 'scores.bin', 'top_scores.bin', 'top_ids.bin')
 
@@ -62,12 +64,28 @@ def run(directory, output, runner, vendors, device, warmup, repeats, mode):
         raise ValueError('计时模式非法')
     command, info = prepare_command(directory, output, runner, vendors, device)
     command.extend([str(warmup), str(repeats), mode])
+    variant = None
+    runtime_file = vendors.resolve() / 'bm25_runtime.json'
+    child_environment = os.environ.copy()
+    child_environment.pop('BM25_EXPECT_TOPK_SCRATCH_BYTES', None)
+    if runtime_file.is_file():
+        variant, expected_scratch, custom_path = validate_runtime(vendors.resolve(), info)
+        child_environment['BM25_EXPECT_TOPK_SCRATCH_BYTES'] = str(expected_scratch)
+        child_environment['ASCEND_CUSTOM_OPP_PATH'] = custom_path
+        print(f'并行Top-K运行库指纹通过；本次子进程明确选择三个vendor；额外工作区至少{expected_scratch}字节。', flush=True)
     print('将运行实际NPU同进程预热/重复调用：', flush=True)
     print(json.dumps(command, ensure_ascii=False), flush=True)
-    subprocess.run(command, check=True)
+    if variant is None and 'BM25_EXPECT_TOPK_SCRATCH_BYTES' not in os.environ:
+        subprocess.run(command, check=True)
+    else:
+        subprocess.run(command, check=True, env=child_environment)
     directory, output = directory.resolve(), output.resolve()
     timing = json.loads((output / 'npu_timing.json').read_text(encoding='utf-8'))
     validate_timing(info, timing, mode, device, warmup, repeats)
+    if variant is not None:
+        capacities = timing['workspace_capacity_bytes']
+        if len(capacities) != 3 or capacities[2] < capacities[0] + expected_scratch:
+            raise ValueError('并行Top-K额外工作区未体现，停止，不接受旧算子结果')
     # Both are actual NPU outputs; no expected file is used to manufacture either one.
     check(directory, output / 'bootstrap')
     check(directory, output)
@@ -82,6 +100,9 @@ def run(directory, output, runner, vendors, device, warmup, repeats, mode):
               'runner_sha256': hashlib.sha256(runner.read_bytes()).hexdigest(), 'platform': platform.platform(),
               'scope': 'per-stage launch/sync diagnostic; not normal pipeline latency or pure kernel time' if mode == 'profile_stages' else 'prepared-input repeated experiment; includes per-iteration API preparation; not complete retrieval or an automatic speedup verdict',
               'validation_policy': timing['full_repeat_validation']}
+    if variant is not None:
+        record['topk_variant'] = variant['variant']
+        record['parallel_user_scratch_bytes'] = expected_scratch
     (output / 'run_metadata.json').write_bytes((json.dumps(record, ensure_ascii=False, indent=2) + '\n').encode('utf-8'))
     print(f'实际调用完成，首末独立公式与排名检查通过；模式={mode}，批次中位数={timing["median_batch_path_ms"]:.6g}ms。', flush=True)
     print('launch/sync包含主机提交和同步，不是纯内核时间；报告保存全部样本。不作完整检索或加速达标结论。', flush=True)
