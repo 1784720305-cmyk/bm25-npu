@@ -2,7 +2,10 @@
 #include <algorithm>
 #include <iomanip>
 
-struct Sample { double path, prepare, launchSync; };
+struct Sample {
+    double path, prepare, launchSync;
+    double contributionSync = 0, accumulateSync = 0, topkSync = 0;
+};
 
 template<class T> bool EqualBytes(const std::vector<T> &a, const std::vector<T> &b)
 {
@@ -13,8 +16,12 @@ double Percentile(const std::vector<Sample> &samples, double fraction, int field
 {
     std::vector<double> values;
     values.reserve(samples.size());
-    for (const auto &sample : samples)
-        values.push_back(field == 0 ? sample.path : field == 1 ? sample.prepare : sample.launchSync);
+    for (const auto &sample : samples) {
+        const double fields[] = {sample.path, sample.prepare, sample.launchSync,
+                                 sample.contributionSync, sample.accumulateSync, sample.topkSync};
+        if (field < 0 || field >= 6) throw std::runtime_error("Invalid timing field");
+        values.push_back(fields[field]);
+    }
     std::sort(values.begin(), values.end());
     const size_t rank = std::max<size_t>(1, static_cast<size_t>(std::ceil(fraction * values.size())));
     return values.at(rank - 1);
@@ -29,7 +36,8 @@ void SaveTiming(const fs::path &path, const std::vector<Sample> &samples, const 
          << "{\n  \"status\": \"device_repeated_completed_independent_correctness_not_yet_checked\",\n"
          << "  \"mode\": \"" << mode << "\",\n"
          << "  \"scope\": \"prepared input; includes fresh three-stage API preparation, launch and stream synchronization; workspace/buffers allocated before measurement; excludes CPU input packing, initialization, file IO and debug downloads\",\n"
-         << "  \"transfer_policy\": \"" << (mode == "resident" ? "four inputs uploaded once; Top-K download excluded" : "four inputs uploaded and Top-K scores/IDs downloaded each iteration") << "\",\n"
+         << "  \"transfer_policy\": \"" << (mode != "with_transfers" ? "four inputs uploaded once; Top-K download excluded" : "four inputs uploaded and Top-K scores/IDs downloaded each iteration") << "\",\n"
+         << "  \"synchronization_policy\": \"" << (mode == "profile_stages" ? "synchronize after EACH operator; diagnostic only, not normal pipeline latency or pure kernel time" : "synchronize after the entire three-operator chain") << "\",\n"
          << "  \"executor_policy\": \"fresh ordinary executors every iteration, framework-owned; three workspaces reused only after synchronization\",\n"
          << "  \"percentile_method\": \"nearest_rank\",\n"
          << "  \"full_repeat_validation\": \"every specified warmup and final measured iteration, all four arrays byte-identical to bootstrap; outputs poisoned before these checks\",\n"
@@ -42,11 +50,22 @@ void SaveTiming(const fs::path &path, const std::vector<Sample> &samples, const 
          << "  \"median_batch_path_ms\": " << Percentile(samples, .5, 0) << ",\n"
          << "  \"p95_batch_path_ms\": " << Percentile(samples, .95, 0) << ",\n"
          << "  \"median_prepare_ms\": " << Percentile(samples, .5, 1) << ",\n"
-         << "  \"median_launch_sync_ms\": " << Percentile(samples, .5, 2) << ",\n"
-         << "  \"samples\": [\n";
-    for (size_t i = 0; i < samples.size(); ++i)
+         << "  \"median_launch_sync_ms\": " << Percentile(samples, .5, 2) << ",\n";
+    if (mode == "profile_stages") {
+        file << "  \"median_contribution_launch_sync_ms\": " << Percentile(samples, .5, 3) << ",\n"
+             << "  \"median_accumulate_launch_sync_ms\": " << Percentile(samples, .5, 4) << ",\n"
+             << "  \"median_topk_launch_sync_ms\": " << Percentile(samples, .5, 5) << ",\n";
+    }
+    file << "  \"samples\": [\n";
+    for (size_t i = 0; i < samples.size(); ++i) {
         file << (i ? ",\n" : "") << "    {\"batch_path_ms\": " << samples[i].path
-             << ", \"prepare_ms\": " << samples[i].prepare << ", \"launch_sync_ms\": " << samples[i].launchSync << "}";
+             << ", \"prepare_ms\": " << samples[i].prepare << ", \"launch_sync_ms\": " << samples[i].launchSync;
+        if (mode == "profile_stages")
+            file << ", \"contribution_launch_sync_ms\": " << samples[i].contributionSync
+                 << ", \"accumulate_launch_sync_ms\": " << samples[i].accumulateSync
+                 << ", \"topk_launch_sync_ms\": " << samples[i].topkSync;
+        file << "}";
+    }
     file << "\n  ]\n}\n";
     file.close();
     if (!file) throw std::runtime_error("Cannot save NPU timing JSON");
@@ -77,8 +96,8 @@ int main(int argc, char **argv)
         const int64_t warmup = ParseInteger(argv[8], "warmup", 1, 10000);
         const int64_t repeats = ParseInteger(argv[9], "repeats", 1, 10000);
         const std::string timingMode(argv[10]);
-        if (timingMode != "resident" && timingMode != "with_transfers")
-            throw std::runtime_error("MODE must be resident or with_transfers");
+        if (timingMode != "resident" && timingMode != "with_transfers" && timingMode != "profile_stages")
+            throw std::runtime_error("MODE must be resident, with_transfers or profile_stages");
         const uint64_t groupCount = static_cast<uint64_t>(queries) * static_cast<uint64_t>(docs);
         if (groupCount > INT32_MAX || k > docs) throw std::runtime_error("Group count or K exceeds operator limits");
         const auto inputDir = fs::absolute(argv[1]);
@@ -200,21 +219,38 @@ int main(int argc, char **argv)
                 }
             }
             const auto launchStart = std::chrono::steady_clock::now();
+            double contributionSync = 0, accumulateSync = 0, topkSync = 0;
+            auto stageEnd = launchStart;
             Require(api.executeContribution(workspace[0], size[0], executor[0], runtime.stream), "contribution execute"); executor[0] = nullptr;
+            if (timingMode == "profile_stages") {
+                Require(aclrtSynchronizeStream(runtime.stream), "profile contribution synchronize");
+                stageEnd = std::chrono::steady_clock::now();
+                contributionSync = std::chrono::duration<double, std::milli>(stageEnd - launchStart).count();
+            }
+            const auto accumulateStart = stageEnd;
             Require(api.executeAccumulate(workspace[1], size[1], executor[1], runtime.stream), "accumulate execute"); executor[1] = nullptr;
+            if (timingMode == "profile_stages") {
+                Require(aclrtSynchronizeStream(runtime.stream), "profile accumulate synchronize");
+                stageEnd = std::chrono::steady_clock::now();
+                accumulateSync = std::chrono::duration<double, std::milli>(stageEnd - accumulateStart).count();
+            }
+            const auto topkStart = stageEnd;
             Require(api.executeTopK(workspace[2], size[2], executor[2], runtime.stream), "Top-K execute"); executor[2] = nullptr;
             Require(aclrtSynchronizeStream(runtime.stream), "pipeline synchronize");
             const auto launchEnd = std::chrono::steady_clock::now();
+            if (timingMode == "profile_stages")
+                topkSync = std::chrono::duration<double, std::milli>(launchEnd - topkStart).count();
             if (timingMode == "with_transfers") downloadTop();
             const auto end = std::chrono::steady_clock::now();
             // Return host wall times. launch_sync is NOT pure device-kernel time.
             return Sample{
                 std::chrono::duration<double, std::milli>(end - begin).count(),
                 std::chrono::duration<double, std::milli>(launchStart - prepareStart).count(),
-                std::chrono::duration<double, std::milli>(launchEnd - launchStart).count()};
+                std::chrono::duration<double, std::milli>(launchEnd - launchStart).count(),
+                contributionSync, accumulateSync, topkSync};
         };
         Stage("bootstrap_upload_prepare_execute");
-        if (timingMode == "resident") upload();
+        if (timingMode != "with_transfers") upload();
         const auto cold = iteration(true);
         Stage("bootstrap_debug_download");
         downloadDebug();
@@ -281,8 +317,14 @@ int main(int argc, char **argv)
                   << " validated_full_repeat_batches=" << warmup + 1 << " intermediate_host_roundtrips=0\n"
                   << "median_batch_path_ms=" << Percentile(samples, .5, 0)
                   << "\nmedian_prepare_ms=" << Percentile(samples, .5, 1)
-                  << "\nmedian_three_launches_and_sync_ms=" << Percentile(samples, .5, 2)
-                  << "\nRepeated call completed; check independent CPU formula and all-query cross-device ranking. "
+                  << "\nmedian_three_launches_and_sync_ms=" << Percentile(samples, .5, 2) << '\n';
+        if (timingMode == "profile_stages") {
+            std::cout << "median_contribution_launch_sync_ms=" << Percentile(samples, .5, 3)
+                      << "\nmedian_accumulate_launch_sync_ms=" << Percentile(samples, .5, 4)
+                      << "\nmedian_topk_launch_sync_ms=" << Percentile(samples, .5, 5)
+                      << "\nPer-stage synchronization changes the normal pipeline; diagnostic only, not pure kernel time.\n";
+        }
+        std::cout << "Repeated call completed; check independent CPU formula and all-query cross-device ranking. "
                   << "Prepared-input experiment, not complete retrieval or a speedup claim.\n";
         return 0;
     } catch (const std::exception &error) {

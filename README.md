@@ -1,12 +1,12 @@
 # BM25 A5 自研计算原型
 
-三个自研算子的同进程串联已通过设备1小样本和设备5的4096文章/17查询/K=10验证，中间结果无主机往返。同输入4线程C++ CPU参考也已在黄区编译、运行并核对通过，见[CPU验证记录](standalone/A5CPU参考验证记录.md)。下一步按[稳态计时步骤](standalone/稳态计时步骤.md)直接核对两边全部结果，再编译、运行新增NPU同进程预热/重复程序。新程序仅完成源码和本机工具检查，尚待A5验证；尚无完整查询或性能达标结论。
+三个自研算子的4096文章串联与同输入4线程CPU参考均通过；CPU与设备5结果的全部17查询直接交叉通过。设备2的NPU同进程预热/30轮重复也已编译运行，首末结果正确；resident批次中位数4.52245ms，明显慢于此前CPU的0.169114ms，见[稳态初测记录](standalone/A5稳态初测记录.md)。现在按[分段定位步骤](standalone/分段定位步骤.md)找贡献、累加、Top-K的大头；新增分段模式源码和本机工具检查通过，尚待A5编译/运行。未实现NPU更快或完整查询性能目标。
 
 **最新路线：自研Ascend C算子 + 实际自动生成的aclnn接口直接调用，不经过ATC或OM，不依赖IndexSDK/Faiss。先读 [standalone/ACLNN路线.md](standalone/ACLNN路线.md)。原SDK接入、ATC与ACL句柄步骤保留为历史参考，当前不执行。**
 
 这是可独立上传Git、再传入黄区的源码快照。包含自研Ascend C贡献、累加、Top-K源码、三个已通过小样本实机核对的调用器、数据工具与样本；历史SDK接入工具仅保留作参考。
 
-**状态：依据用户黄区日志，小样本与4096文章NPU串联、4线程CPU参考均通过各自正确性检查。CPU预热后17查询批次中位数0.169114ms；NPU此前为首次诊断时间，不能直接计算加速比。CPU/NPU直接交叉、新NPU稳态复用、更多规模、完整查询和正式性能未验收。**
+**状态：普通resident重复模式实机通过，当前数据/配置初测中NPU较慢；新增profile_stages逐段同步诊断尚待实机验证。更多规模、合理CPU线程扫描、单条/不同批量、含传输和完整BM25S查询比较仍待推进。**
 
 ## 先理解这一步
 
@@ -21,7 +21,7 @@
 | npu_prototype/op_host | 贡献/累加/Top-K注册、输入输出和任务分配 |
 | npu_prototype/op_kernel | 自研A5 SIMT贡献、累加与Top-K |
 | npu_prototype/host | 三个算子的aclnn直接调用器及CMake，均已通过小样本实机核对 |
-| npu_prototype/pipeline_host | 已验证诊断入口、公共资源/接口辅助代码及新增重复计时入口；新入口待A5编译运行 |
+| npu_prototype/pipeline_host | 诊断与普通resident重复入口已实机通过；新增分段同步模式待A5编译运行 |
 | cpu_reference | 优化C++/OpenMP贡献、累加、候选堆Top-K；黄区GNU10.3.1/OpenMP4.5编译和4线程正确性通过 |
 | standalone/scale_fixture.py、run_cpu.py | 可复现规模输入准备与实际C++ CPU调用；复用四输出核对 |
 | standalone/run_topk.py | 从已准备元信息读取尺寸/指纹，启动实际C++ Top-K调用器 |
@@ -107,7 +107,7 @@ python3 check_result.py --actual results/actual_run1.bin
 - runner的main：上传→执行→同步→下载；不读取CPU期望值。
 - check_result：独立检查公式/文件，再核对设备输出。
 
-下一阶段：先直接交叉核对全部CPU/NPU结果，实机验证新增同进程重复NPU入口，再按合理CPU线程配置和更多规模测相同流程及完整NPU/BM25S两类比较。
+下一阶段：先补设备2 resident结果的CPU交叉核对，实机分段定位并优化瓶颈，再用正常模式和合理CPU线程配置、更多规模做两类比较。
 
 ## 上传Git
 

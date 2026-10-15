@@ -32,11 +32,23 @@ def validate_timing(info, timing, mode, device, warmup, repeats):
             raise ValueError('NPU计时值非法')
         if values[0] + 1e-8 < values[1] + values[2]:
             raise ValueError('NPU总计时小于所包含阶段')
+        if mode == 'profile_stages':
+            stages = [sample[key] for key in ('contribution_launch_sync_ms', 'accumulate_launch_sync_ms', 'topk_launch_sync_ms')]
+            if any(type(v) not in (int, float) or not math.isfinite(v) or v < 0 for v in stages):
+                raise ValueError('分段计时值非法')
+            if abs(sum(stages) - sample['launch_sync_ms']) > 1e-7 * max(1., sample['launch_sync_ms']):
+                raise ValueError('分段计时和与三段总计时不匹配')
+    if mode == 'profile_stages' and timing.get('synchronization_policy') != 'synchronize after EACH operator; diagnostic only, not normal pipeline latency or pure kernel time':
+        raise ValueError('分段同步规则不匹配')
     # Do not trust summaries without checking against the raw timing samples.
-    for field, summary, fraction in (('batch_path_ms', 'median_batch_path_ms', .5),
-                                      ('batch_path_ms', 'p95_batch_path_ms', .95),
-                                      ('prepare_ms', 'median_prepare_ms', .5),
-                                      ('launch_sync_ms', 'median_launch_sync_ms', .5)):
+    summaries = [('batch_path_ms', 'median_batch_path_ms', .5),
+                 ('batch_path_ms', 'p95_batch_path_ms', .95),
+                 ('prepare_ms', 'median_prepare_ms', .5),
+                 ('launch_sync_ms', 'median_launch_sync_ms', .5)]
+    if mode == 'profile_stages':
+        summaries.extend((field, 'median_' + field, .5) for field in (
+            'contribution_launch_sync_ms', 'accumulate_launch_sync_ms', 'topk_launch_sync_ms'))
+    for field, summary, fraction in summaries:
         expected_value = sorted(s[field] for s in samples)[max(1, math.ceil(fraction * repeats)) - 1]
         actual_value = timing[summary]
         if type(actual_value) not in (int, float) or not math.isfinite(actual_value) or abs(actual_value - expected_value) > 1e-9:
@@ -46,7 +58,7 @@ def validate_timing(info, timing, mode, device, warmup, repeats):
 def run(directory, output, runner, vendors, device, warmup, repeats, mode):
     if type(warmup) is not int or type(repeats) is not int or not (1 <= warmup <= 10000 and 1 <= repeats <= 10000):
         raise ValueError('预热/重复次数必须在1..10000')
-    if mode not in ('resident', 'with_transfers'):
+    if mode not in ('resident', 'with_transfers', 'profile_stages'):
         raise ValueError('计时模式非法')
     command, info = prepare_command(directory, output, runner, vendors, device)
     command.extend([str(warmup), str(repeats), mode])
@@ -68,11 +80,15 @@ def run(directory, output, runner, vendors, device, warmup, repeats, mode):
               'input_sha256': info['input_sha256'],
               'output_sha256': {name: hashlib.sha256((output / name).read_bytes()).hexdigest() for name in OUTPUT_FILES},
               'runner_sha256': hashlib.sha256(runner.read_bytes()).hexdigest(), 'platform': platform.platform(),
-              'scope': 'prepared-input repeated experiment; includes per-iteration API preparation; not complete retrieval or an automatic speedup verdict',
+              'scope': 'per-stage launch/sync diagnostic; not normal pipeline latency or pure kernel time' if mode == 'profile_stages' else 'prepared-input repeated experiment; includes per-iteration API preparation; not complete retrieval or an automatic speedup verdict',
               'validation_policy': timing['full_repeat_validation']}
     (output / 'run_metadata.json').write_bytes((json.dumps(record, ensure_ascii=False, indent=2) + '\n').encode('utf-8'))
     print(f'实际调用完成，首末独立公式与排名检查通过；模式={mode}，批次中位数={timing["median_batch_path_ms"]:.6g}ms。', flush=True)
     print('launch/sync包含主机提交和同步，不是纯内核时间；报告保存全部样本。不作完整检索或加速达标结论。', flush=True)
+    if mode == 'profile_stages':
+        print('分段诊断中位数(ms)：' + json.dumps({stage: timing['median_' + stage + '_launch_sync_ms']
+              for stage in ('contribution', 'accumulate', 'topk')}, ensure_ascii=False), flush=True)
+        print('此模式每段都同步，改变了正常流水线；仅用于定位瓶颈。', flush=True)
 
 
 def main():
@@ -84,7 +100,7 @@ def main():
     parser.add_argument('--device', type=int, default=5)
     parser.add_argument('--warmup', type=int, default=5)
     parser.add_argument('--repeats', type=int, default=30)
-    parser.add_argument('--mode', choices=('resident', 'with_transfers'), default='resident')
+    parser.add_argument('--mode', choices=('resident', 'with_transfers', 'profile_stages'), default='resident')
     args = parser.parse_args()
     try:
         run(Path(args.input), Path(args.output), Path(args.runner), Path(args.vendor_dir),

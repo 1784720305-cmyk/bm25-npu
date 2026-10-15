@@ -30,4 +30,4 @@ NPU此前5.89081ms为首次三段提交/同步，843.087ms为首次上传/准备
 
 原始证据：`results/cpu_configure.log`、`results/cpu_build.log`、`results/pipeline_medium1_cpu_t4_run1.log`、`results/pipeline_medium1_cpu_t4_check1.log`。CPU结果指纹和时间样本位于输出目录的 `run_metadata.json`、`cpu_timing.json`，不打入Git源码包。
 
-当前结论：C++ CPU参考在黄区编译、运行及该规模正确性检查通过。完整CPU/NPU交叉结果检查、新NPU重复程序编译/实机执行、配对稳态性能及原版BM25S完整查询比较均尚未验收。下一步见 [稳态计时步骤.md](稳态计时步骤.md)。
+当前更新：C++ CPU已通过黄区检查，用户随后完成CPU与设备5旧NPU结果的全部17查询交叉，并在设备2完成普通resident重复模式实机检查，NPU中位数4.52245ms，明显较慢。见 [A5稳态初测记录.md](A5稳态初测记录.md)。新的分段诊断、统一CPU配置复测、更多规模及原版BM25S完整查询比较尚未验收，下一步见 [分段定位步骤.md](分段定位步骤.md)。
