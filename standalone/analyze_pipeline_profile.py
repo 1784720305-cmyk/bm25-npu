@@ -88,10 +88,13 @@ def analyze(root, run):
     require(metadata['status'] == 'device_repeated_call_completed_file_checks_passed',
             '运行记录未通过原来的首末/重复/文件检查')
     variant = metadata.get('topk_variant')
-    require(variant in ('striped_local_topk_warp_merge_v1', 'document_sharded_topk_v1', 'document_sharded_warp_sort32_topk_v1'),
+    require(variant in ('striped_local_topk_warp_merge_v1', 'document_sharded_topk_v1',
+                        'document_sharded_warp_sort32_topk_v1', 'document_sharded_exact_radix_topk_v1'),
             '本分析器只接受已核对的三段并行或四段分块Top-K版本')
-    sharded = variant in ('document_sharded_topk_v1', 'document_sharded_warp_sort32_topk_v1')
+    sharded = variant in ('document_sharded_topk_v1', 'document_sharded_warp_sort32_topk_v1',
+                          'document_sharded_exact_radix_topk_v1')
     warp_topk = variant == 'document_sharded_warp_sort32_topk_v1'
+    radix_topk = variant == 'document_sharded_exact_radix_topk_v1'
     operators = SHARDED_OPERATORS if sharded else OPERATORS
     stage_count = len(operators)
     outputs = OUTPUTS + ('partial_scores.bin', 'partial_ids.bin') if sharded else OUTPUTS
@@ -128,11 +131,26 @@ def analyze(root, run):
                 '四段必须采用整链一次同步，不混入逐段同步')
         info = {'num_queries': timing['queries'], 'num_docs': timing['docs'], 'k': timing['k']}
         validate_timing(info, timing, 'resident', timing['device'], timing['warmup'], timing['repeats'])
-        scratch = scratch_bytes(timing['queries'] * shards, timing['docs'] // shards, timing['k'])
+        scratch = 0 if radix_topk else scratch_bytes(timing['queries'] * shards, timing['docs'] // shards, timing['k'])
         capacity = timing['workspace_capacity_bytes']
-        require(metadata.get('parallel_user_scratch_bytes') == scratch and len(capacity) == 4 and
-                all(type(value) is int and value >= 0 for value in capacity) and capacity[2] >= capacity[0] + scratch,
+        require(type(metadata.get('parallel_user_scratch_bytes')) is int and
+                metadata['parallel_user_scratch_bytes'] == scratch and len(capacity) == 4 and
+                all(type(value) is int and value >= 0 for value in capacity),
                 '四段分块工作区与本次尺寸不匹配')
+        if radix_topk:
+            from standalone.prepare_sharded_runtime import validate_topk_workspace
+            installation = metadata.get('runtime_installation', {})
+            require(isinstance(installation, dict) and installation.get('variant') == variant and
+                    installation.get('topk_implementation') == 'radix',
+                    'Radix运行记录缺少同版本安装与独立验收引用')
+            accepted = installation.get('radix_validation', {})
+            require(isinstance(accepted, dict) and type(accepted.get('workspace_bytes')) is int and accepted['workspace_bytes'] >= 0 and
+                    isinstance(accepted.get('report_sha256'), str) and
+                    re.fullmatch(r'[0-9a-f]{64}', accepted['report_sha256']) is not None,
+                    'Radix独立验收工作区或报告指纹非法')
+            validate_topk_workspace(installation, timing, scratch)
+        else:
+            require(capacity[2] >= capacity[0] + scratch, '四段分块Top-K额外GM工作区不匹配')
         if warp_topk:
             require(timing.get('topk_implementation') == 'warp' and
                     timing.get('local_topk_user_scratch_bytes') == scratch and capacity[2] == capacity[0] + scratch,
