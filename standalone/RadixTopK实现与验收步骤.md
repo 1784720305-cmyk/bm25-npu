@@ -1,6 +1,6 @@
 # 自研门槛选择Top-K：第一版代码与黄区下一步
 
-本次完成独立算子源码及工程生成接入，尚未在CANN编译或950执行。484组Python线程分组模型通过，不等于设备正确。旧四段、Warp、CPU和原始二进制样本不改；新算子使用独立vendor `bm25_topk_radix`，暂不加入四段运行目录。
+最新实机状态：用户提供的黄区日志确认，独立算子已完成ascend950编译、打包和安装；真实生成头文件已核对，ldd -r未见缺库或未定义符号。尚未执行或验证Radix NPU计算。本次新增独立调用器和设备验收脚本源码，本机47项辅助测试通过；调用器尚未在黄区编译。**无需重新生成、编译或安装算子，下面只编译调用器。** 484组Python线程分组模型仍只作设计验证。旧四段、Warp、CPU和原始二进制样本不改。
 
 ## 先理解输入、过程、输出
 
@@ -32,39 +32,57 @@
 
 这是Python整数模型。它不证明UB原子操作、同步、编译器生成代码或性能正确。它也不替代CPU性能对手。报告为`results/radix_model_check.json`，记录本次源码指纹，NPU验证与性能验证字段均为false。
 
-## 黄区现在只做生成和编译
+## 新调用器的输入、步骤、输出和函数
 
-先提交、同步此版代码。在黄区终端逐行执行，不把提示符或日志一起粘入：
+输入是同一形状的两份测试分数A/B。调用器只包含这个算子的实际生成头文件，不需要贡献、累加或Warp头文件；动态库按绝对路径加载，并核对两个函数实际属于选定的Radix库。
+
+每组默认运行5次A→B→A→B→A，复用设备内存和临时工作区。每次上传对应分数，将分数输出填NaN、编号填-1；调用GetWorkspaceSize准备执行对象，首次按实际返回值分配临时工作区，后续要求同形状返回值一致；执行、同步、下载，再核对全部输出。临时空间不套用Warp旧公式，也不把8512字节片上算法空间当成主机要分配的GM工作区。
+
+- `npu_prototype/topk_radix_host/radix_host_common.h`：沿用本项目已有的运行时、张量、资源释放和动态库检查写法，隔离成只需Top-K头文件的版本；没有IndexSDK运行依赖。
+- `radix_runner.cpp`中的`FullSortIds`：用原始FP32数值完整排序建立核对答案，正负零视为同分，编号升序。它只核对，不能写成NPU输出。
+- `CheckFullOutput`：每次下载后比较全部编号，并将选中分数字节与对应输入逐项比较。没有算术容差，也不只检查已选分数的顺序。
+- `main`：两份输入交替调用，每次新建普通executor、同步后复用工作区；同一输入再次出现时还比较输出原字节。全部成功并释放资源后，才保存实际设备的A/B输出和`device_validation.json`。
+- `standalone/validate_topk_radix.py`中的`validate_install`：核对当前包、生成工程的三个源文件指纹，真实头文件声明及API库；同时核对安装的设备目标文件与工程构建目标文件。
+- `prepare_pair`：生成全零、全等、正负零、随机、邻近FP32、次正规数、最大有限数、少于K个正分及跨128边界同分等数据；B会变换行和编号位置，检查残留状态。
+- `run`：仅为子进程设置Radix vendor搜索路径；保留每组日志。C++逐次检查之后，再用Python对A/B实际设备文件独立完整排序核对。任何调用、超时、文件或结果检查失败都停止，报告记为failed，不继续后续用例，不生成CPU替代结果。
+
+## 黄区下一步：只编译独立调用器
+
+先提交、同步本次主机与验收代码。下列命令在黄区执行，逐行粘贴，确认上一条成功再继续：
 
 ```bash
 cd /test/w50066029/bm25-npu
 source /usr/local/Ascend/cann-9.2.0/set_env.sh
 python3 verify_package.py
-python3 standalone/create_project.py --operator topk_radix --compute-resource ai_core-ascend950 --compute-unit ascend950 --msopgen-python python3
-```
-
-只有看到工程及自研源码准备成功，再执行：
-
-```bash
-cd /test/w50066029/bm25-npu/results/Bm25TopKRadix
 set -o pipefail
-bash build.sh 2>&1 | tee ../topk_radix_build1.log
+cmake -S npu_prototype/topk_radix_host -B results/topk_radix_host_build -DTOOLKIT_HOME=/usr/local/Ascend/cann-9.2.0 -DBM25_OPP_ROOT=/test/w50066029/bm25-npu/results/custom_opp/vendors/bm25_topk_radix 2>&1 | tee results/radix_host_configure1.log
+cmake --build results/topk_radix_host_build -j 2>&1 | tee results/radix_host_build1.log
 ```
 
-若失败，停在这里，查看日志末尾：
+配置或编译失败即停止。算子已安装，不需要重新运行create_project.py或算子build.sh。本机没有CANN，不能声称新调用器已编译。
+
+## 设备验收：先两组，再完整19组
+
+先运行两组小测试：6×6/K=3，以及65×129/K=10。第二组含全部12种行类型，覆盖正负零、跨线程批次同分和极值；第一组先确认基本调用可用。
 
 ```bash
-tail -n 100 /test/w50066029/bm25-npu/results/topk_radix_build1.log
+python3 standalone/validate_topk_radix.py --suite smoke --output results/radix_topk_smoke1 --device 2 2>&1 | tee results/radix_topk_smoke1.log
 ```
 
-只提供允许分享的错误摘要，黄区源文件和构建文件仍留在黄区。本机没有CANN，不能声称这些新SIMT原子、shuffle、UB空间组合已经被编译器接受。
+只有看到smoke验收完成并且两组都通过，再运行完整19组：
 
-## 编译成功后才推进的验收
+```bash
+python3 standalone/validate_topk_radix.py --suite all --output results/radix_topk_validation1 --device 2 2>&1 | tee results/radix_topk_validation1.log
+```
 
-先安装独立vendor、读取真实生成头文件及动态库依赖，再确认可以复用已有主机Top-K调用流程。不能把旧Warp的GM候选空间公式套给本版，也不能未经验收直接挂入旧四段。
+全套保留原13组尺寸，新增127/128/129等批次边界和65536文章/K=32，共19组，每组默认5次交替实机调用。输入A/B实际下载输出都由Python再次核对全部编号和原分数字节。结果目录必须新建，重复验收请选择新名字。设备号可换成当前空闲的同规格卡，避免设备4。
 
-独立设备验收必须覆盖原13组，以及全零/正负零、少于K个正分、跨128边界同分、次正规数、最大有限数、较小编号后到；输出poison后重复并轮换输入，逐次与同一输入完整排序比较全部ID和原分数字节。真实数据以65536文章的同一实际总分为输入。非法输入须停止或明确产生被拒绝的错误结果。
+每组输出`device.log`、`check.log`和两份输入、A/B实际输出；总报告为结果目录的`report.json`。工作区记录实际查询值，声明的片上算法空间另记为8512字节。小测试通过不能写成19组全部通过；全套通过也还不证明四段或性能。ldd检查只覆盖当时可见依赖，不能保证后续接口准备和设备执行必定成功；运行失败保留原错误，不据此认定原ATC缺失接口问题已经解决。
 
-独立正确后才接原四段并与CPU直接交叉。性能先测同一局部输入的旧版、Warp、本版，再测整链；至少5轮交替独立复测，保留原样本及p95，设备分段和不开采集的主机计时分开报告。若严格规则失败、局部无稳定收益或整链退化，则不设为默认主线。
+黄区源文件、数据和报告留在黄区，仅提供允许分享的运行摘要。验收脚本本机47项测试是数据、文件保护、元信息与失败控制测试，不包含CANN编译或NPU执行。
 
-建议commit备注：`feat: 新增参考IndexSDK的自研Radix Top-K独立算子`
+## 正确性通过后的下一步
+
+完整19组通过后才接原四段，并在65536文章同一实际分数与CPU直接交叉。先比较同一局部输入的旧版、Warp、本版，再测整链；至少5轮交替独立复测，保留原样本及p95，设备分段和不开采集的主机计时分开报告。若严格规则失败、局部无稳定收益或整链退化，不设为默认主线。
+
+建议commit备注：`feat: 增加Radix Top-K独立调用器与交替输入设备验收`

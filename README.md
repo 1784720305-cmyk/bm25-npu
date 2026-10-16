@@ -1,6 +1,6 @@
 # BM25 A5 自研计算原型
 
-**最新进展：参考IndexSDK CAGRA思路的自研Radix Top-K独立源码已加入，尚未在CANN编译或950执行。** 三轮找门槛、按编号确定同分成员、只排序最终K项；484组Python线程分组模型通过，不证明设备正确或性能。新工程使用独立vendor，暂不接四段。输入输出、关键函数和黄区生成/编译命令见 [Radix Top-K实现与验收步骤](standalone/RadixTopK实现与验收步骤.md)。现有四段自研主线、CPU计算和原始样本保持原样，无IndexSDK/Faiss运行依赖。官方Top-K对照继续暂停。算法来源和取舍见 [IndexSDK Top-K借鉴路线](standalone/IndexSDKTopK借鉴路线.md)。
+**最新进展：自研Radix Top-K算子已由用户在黄区完成ascend950编译、打包、安装，真实接口和依赖已核对；尚未执行或验证其NPU输出。** 本次增加独立调用器和两组冒烟/完整19组验收脚本，每组5次交替输入、输出poison、逐次完整排名及原FP32字节核对。本机47项辅助测试通过，调用器尚未在黄区编译；原算子源码未改，不用重编算子。当前操作见 [Radix Top-K实现与验收步骤](standalone/RadixTopK实现与验收步骤.md)。484组Python模型是设计验证，不代表设备正确或加速。现有四段、CPU、原始样本保持原样，无IndexSDK/Faiss运行依赖，官方Top-K对照继续暂停。算法依据见 [IndexSDK Top-K借鉴路线](standalone/IndexSDKTopK借鉴路线.md)。
 
 官方参考的最新实机状态：主机编译和库加载成功，513×40/K=32通过；65×1025/K=10在完整排名检查失败，首个差异涉及正负零同分成员。保留失败结果，不放宽规则，暂停其后续性能实验。
 
