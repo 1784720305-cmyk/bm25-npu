@@ -14,6 +14,7 @@ OPERATORS = {
     'topk_parallel': ('Bm25TopKParallel', 'bm25_top_k', 'topk_operator.json', 'bm25_topk_parallel'),
     'topk_merge': ('Bm25TopKMerge', 'bm25_top_k_merge', 'topk_merge_operator.json', 'bm25_topk_merge'),
     'topk_warp': ('Bm25TopKWarp', 'bm25_top_k', 'topk_operator.json', 'bm25_topk_warp'),
+    'topk_radix': ('Bm25TopKRadix', 'bm25_top_k', 'topk_operator.json', 'bm25_topk_radix'),
 }
 
 
@@ -79,7 +80,7 @@ def populate(project, compute_unit, vendor, operator='contribution'):
             saved.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(target, saved)
         source_root = ROOT / 'npu_prototype'
-        if operator in ('topk_parallel', 'topk_merge', 'topk_warp'):
+        if operator in ('topk_parallel', 'topk_merge', 'topk_warp', 'topk_radix'):
             source_root = source_root / operator
         shutil.copyfile(source_root / source, target)
     shutil.copyfile(presets_path, backup / 'CMakePresets.json')
@@ -107,7 +108,7 @@ def main():
     args = parser.parse_args()
     project_name, _, spec, default_vendor = OPERATORS[args.operator]
     vendor = args.vendor or default_vendor
-    if args.operator in ('topk_parallel', 'topk_merge', 'topk_warp') and vendor != default_vendor:
+    if args.operator in ('topk_parallel', 'topk_merge', 'topk_warp', 'topk_radix') and vendor != default_vendor:
         parser.error('本实验使用独立vendor ' + default_vendor + '，避免覆盖已有算子')
     project = Path(args.output or ROOT / 'results' / project_name).resolve()
     if project.exists():
