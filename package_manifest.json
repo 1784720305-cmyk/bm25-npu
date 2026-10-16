@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "User-provided A5 logs confirm warp unit-host compilation and all 13 unit cases passed on device2, three same-process poisoned-output calls per case, exact full-sort IDs/score bytes. Four-stage host/runtime integration now explicitly supports separate warp and legacy variants, prior unit-acceptance rechecks, absolute-path/symbol ownership and exact Q*S*P*12 warp workspace; new four-stage compile/device correctness/performance pending. Retest/profile tools recognize both variants. CPU-only integration/provenance/failure/CSV regressions passed, not NPU evidence. All device kernel sources, CPU reference and five original binary samples unchanged; LF raw-byte Git publication.",
+  "scope": "User-provided A5 logs confirm all 13 warp unit cases, the four-stage small/65536-document runs, three CPU cross-check rounds and the latest four-stage profile passed. Latest profiled local Top-K median 40.643us; no stable CPU speedup claim. Actual installed official aclnnTopk/TopkV2 declarations and exported libopapi symbols confirmed. New standalone official FP32 Top-K reference host/wrapper supports INT64 indices, exact full ranking, same-score sharded views, repeated poisoned outputs, provenance and strict failure handling. Python3.9/synthetic/mock-process tests passed; the new official reference host has NOT been compiled, loaded or executed on A5. Existing custom kernels, CPU computation and five original binary samples unchanged. LF raw-byte Git publication; no yellow-zone files exported.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -8,7 +8,7 @@
   "files": {
     ".gitattributes": "f3b83fa6dd1322e693b202cdec41cdf168dd8ae13c728b34dbe39427f7f282ac",
     ".gitignore": "513d0bf4e2133dd931a7cb763f5e2be14d6385766e0d49e8d0a51d7e01a0cec1",
-    "README.md": "0164f23f3f34f2ea01c753ac9b208f6c7091e7e6785ae23394eac7ecafaa144f",
+    "README.md": "ff8e1bfad6c063ae5d4713a88e4a752aac087aac2039d7baafd3d9366a3298ce",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "cpu_reference/CMakeLists.txt": "da98753c2f8c337c02a0ff0658368ba1ee302f0d3c6c2bd97ee6d46af0bf0c80",
@@ -28,6 +28,8 @@
     "npu_prototype/host/accumulate_runner.cpp": "04c1e06325f7b4b0e6c75763ee561884fff99d2dcbf5b66d82d228a3cf42574c",
     "npu_prototype/host/contribution_runner.cpp": "3985281342157b23d0dd2f29e204a7264ff00e5ea2b1f679517bd17edb2e25b5",
     "npu_prototype/host/topk_runner.cpp": "d2e8368abdec91c987d16d8984dcb9ab5281425d7359fedfae01489b77048abc",
+    "npu_prototype/official_topk_host/CMakeLists.txt": "57d19c79df18f6a3758a8c5e3cc428891f94b7e211c12589c1ee29682cf44d29",
+    "npu_prototype/official_topk_host/official_topk_runner.cpp": "e052bfdd54d15ac40d8b1f8bc9efef7df8e0eada93c2dab376ae88efb1f76aab",
     "npu_prototype/op_host/bm25_accumulate.cpp": "4e28e0c406646326ec6f70f379f37258a7f20dc6db2fae0799cb26a423a029ee",
     "npu_prototype/op_host/bm25_accumulate_tiling.h": "7ce6aac1edef965b86460080767f2378d2d2c75d1bf619e04d42c3aa7f62e26c",
     "npu_prototype/op_host/bm25_contribution.cpp": "32a4e54cabbbcd2d7098a0f861be72b0eb5cd483bf126d98b8685cd772a895cb",
@@ -85,6 +87,7 @@
     "standalone/prepare_topk_parallel_runtime.py": "649732c22cae6c6b9a96628eb495fee4335e725a4fcf2a1098d33bc30deb1863",
     "standalone/repair_project_presets.py": "1131cca75722be7c9e4b311e4ec75728419dce0df53cacd1f70ae3cd71d0ccab",
     "standalone/run_cpu.py": "644a7e21cdbe840f123399073c805b584dace51f08f4a927770abf6b4dca4816",
+    "standalone/run_official_topk.py": "0f7aa6f95b2f5fdee9afd14d80b766d6989ae6c340e30c9291cb0d42fda566b6",
     "standalone/run_pipeline.py": "1b682ce95f320dc3551815d37bbe98cd5e3d2e9c2c284c32479ff3454f97d9ee",
     "standalone/run_pipeline_benchmark.py": "35aa09669b1312b02bcc159e7bdaddf876c19c993bd2f685453298644755e400",
     "standalone/run_sharded_pipeline.py": "ae5043ee599b86ed9a58a6d91831e2b16e4745a6bb2a8f477297713f2b3c50b9",
@@ -99,6 +102,7 @@
     "standalone/分段定位步骤.md": "8fa884d47b3f840f2d2b9ea56ff4a8cef8022905bd3bd36e05ef82bf88b5e91b",
     "standalone/同进程串联步骤.md": "729601c3aedafde80435d4f7804582650d95a3e0f487f142eccf1c1d7699153d",
     "standalone/四段运行步骤.md": "8810781f46c6be222788d8ac2e32cd3c40bee974d5ff0fc1f060f8219a19b631",
+    "standalone/官方TopK对照步骤.md": "1d0ce049e3c6f0f98d74a80da4ec56660ccde39c000e80306c4a6b87834f5e51",
     "standalone/并行TopK优化步骤.md": "22cdec6a4e639280ef62cfe5d39226dd80e8e53209b42cbc7edcca966faff76a",
     "standalone/扩大验证步骤.md": "78c5d3d4f5bc76a758542fdcd55fd07b0c7c8e5767e6be639ae7b68d1b4e6738",
     "standalone/稳态计时步骤.md": "33924640c6f52583851bff6ddc818673a43a9690ac62b412134463b398040f3c",
