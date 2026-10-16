@@ -125,11 +125,16 @@ int main(int argc, char **argv)
         if (docs % shards != 0 || docs/shards < k) throw std::runtime_error("Documents must divide evenly; each shard needs K documents");
         const char *scratchEnv = std::getenv("BM25_EXPECT_TOPK_SCRATCH_BYTES");
         const uint64_t expectedTopkScratch = scratchEnv == nullptr ? 0 :
-            static_cast<uint64_t>(ParseInteger(scratchEnv, "expected Top-K scratch", 1, INT64_MAX));
+            static_cast<uint64_t>(ParseInteger(scratchEnv, "expected Top-K scratch", 0, INT64_MAX));
         const char *implementationEnv = std::getenv("BM25_TOPK_IMPLEMENTATION");
         const std::string topkImplementation = implementationEnv ? implementationEnv : "parallel";
-        if (topkImplementation != "parallel" && topkImplementation != "warp")
+        if (topkImplementation != "parallel" && topkImplementation != "warp" && topkImplementation != "radix")
             throw std::runtime_error("Unknown explicit Top-K implementation");
+        const char *radixWorkspaceEnv = std::getenv("BM25_EXPECT_RADIX_WORKSPACE_BYTES");
+        if (topkImplementation == "radix" && (scratchEnv == nullptr || radixWorkspaceEnv == nullptr))
+            throw std::runtime_error("Radix requires explicit zero scratch and accepted unit workspace guards");
+        const uint64_t expectedRadixWorkspace = topkImplementation == "radix" ?
+            static_cast<uint64_t>(ParseInteger(radixWorkspaceEnv, "accepted Radix workspace", 0, INT64_MAX)) : 0;
         if (timingMode != "resident" && timingMode != "with_transfers")
             throw std::runtime_error("MODE must be resident or with_transfers");
         const uint64_t groupCount = static_cast<uint64_t>(queries) * static_cast<uint64_t>(docs);
@@ -162,8 +167,8 @@ int main(int argc, char **argv)
         const size_t partialBytes = CheckedBytes(partialCount, sizeof(float));
         uint64_t partitions = 32;
         while (partitions < 256 && static_cast<uint64_t>(docs/shards) > partitions*16) partitions *= 2;
-        const uint64_t scratch = static_cast<uint64_t>(queries)*shards*partitions*
-            (topkImplementation == "warp" ? 12 : (8*k+4));
+        const uint64_t scratch = topkImplementation == "radix" ? 0 :
+            static_cast<uint64_t>(queries)*shards*partitions*(topkImplementation == "warp" ? 12 : (8*k+4));
         if (expectedTopkScratch != scratch) throw std::runtime_error("Explicit local Top-K scratch guard missing or inconsistent");
         std::cout << "value_count=" << tf.size() << " group_count=" << groupCount << " queries=" << queries
                   << " docs=" << docs << " k=" << k << " shards=" << shards << " pipeline_stages=4" << std::endl;
@@ -268,6 +273,8 @@ int main(int argc, char **argv)
                 size[2] < size[0] + expectedTopkScratch ||
                 (topkImplementation == "warp" && size[2] != size[0] + expectedTopkScratch)))
                 throw std::runtime_error("Local Top-K workspace mismatch; stop before execution");
+            if (topkImplementation == "radix" && size[2] != expectedRadixWorkspace)
+                throw std::runtime_error("Radix workspace differs from accepted independent device validation");
             for (int i = 0; i < 4; ++i) {
                 if (executor[i] == nullptr || size[i] > std::numeric_limits<size_t>::max())
                     throw std::runtime_error("Invalid executor/workspace");

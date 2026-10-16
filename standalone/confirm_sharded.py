@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT))
 from standalone.benchmark_case import read_cpu_result, require
 from standalone.compare_compute_outputs import cross_check, validate_producer, NPU_STATUSES
 from standalone.pipeline_fixture import validate_input, check
-from standalone.prepare_sharded_runtime import validate_runtime, VARIANT, WARP_VARIANT
+from standalone.prepare_sharded_runtime import validate_runtime, VARIANT, WARP_VARIANT, validate_topk_workspace
 from standalone.run_pipeline_benchmark import validate_timing
 from standalone.run_sharded_pipeline import check_candidates, FILES
 from standalone.validate_topk_merge import digest, write_json
@@ -77,13 +77,7 @@ def read_npu_result(destination, info, runner, installation, device, shards, war
     require(timing.get('pipeline_stages') == 4 and timing.get('shards') == shards and
             timing.get('synchronization_policy') == 'synchronize after the entire four-operator chain',
             '不是本轮四段单次同步路径')
-    capacities = timing['workspace_capacity_bytes']
-    require(len(capacities) == 4 and all(type(value) is int and value >= 0 for value in capacities) and
-            capacities[2] >= capacities[0] + scratch, '分块Top-K工作区不匹配')
-    if installation['variant'] == WARP_VARIANT:
-        require(timing.get('topk_implementation') == 'warp' and
-                timing.get('local_topk_user_scratch_bytes') == scratch and capacities[2] == capacities[0] + scratch,
-                'warp版本未使用新调用器及精确工作区规则')
+    validate_topk_workspace(installation, timing, scratch)
     require(timing['median_batch_path_ms'] > 0, 'NPU耗时必须为正')
     check_candidates(info, destination, shards)
     return metadata, timing
