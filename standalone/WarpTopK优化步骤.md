@@ -1,5 +1,53 @@
 # 局部Top-K优化：32线程协作保留候选
 
+## 当前状态与本轮要做的事
+
+用户提供的黄区日志已确认：Ascend950内核编译成功、安装包生成、独立vendor `bm25_topk_warp` 安装SUCCESS。新实际头文件的两个声明与旧版一致，`ldd -r` 没有报告缺库或未定义符号。它们是编译/安装/依赖证据，还没有新warp算子的设备计算结果，也不证明ATC缺失符号或其他vendor问题已修复。
+
+这次新增独立正确性调用器和13组验收脚本，不修改已安装算子源码，不切换现有四段调用器。同步本次代码后清单为98个文件；**不用重新生成或编译算子，只编译新主机调用器**。
+
+输入是测试文章分数，每条查询对应一行；处理是上传一次，再在同一进程内实际调用新算子3次，每次先把输出写成无效值，然后下载核对；输出为前K个编号/分数、逐用例设备日志、检查日志和总报告。每次使用新executor，已分配工作区只在同步后复用。失败立即停，不用CPU结果替代设备输出。
+
+验收要求：API符号来自指定的新库，临时内存严格符合新布局，3次结果字节一致，且最终结果与独立完整排序的编号、顺序、分数字节完全一致。只校验正确性，不输出性能成绩。
+
+先配置、编译新调用器，上一条成功才继续：
+
+```bash
+cd /test/w50066029/bm25-npu
+source /usr/local/Ascend/cann-9.2.0/set_env.sh
+python3 verify_package.py
+set -o pipefail
+cmake -S npu_prototype/topk_warp_host -B results/topk_warp_host_build -DTOOLKIT_HOME=/usr/local/Ascend/cann-9.2.0 -DBM25_VENDOR_DIR=/test/w50066029/bm25-npu/results/custom_opp/vendors 2>&1 | tee results/topk_warp_host_configure1.log
+cmake --build results/topk_warp_host_build -j 2>&1 | tee results/topk_warp_host_build1.log
+```
+
+编译成功后执行设备验收（设备2若被占用可指定其他空闲卡，避开设备4）：
+
+```bash
+python3 standalone/validate_topk_warp.py --output results/topk_warp_validation1 --device 2 2>&1 | tee results/topk_warp_validation1.log
+```
+
+脚本只为子进程设置新vendor的 `ASCEND_CUSTOM_OPP_PATH`，不依赖终端先source多个同名算子vendor。若结果目录已存在，换一个新的 `--output`，保留原日志。每个用例最多等待300秒，超时记为失败。控制台逐用例展示设备日志，`report.json` 从running更新到passed/failed/interrupted，未完成不作通过记录。
+
+13组覆盖6篇文章K=1/3/6、32篇K=32、513条查询触发工作块循环、513/1025/2049篇触发线程数切换及尾批、2048/4097篇多轮保留、65536篇随机分数K=10。大多数用例包含全零、同分、正反序、随机重复分数、跨线程组高分、相邻FP32和正负零；单查询65536篇采用随机分数。非法非有限/负分数在主机入口拒绝，本轮不声称验证了设备非法值分支。
+
+系统工作区默认16777216字节，来自当前CANN此前四段实际日志；用户工作区由Python和C++分别按 `Q*P*12` 计算，并要求实际接口返回总大小恰等于两者之和。若不一致，保留实际返回值并停止，核对环境后再决定，不能自动放宽。当前 `[32,2048]` 的用户部分为49152字节。
+
+关键函数：`validate_install` 核对真实新接口、工程源码与库指纹；`prepare` 生成独立测试输入，CPU期望文件只供检查器使用；C++ `main` 只读 `scores.bin`，用既有 `Library/Runtime/Resources` 辅助代码完成指定库加载、上传、prepare/execute/同步、下载和释放；`check` 从原输入重新完整排序，严格核对设备结果。共享主机辅助头因此需要贡献/累加的已有头文件，但本调用器不加载或执行它们。
+
+本机已用实际粘贴头文件核对声明，检查13组数据和编排、库/源码改变、工作区错误、重复次数不足、未覆写标记、排名错误及子进程失败的拒绝路径；这些采用本机测试替身，不是设备运行证据。本机没有CANN，新增C++调用器尚待黄区编译和运行。验收通过后再显式接入四段运行及新版工作区规则，核对六数组与CPU结果，再测整链和局部Top-K耗时。
+
+本次commit备注：
+
+```text
+feat: 接入warp Top-K独立ACLNN调用和设备正确性验收
+
+- 按黄区实际生成接口加载独立warp库并核对符号来源
+- 严格校验新版工作区，逐次覆写并检查同进程重复结果
+- 增加13组边界与完整排序验收，失败即停止并保留报告
+- 更新实机进度、操作说明及LF文件清单，保留原算子和样本
+```
+
 ## 为什么现在改这段
 
 用户已在黄区用更新后的分析器核对68条设备任务，排除首次1轮、检查预热5轮、普通预热1轮，只统计正式10轮，得到以下设备诊断结果：
@@ -30,7 +78,7 @@
 
 ## 这一版改了什么、还没改什么
 
-独立源码在 `npu_prototype/topk_warp`，生成选项 `--operator topk_warp`，工程目录 `results/Bm25TopKWarp`，vendor固定为 `bm25_topk_warp`。IR仍是Bm25TopK，复用同一份明确输入/输出/属性定义，最终必须核对实际新旧生成的接口声明。
+独立源码在 `npu_prototype/topk_warp`，生成选项 `--operator topk_warp`，工程目录 `results/Bm25TopKWarp`，vendor固定为 `bm25_topk_warp`。IR仍是Bm25TopK，复用同一份明确输入/输出/属性定义，实际新旧生成接口声明已由黄区头文件确认一致。
 
 原来的贡献、累加、并行Top-K、跨块合并、四段调用器和所有已安装vendor保持原样。当前新增源文件及工程准备代码，没有切换默认运行路径，也没有让旧调用器忽略工作区检查。IndexSDK只参考A5 SIMT辅助函数标记方式，不作为构建或运行依赖。
 
@@ -40,9 +88,9 @@
 
 本机312组完整Top-K模型与独立完整排序的编号、分数字节一致；逐批检查保留前32的不变量。覆盖P切换、1/10/32等K边界、全零/同分/正反序、非整除尾批、正负零、相邻FP32、极小/最大有限值及65536文档模型；另测大编号比较、非法值哨兵、生成模板备份/vendor/源码指纹。模型不执行C++或NPU，不证明Ascend C可编译或性能达标。
 
-## 现在只生成、编译独立新算子
+## 已完成的生成、编译和安装（留作复现）
 
-同步最新代码后，文件清单应为95个文件。按次序执行，上一条成功才继续。生成目标已存在时使用新的 `--output`，不要删除原工程或报告。
+以下是95文件版本时已经执行成功的操作；本轮不必重做。按次序执行，上一条成功才继续。生成目标已存在时使用新的 `--output`，不要删除原工程或报告。
 
 ```bash
 cd /test/w50066029/bm25-npu
@@ -59,7 +107,7 @@ set -o pipefail
 bash build.sh 2>&1 | tee ../topk_warp_build1.log
 ```
 
-这轮先提供编译日志末尾，确认实际Ascend950内核和安装包生成。编译失败按实际错误修复，不换CPU输出、不修改CANN系统安装，也不覆盖旧vendor。
+用户已经提供编译日志，确认实际Ascend950内核和安装包生成。将来编译失败仍按实际错误修复，不换CPU输出、不修改CANN系统安装，也不覆盖旧vendor。
 
 编译通过后才安装并读实际头文件（安装包名依据前几次该生成器的实际产物，如新工具输出不同先核对日志）：
 
@@ -70,7 +118,7 @@ cat results/custom_opp/vendors/bm25_topk_warp/op_api/include/aclnn_bm25_top_k.h
 ldd -r results/custom_opp/vendors/bm25_topk_warp/op_api/lib/libcust_opapi.so 2>&1 | tee results/topk_warp_dependencies1.log
 ```
 
-读到真实声明并检查依赖后，再接新的独立运行目录与工作区规则。现有四段调用器会按旧公式验证工作区；直接把新库替换进去会触发保护。届时需要显式区分新版本并检查49152字节的用户工作区，不能关闭验证或篡改元信息绕过检查。
+真实声明和依赖已由用户提供并核对，本轮接的是上方独立单算子验收。现有四段调用器会按旧公式验证工作区；直接把新库替换进去会触发保护。后续接四段时需要显式区分新版本并检查49152字节的用户工作区，不能关闭验证或篡改元信息绕过检查。
 
 ## 随后的设备验收和性能条件
 
@@ -86,7 +134,7 @@ ldd -r results/custom_opp/vendors/bm25_topk_warp/op_api/lib/libcust_opapi.so 2>&
 - `Tiling`：核对尺寸/输出形状，按旧规则分配线程，按新候选布局算独立临时内存。
 - `create_project.populate`：将实际生成模板备份，再复制本次源码，固定独立vendor并保存源码指纹；不会编译、安装或执行设备。
 
-本次建议commit备注：
+上一轮源码实验的commit备注（历史）：
 
 ```text
 feat: 新增BM25局部Top-K的warp协作排序实验
