@@ -88,9 +88,10 @@ def analyze(root, run):
     require(metadata['status'] == 'device_repeated_call_completed_file_checks_passed',
             '运行记录未通过原来的首末/重复/文件检查')
     variant = metadata.get('topk_variant')
-    require(variant in ('striped_local_topk_warp_merge_v1', 'document_sharded_topk_v1'),
+    require(variant in ('striped_local_topk_warp_merge_v1', 'document_sharded_topk_v1', 'document_sharded_warp_sort32_topk_v1'),
             '本分析器只接受已核对的三段并行或四段分块Top-K版本')
-    sharded = variant == 'document_sharded_topk_v1'
+    sharded = variant in ('document_sharded_topk_v1', 'document_sharded_warp_sort32_topk_v1')
+    warp_topk = variant == 'document_sharded_warp_sort32_topk_v1'
     operators = SHARDED_OPERATORS if sharded else OPERATORS
     stage_count = len(operators)
     outputs = OUTPUTS + ('partial_scores.bin', 'partial_ids.bin') if sharded else OUTPUTS
@@ -113,6 +114,8 @@ def analyze(root, run):
             sys.path.insert(0, package)
         from standalone.run_pipeline_benchmark import validate_timing
         from standalone.prepare_topk_parallel_runtime import scratch_bytes
+        if warp_topk:
+            from standalone.validate_topk_warp import scratch_bytes
         require(metadata.get('pipeline_stages') == timing.get('pipeline_stages') == 4,
                 '四段运行的阶段数不匹配')
         shards = metadata['shards']
@@ -130,6 +133,10 @@ def analyze(root, run):
         require(metadata.get('parallel_user_scratch_bytes') == scratch and len(capacity) == 4 and
                 all(type(value) is int and value >= 0 for value in capacity) and capacity[2] >= capacity[0] + scratch,
                 '四段分块工作区与本次尺寸不匹配')
+        if warp_topk:
+            require(timing.get('topk_implementation') == 'warp' and
+                    timing.get('local_topk_user_scratch_bytes') == scratch and capacity[2] == capacity[0] + scratch,
+                    'warp版本必须使用新调用器及精确工作区规则')
     for name in outputs:
         require(digest(run / name) == metadata['output_sha256'][name], '输出指纹不一致：' + name)
         if sharded:

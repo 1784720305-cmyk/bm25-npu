@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT))
 from standalone.benchmark_case import read_cpu_result, require
 from standalone.compare_compute_outputs import cross_check, validate_producer, NPU_STATUSES
 from standalone.pipeline_fixture import validate_input, check
-from standalone.prepare_sharded_runtime import validate_runtime, VARIANT
+from standalone.prepare_sharded_runtime import validate_runtime, VARIANT, WARP_VARIANT
 from standalone.run_pipeline_benchmark import validate_timing
 from standalone.run_sharded_pipeline import check_candidates, FILES
 from standalone.validate_topk_merge import digest, write_json
@@ -64,7 +64,7 @@ def run_logged(command, log_path):
 def read_npu_result(destination, info, runner, installation, device, shards, warmup, repeats, scratch):
     metadata = validate_producer(destination, info, NPU_STATUSES)
     expected = {'status': 'device_repeated_call_completed_file_checks_passed',
-                'topk_variant': VARIANT, 'pipeline_stages': 4, 'shards': shards,
+                'topk_variant': installation['variant'], 'pipeline_stages': 4, 'shards': shards,
                 'device': device, 'mode': 'resident', 'warmup': warmup, 'repeats': repeats,
                 'runner_sha256': digest(runner), 'runtime_installation': installation,
                 'parallel_user_scratch_bytes': scratch}
@@ -80,6 +80,10 @@ def read_npu_result(destination, info, runner, installation, device, shards, war
     capacities = timing['workspace_capacity_bytes']
     require(len(capacities) == 4 and all(type(value) is int and value >= 0 for value in capacities) and
             capacities[2] >= capacities[0] + scratch, '分块Top-K工作区不匹配')
+    if installation['variant'] == WARP_VARIANT:
+        require(timing.get('topk_implementation') == 'warp' and
+                timing.get('local_topk_user_scratch_bytes') == scratch and capacities[2] == capacities[0] + scratch,
+                'warp版本未使用新调用器及精确工作区规则')
     require(timing['median_batch_path_ms'] > 0, 'NPU耗时必须为正')
     check_candidates(info, destination, shards)
     return metadata, timing

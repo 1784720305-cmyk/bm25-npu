@@ -30,7 +30,8 @@ double Percentile(const std::vector<Sample> &samples, double fraction, int field
 
 void SaveTiming(const fs::path &path, const std::vector<Sample> &samples, const Sample &cold,
                 const std::string &mode, int64_t device, int64_t queries, int64_t docs, int64_t k,
-                int64_t warmup, int64_t repeats, int64_t shards, const uint64_t (&capacity)[4])
+                int64_t warmup, int64_t repeats, int64_t shards, const uint64_t (&capacity)[4],
+                const std::string &topkImplementation, uint64_t scratch)
 {
     std::ofstream file(path);
     file << std::setprecision(17)
@@ -46,6 +47,8 @@ void SaveTiming(const fs::path &path, const std::vector<Sample> &samples, const 
          << "  \"all_measured_topk_checked\": " << (mode == "with_transfers" ? "true" : "false") << ",\n"
          << "  \"device\": " << device << ",\n  \"queries\": " << queries << ",\n  \"docs\": " << docs << ",\n  \"k\": " << k << ",\n"
          << "  \"shards\": " << shards << ",\n  \"pipeline_stages\": 4,\n"
+         << "  \"topk_implementation\": \"" << topkImplementation << "\",\n"
+         << "  \"local_topk_user_scratch_bytes\": " << scratch << ",\n"
          << "  \"warmup\": " << warmup << ",\n  \"additional_plain_warmup\": 1,\n  \"repeats\": " << repeats << ",\n"
          << "  \"workspace_capacity_bytes\": [" << capacity[0] << ", " << capacity[1] << ", " << capacity[2] << ", " << capacity[3] << "],\n"
          << "  \"bootstrap_batch_path_ms\": " << cold.path << ",\n"
@@ -123,6 +126,10 @@ int main(int argc, char **argv)
         const char *scratchEnv = std::getenv("BM25_EXPECT_TOPK_SCRATCH_BYTES");
         const uint64_t expectedTopkScratch = scratchEnv == nullptr ? 0 :
             static_cast<uint64_t>(ParseInteger(scratchEnv, "expected Top-K scratch", 1, INT64_MAX));
+        const char *implementationEnv = std::getenv("BM25_TOPK_IMPLEMENTATION");
+        const std::string topkImplementation = implementationEnv ? implementationEnv : "parallel";
+        if (topkImplementation != "parallel" && topkImplementation != "warp")
+            throw std::runtime_error("Unknown explicit Top-K implementation");
         if (timingMode != "resident" && timingMode != "with_transfers")
             throw std::runtime_error("MODE must be resident or with_transfers");
         const uint64_t groupCount = static_cast<uint64_t>(queries) * static_cast<uint64_t>(docs);
@@ -155,10 +162,12 @@ int main(int argc, char **argv)
         const size_t partialBytes = CheckedBytes(partialCount, sizeof(float));
         uint64_t partitions = 32;
         while (partitions < 256 && static_cast<uint64_t>(docs/shards) > partitions*16) partitions *= 2;
-        const uint64_t scratch = static_cast<uint64_t>(queries)*shards*partitions*(8*k+4);
+        const uint64_t scratch = static_cast<uint64_t>(queries)*shards*partitions*
+            (topkImplementation == "warp" ? 12 : (8*k+4));
         if (expectedTopkScratch != scratch) throw std::runtime_error("Explicit local Top-K scratch guard missing or inconsistent");
         std::cout << "value_count=" << tf.size() << " group_count=" << groupCount << " queries=" << queries
                   << " docs=" << docs << " k=" << k << " shards=" << shards << " pipeline_stages=4" << std::endl;
+        std::cout << "topk_implementation=" << topkImplementation << " local_topk_user_scratch_bytes=" << scratch << std::endl;
         Stage("load_four_api_libraries");
         ShardedInterfaces api(fs::absolute(argv[7]));
         Runtime runtime;
@@ -256,8 +265,9 @@ int main(int argc, char **argv)
             Require(api.prepareMerge(partialScore3D, partialId3D, k, docs, topScoreTensor, topIdTensor,
                                      &size[3], &executor[3]), "merge prepare");
             if (expectedTopkScratch != 0 && (size[0] > UINT64_MAX - expectedTopkScratch ||
-                size[2] < size[0] + expectedTopkScratch))
-                throw std::runtime_error("Parallel Top-K workspace mismatch; expected new tiling plus scratch, stop before execution");
+                size[2] < size[0] + expectedTopkScratch ||
+                (topkImplementation == "warp" && size[2] != size[0] + expectedTopkScratch)))
+                throw std::runtime_error("Local Top-K workspace mismatch; stop before execution");
             for (int i = 0; i < 4; ++i) {
                 if (executor[i] == nullptr || size[i] > std::numeric_limits<size_t>::max())
                     throw std::runtime_error("Invalid executor/workspace");
@@ -362,7 +372,7 @@ int main(int argc, char **argv)
         Write(outputDir / "bootstrap/top_scores.bin", baselineTop);
         Write(outputDir / "bootstrap/top_ids.bin", baselineIds);
         SaveTiming(outputDir / "npu_timing.json", samples, cold, timingMode, device, queries, docs, k,
-                   warmup, repeats, shards, capacity);
+                   warmup, repeats, shards, capacity, topkImplementation, scratch);
         std::cout << "device=" << device << " mode=" << timingMode << " measured_batches=" << repeats
                   << " validated_full_repeat_batches=" << warmup + 1 << " intermediate_host_roundtrips=0\n"
                   << "median_batch_path_ms=" << Percentile(samples, .5, 0)

@@ -14,7 +14,7 @@ from check_result import read_floats
 from standalone.pipeline_fixture import check
 from standalone.run_pipeline import prepare_command
 from standalone.run_pipeline_benchmark import OUTPUT_FILES, validate_timing
-from standalone.prepare_sharded_runtime import validate_runtime, VARIANT
+from standalone.prepare_sharded_runtime import validate_runtime, WARP_VARIANT
 from standalone.validate_topk_merge import digest, write_json
 
 FILES = OUTPUT_FILES + ('partial_scores.bin', 'partial_ids.bin')
@@ -66,6 +66,8 @@ def run(directory, output, runner, vendors, device, warmup, repeats, mode, shard
     environment = os.environ.copy()
     environment['ASCEND_CUSTOM_OPP_PATH'] = custom_path
     environment['BM25_EXPECT_TOPK_SCRATCH_BYTES'] = str(scratch)
+    implementation = 'warp' if record['variant'] == WARP_VARIANT else 'parallel'
+    environment['BM25_TOPK_IMPLEMENTATION'] = implementation
     print(f'四段运行库/工程指纹通过；S={shards}，局部Top-K额外工作区={scratch}字节。', flush=True)
     print('实际NPU命令：' + json.dumps(command, ensure_ascii=False), flush=True)
     # The C++ executable consumes only original input arrays; no expected/candidate CPU file is passed.
@@ -78,6 +80,9 @@ def run(directory, output, runner, vendors, device, warmup, repeats, mode, shard
     capacity = timing['workspace_capacity_bytes']
     if len(capacity) != 4 or any(type(v) is not int or v < 0 for v in capacity) or capacity[2] < capacity[0] + scratch:
         raise ValueError('四段工作区或分块Top-K额外工作区不匹配')
+    if implementation == 'warp' and (timing.get('topk_implementation') != 'warp' or
+            timing.get('local_topk_user_scratch_bytes') != scratch or capacity[2] != capacity[0] + scratch):
+        raise ValueError('新warp调用器版本或精确工作区不匹配，不能使用旧调用器或放宽检查')
     if validate_runtime(vendors.resolve(), info, shards) != (record, scratch, custom_path):
         raise ValueError('运行过程中库/头文件/工程改变')
     for actual in (output / 'bootstrap', output):
@@ -86,7 +91,7 @@ def run(directory, output, runner, vendors, device, warmup, repeats, mode, shard
     for name in FILES:
         if (output / name).read_bytes() != (output / 'bootstrap' / name).read_bytes():
             raise ValueError(f'首末实际设备输出不一致：{name}')
-    metadata = {'status': 'device_repeated_call_completed_file_checks_passed', 'topk_variant': VARIANT,
+    metadata = {'status': 'device_repeated_call_completed_file_checks_passed', 'topk_variant': record['variant'],
                 'pipeline_stages': 4, 'shards': shards, 'device': device, 'mode': mode,
                 'queries': info['num_queries'], 'docs': info['num_docs'], 'k': info['k'],
                 'warmup': warmup, 'repeats': repeats, 'command': command,
