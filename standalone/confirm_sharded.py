@@ -97,7 +97,8 @@ def summarize(values):
             'min_run_median_ms': min(values), 'max_run_median_ms': max(values)}
 
 
-def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, shards, rounds, warmup, repeats):
+def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, shards, rounds, warmup, repeats,
+        order_policy='cpu_first'):
     directory, output, cpu_runner, npu_runner, vendors = (
         path.resolve() for path in (directory, output, cpu_runner, npu_runner, vendors))
     require(not output.exists(), '输出目录已存在，请选择新目录')
@@ -108,6 +109,7 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
             type(warmup) is int and 1 <= warmup <= 10000 and
             type(repeats) is int and 1 <= repeats <= 10000, '轮数/预热数/测量数非法')
     require(shards and len(shards) == len(set(shards)), '分块列表为空或重复')
+    require(order_policy in ('cpu_first', 'alternate'), '未知CPU/NPU先后顺序规则')
     for name in ('PROFILING_MODE', 'PROFILING_OPTIONS'):
         require(os.environ.get(name, '').lower() in ('', '0', 'off', 'false'),
                 '普通复测请先关闭性能采集：' + name)
@@ -128,20 +130,27 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
     baseline_cpu = None
     for index in range(rounds):
         order = list(shards) if index % 2 == 0 else list(reversed(shards))
-        print(f'开始第{index+1}/{rounds}轮：CPU {threads}线程，然后NPU分块顺序{order}。', flush=True)
+        cpu_first = order_policy == 'cpu_first' or index % 2 == 0
+        process_order = ['cpu'] + [f'npu_s{s}' for s in order] if cpu_first else [f'npu_s{s}' for s in order] + ['cpu']
+        print(f'开始第{index+1}/{rounds}轮：CPU {threads}线程，实际进程顺序{process_order}。', flush=True)
         round_dir = output / f'round{index+1:02d}'
         round_dir.mkdir()
         cpu = round_dir / 'cpu'
         cpu_log = round_dir / 'cpu.log'
-        run_logged([sys.executable, '-B', '-u', str(ROOT / 'standalone/run_cpu.py'), '--input', str(directory),
-                    '--output', str(cpu), '--runner', str(cpu_runner), '--threads', str(threads),
-                    '--warmup', str(warmup), '--repeats', str(repeats)], cpu_log)
-        cpu_metadata, cpu_timing = read_cpu_result(cpu, info, threads, warmup, repeats)
-        check(directory, cpu)
-        require(baseline_cpu is None or baseline_cpu == cpu_metadata['output_sha256'], '各轮CPU输出字节不同')
-        baseline_cpu = cpu_metadata['output_sha256']
-        cpu_record = time_record(cpu, 'cpu_timing.json', cpu_timing['median_batch_ms'], cpu_timing['p95_batch_ms'], cpu_log)
-        npu_records = []
+        def execute_cpu():
+            nonlocal baseline_cpu
+            run_logged([sys.executable, '-B', '-u', str(ROOT / 'standalone/run_cpu.py'), '--input', str(directory),
+                        '--output', str(cpu), '--runner', str(cpu_runner), '--threads', str(threads),
+                        '--warmup', str(warmup), '--repeats', str(repeats)], cpu_log)
+            metadata, timing = read_cpu_result(cpu, info, threads, warmup, repeats)
+            check(directory, cpu)
+            require(baseline_cpu is None or baseline_cpu == metadata['output_sha256'], '各轮CPU输出字节不同')
+            baseline_cpu = metadata['output_sha256']
+            return timing
+
+        if cpu_first:
+            cpu_timing = execute_cpu()
+        pending = []
         for count in order:
             destination = round_dir / f'npu_s{count}'
             log = round_dir / f'npu_s{count}.log'
@@ -150,6 +159,13 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
                         '--vendor-dir', str(vendors), '--device', str(device), '--shards', str(count),
                         '--warmup', str(warmup), '--repeats', str(repeats), '--mode', 'resident'], log)
             _, timing = read_npu_result(destination, info, npu_runner, installation, device, count, warmup, repeats, scratches[count])
+            pending.append((count, destination, log, timing))
+        if not cpu_first:
+            cpu_timing = execute_cpu()
+        cpu_record = time_record(cpu, 'cpu_timing.json', cpu_timing['median_batch_ms'], cpu_timing['p95_batch_ms'], cpu_log)
+        npu_records = []
+        # Both sides of THIS round must exist; never compare an NPU-first run to a prior round's CPU.
+        for count, destination, log, timing in pending:
             cross = cross_check(directory, cpu, destination)
             write_json(round_dir / f'cross_s{count}.json', cross)
             record = time_record(destination, 'npu_timing.json', timing['median_batch_path_ms'], timing['p95_batch_path_ms'], log)
@@ -164,7 +180,7 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
         for count in shards:
             current, scratch, _ = validate_runtime(vendors, info, count)
             require(current == installation and scratch == scratches[count], '复测过程中运行库改变')
-        record = {'round': index+1, 'npu_order': order, 'cpu': cpu_record, 'npu': npu_records}
+        record = {'round': index+1, 'npu_order': order, 'process_order': process_order, 'cpu': cpu_record, 'npu': npu_records}
         write_json(round_dir / 'checked.json', record)
         completed.append(record)
     cpu_summary = summarize([item['cpu']['median_batch_ms'] for item in completed])
@@ -181,7 +197,9 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
               'queries': info['num_queries'], 'docs': info['num_docs'], 'k': info['k'],
               'rounds': rounds, 'warmup': warmup, 'repeats_per_process': repeats,
               'device': device, 'cpu_threads': threads, 'shards': shards,
-              'order_policy': 'CPU first every round, NPU list forward on odd rounds/reversed on even rounds',
+              'cpu_npu_order': order_policy,
+              'order_policy': ('CPU first on odd rounds/NPU first on even rounds; NPU list forward on odd rounds/reversed on even rounds'
+                               if order_policy == 'alternate' else 'CPU first every round, NPU list forward on odd rounds/reversed on even rounds'),
               'cpu': cpu_summary, 'npu': npu_summary, 'per_round': completed,
               'lowest_point_estimate_shards': lowest['shards'], 'executable_sha256': executable_hashes,
               'runtime_installation': installation, 'cpu_allowed_logical_ids': allowed,
@@ -193,6 +211,7 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
         'status': report['status'], 'queries': info['num_queries'], 'docs': info['num_docs'], 'k': info['k'],
         'device': device, 'cpu_threads': threads, 'rounds': rounds, 'warmup': warmup, 'repeats_per_process': repeats,
         'cpu': cpu_summary, 'npu': npu_summary, 'lowest_point_estimate_shards': lowest['shards'],
+        'cpu_npu_order': order_policy, 'order_policy': report['order_policy'],
         'ratio_rule': 'CPU time / NPU time: >1 NPU faster, <1 CPU faster; paired per round',
         'scope': report['scope'], 'full_report_sha256': digest(output / 'report.json')})
     print('独立进程复测及全部结果检查通过。CPU各轮中位数(ms)：' + str(cpu_summary['all_run_medians_ms']), flush=True)
@@ -215,10 +234,12 @@ def main():
     parser.add_argument('--rounds', type=int, default=3)
     parser.add_argument('--warmup', type=int, default=5)
     parser.add_argument('--repeats', type=int, default=30)
+    parser.add_argument('--order-policy', choices=('cpu_first', 'alternate'), default='cpu_first',
+                        help='alternate让CPU/NPU每轮轮换先后；偶数轮数可使双方先跑次数相同')
     args = parser.parse_args()
     try:
         run(Path(args.input), Path(args.output), Path(args.cpu_runner), Path(args.npu_runner), Path(args.vendor_dir),
-            args.device, args.threads, args.shards, args.rounds, args.warmup, args.repeats)
+            args.device, args.threads, args.shards, args.rounds, args.warmup, args.repeats, args.order_policy)
     except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as error:
         print(f'FAILED：{error}；停止，不生成CPU替代输出或总成功报告。', file=sys.stderr)
         return 1
