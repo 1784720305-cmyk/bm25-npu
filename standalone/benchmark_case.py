@@ -28,13 +28,20 @@ def percentile(values, fraction):
     return sorted(values)[max(1, math.ceil(len(values) * fraction)) - 1]
 
 
-def read_cpu_result(directory, info, threads, warmup, repeats):
+def read_cpu_result(directory, info, threads, warmup, repeats, topk_document_shards=0):
+    require(type(topk_document_shards) is int and 0 <= topk_document_shards <= min(threads, info['num_docs']),
+            'CPU Top-K分块要求非法')
     record = validate_producer(directory, info, CPU_STATUSES)
     timing = json.loads((directory / 'cpu_timing.json').read_text(encoding='utf-8'))
     expected = {'status': 'cpu_computed_correctness_not_yet_checked',
         'requested_threads': threads, 'actual_threads': threads, 'warmup': warmup, 'repeats': repeats,
         'queries': info['num_queries'], 'docs': info['num_docs'], 'k': info['k']}
     require(all(timing.get(key) == value for key, value in expected.items()), 'CPU参数或实际线程数不匹配')
+    require(type(timing.get('topk_document_shards', 0)) is int and
+            timing.get('topk_document_shards', 0) == topk_document_shards and
+            type(record.get('topk_document_shards', 0)) is int and
+            record.get('topk_document_shards', 0) == topk_document_shards,
+            'CPU Top-K分块版本与本次要求不匹配')
     samples = timing['samples_batch_ms']
     require(len(samples) == repeats and all(type(value) in (float, int) and math.isfinite(value) and value > 0
                                            for value in samples), 'CPU计时样本非法')

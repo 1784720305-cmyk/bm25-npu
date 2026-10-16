@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include <omp.h>
+#include "topk_document_shards.h"
 
 namespace fs = std::filesystem;
 using Clock = std::chrono::steady_clock;
@@ -57,17 +58,6 @@ template<class T> void Write(const fs::path &path, const std::vector<T> &values)
     stream.close();
     Require(static_cast<bool>(stream), "Cannot save: " + path.string());
 }
-
-struct Candidate {
-    float score;
-    int32_t id;
-};
-struct Better {
-    bool operator()(const Candidate &a, const Candidate &b) const
-    {
-        return a.score > b.score || (a.score == b.score && a.id < b.id);
-    }
-};
 
 void Contributions(const std::vector<float> &tf, const std::vector<float> &norm,
                    const std::vector<float> &idf, std::vector<float> &output)
@@ -131,18 +121,20 @@ double Percentile(std::vector<double> data, double fraction)
 int main(int argc, char **argv)
 {
     try {
-        Require(argc == 9, "Usage: bm25_cpu_runner INPUT OUTPUT QUERIES DOCS K THREADS WARMUP REPEATS");
+        Require(argc == 9 || argc == 10, "Usage: bm25_cpu_runner INPUT OUTPUT QUERIES DOCS K THREADS WARMUP REPEATS [TOPK_DOCUMENT_SHARDS]");
         const fs::path input = fs::canonical(argv[1]);
         const fs::path output = fs::absolute(argv[2]);
         Require(!fs::exists(output), "Output exists; choose a new directory");
         const auto queries = Integer(argv[3], "queries"), docs = Integer(argv[4], "docs");
         const auto k = Integer(argv[5], "k"), threads = Integer(argv[6], "threads");
         const auto warmup = Integer(argv[7], "warmup"), repeats = Integer(argv[8], "repeats");
+        const int64_t topkDocumentShards = argc == 10 ? Integer(argv[9], "Top-K document shards") : 0;
         const int64_t limit = std::numeric_limits<int32_t>::max();
         Require(queries > 0 && docs > 0 && queries <= limit / docs, "Q*D exceeds current operator limits");
         Require(k >= 1 && k <= std::min<int64_t>(docs, 32), "Invalid K");
         Require(threads >= 1 && threads <= 65536 && warmup <= 10000 && repeats >= 1 && repeats <= 10000,
                 "Invalid thread/iteration count");
+        Require(topkDocumentShards <= std::min(threads, docs), "Top-K document shards must be zero or <= min(threads, docs)");
         const uint16_t endian = 1;
         Require(*reinterpret_cast<const uint8_t *>(&endian) == 1, "This runner requires little-endian input/host");
         std::cout << "stage=validate_inputs\n";
@@ -163,6 +155,9 @@ int main(int argc, char **argv)
         }
         std::vector<float> contributions(tf.size()), scores(groups), topScores(queries * k);
         std::vector<int32_t> topIds(queries * k);
+        const uint64_t partialCount = static_cast<uint64_t>(queries)*topkDocumentShards*k;
+        Require(partialCount <= std::numeric_limits<size_t>::max()/sizeof(Candidate), "CPU partial buffer too large");
+        std::vector<Candidate> partials(static_cast<size_t>(partialCount));
         omp_set_dynamic(0);
         omp_set_num_threads(static_cast<int>(threads));
         int actualThreads = 0;
@@ -174,10 +169,11 @@ int main(int argc, char **argv)
         const auto compute = [&]() {
             Contributions(tf, norm, idf, contributions);
             Accumulate(contributions, offsets, scores);
-            TopK(scores, queries, docs, k, topScores, topIds);
+            if (topkDocumentShards == 0) TopK(scores, queries, docs, k, topScores, topIds);
+            else TopKDocumentShards(scores, queries, docs, k, topkDocumentShards, partials, topScores, topIds);
         };
         std::cout << "values=" << tf.size() << " groups=" << groups << " requested_threads=" << threads
-                  << " actual_threads=" << actualThreads << "\nstage=warmup\n";
+                  << " actual_threads=" << actualThreads << " topk_document_shards=" << topkDocumentShards << "\nstage=warmup\n";
         for (int64_t i = 0; i < warmup; ++i) compute();
         std::vector<double> timings;
         timings.reserve(repeats);
@@ -199,7 +195,9 @@ int main(int argc, char **argv)
                << "{\n  \"status\": \"cpu_computed_correctness_not_yet_checked\",\n"
                << "  \"scope\": \"resident three-stage CPU computation; excludes input packing, file IO and allocations; includes OpenMP scheduling\",\n"
                << "  \"fp32_flags\": \"-O3 -march=native -ffp-contract=off -fno-fast-math\",\n"
-               << "  \"topk_algorithm\": \"bounded heap O(D log K) per query\",\n"
+               << "  \"topk_algorithm\": \"" << (topkDocumentShards == 0 ? "bounded heap O(D log K) per query" :
+                   "document-partition bounded heaps, unsorted local candidates, final bounded-heap merge") << "\",\n"
+               << "  \"topk_document_shards\": " << topkDocumentShards << ",\n"
                << "  \"compiler\": \"" << __VERSION__ << "\",\n"
                << "  \"openmp_version\": " << _OPENMP << ",\n"
                << "  \"requested_threads\": " << threads << ",\n  \"actual_threads\": " << actualThreads << ",\n"

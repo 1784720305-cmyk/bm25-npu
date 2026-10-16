@@ -98,7 +98,7 @@ def summarize(values):
 
 
 def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, shards, rounds, warmup, repeats,
-        order_policy='cpu_first'):
+        order_policy='cpu_first', cpu_topk_document_shards=0):
     directory, output, cpu_runner, npu_runner, vendors = (
         path.resolve() for path in (directory, output, cpu_runner, npu_runner, vendors))
     require(not output.exists(), '输出目录已存在，请选择新目录')
@@ -116,6 +116,8 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
     allowed = sorted(os.sched_getaffinity(0)) if hasattr(os, 'sched_getaffinity') else None
     require(allowed is None or threads <= len(allowed), 'CPU线程数超过进程亲和性范围')
     info, _ = validate_input(directory)
+    require(type(cpu_topk_document_shards) is int and 0 <= cpu_topk_document_shards <= min(threads, info['num_docs']),
+            'CPU Top-K文章分块须为0或不超过线程数及文章数')
     require(info.get('dataset', {}).get('case') == 'performance_uniform_short_v1',
             '本入口接受正常performance输入，不将正确性压力样本作性能工作负载')
     installation, scratches = None, {}
@@ -139,10 +141,13 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
         cpu_log = round_dir / 'cpu.log'
         def execute_cpu():
             nonlocal baseline_cpu
-            run_logged([sys.executable, '-B', '-u', str(ROOT / 'standalone/run_cpu.py'), '--input', str(directory),
+            command = [sys.executable, '-B', '-u', str(ROOT / 'standalone/run_cpu.py'), '--input', str(directory),
                         '--output', str(cpu), '--runner', str(cpu_runner), '--threads', str(threads),
-                        '--warmup', str(warmup), '--repeats', str(repeats)], cpu_log)
-            metadata, timing = read_cpu_result(cpu, info, threads, warmup, repeats)
+                        '--warmup', str(warmup), '--repeats', str(repeats)]
+            if cpu_topk_document_shards:
+                command.extend(['--topk-document-shards', str(cpu_topk_document_shards)])
+            run_logged(command, cpu_log)
+            metadata, timing = read_cpu_result(cpu, info, threads, warmup, repeats, cpu_topk_document_shards)
             check(directory, cpu)
             require(baseline_cpu is None or baseline_cpu == metadata['output_sha256'], '各轮CPU输出字节不同')
             baseline_cpu = metadata['output_sha256']
@@ -197,6 +202,7 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
               'queries': info['num_queries'], 'docs': info['num_docs'], 'k': info['k'],
               'rounds': rounds, 'warmup': warmup, 'repeats_per_process': repeats,
               'device': device, 'cpu_threads': threads, 'shards': shards,
+              'cpu_topk_document_shards': cpu_topk_document_shards,
               'cpu_npu_order': order_policy,
               'order_policy': ('CPU first on odd rounds/NPU first on even rounds; NPU list forward on odd rounds/reversed on even rounds'
                                if order_policy == 'alternate' else 'CPU first every round, NPU list forward on odd rounds/reversed on even rounds'),
@@ -210,6 +216,7 @@ def run(directory, output, cpu_runner, npu_runner, vendors, device, threads, sha
     write_json(output / 'summary.json', {
         'status': report['status'], 'queries': info['num_queries'], 'docs': info['num_docs'], 'k': info['k'],
         'device': device, 'cpu_threads': threads, 'rounds': rounds, 'warmup': warmup, 'repeats_per_process': repeats,
+        'cpu_topk_document_shards': cpu_topk_document_shards,
         'cpu': cpu_summary, 'npu': npu_summary, 'lowest_point_estimate_shards': lowest['shards'],
         'cpu_npu_order': order_policy, 'order_policy': report['order_policy'],
         'ratio_rule': 'CPU time / NPU time: >1 NPU faster, <1 CPU faster; paired per round',
@@ -236,10 +243,12 @@ def main():
     parser.add_argument('--repeats', type=int, default=30)
     parser.add_argument('--order-policy', choices=('cpu_first', 'alternate'), default='cpu_first',
                         help='alternate让CPU/NPU每轮轮换先后；偶数轮数可使双方先跑次数相同')
+    parser.add_argument('--cpu-topk-document-shards', type=int, default=0,
+                        help='0保留原CPU版本；正整数启用已编译的新CPU文章分块Top-K')
     args = parser.parse_args()
     try:
         run(Path(args.input), Path(args.output), Path(args.cpu_runner), Path(args.npu_runner), Path(args.vendor_dir),
-            args.device, args.threads, args.shards, args.rounds, args.warmup, args.repeats, args.order_policy)
+            args.device, args.threads, args.shards, args.rounds, args.warmup, args.repeats, args.order_policy, args.cpu_topk_document_shards)
     except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as error:
         print(f'FAILED：{error}；停止，不生成CPU替代输出或总成功报告。', file=sys.stderr)
         return 1
