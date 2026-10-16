@@ -1,5 +1,7 @@
 # 官方FP32 Top-K独立对照
 
+**当前暂停执行本路线。** 用户最新要求转回参考IndexSDK后自研，见 [IndexSDK Top-K借鉴路线](IndexSDKTopK借鉴路线.md)。本调用器已在黄区编译/加载并运行；K=32首组通过，K=10/1025长度首组完整排名失败，已知差异涉及正负零边界成员。失败保留，不修改样本或规则，也不继续把下面的性能步骤作为当前任务。以下操作保留为历史参考。
+
 这是参考测量，不替代最终自研算子交付。没有增加新内核，不依赖Faiss、IndexSDK、ATC或OM。黄区文件留黄区，只提供允许分享的终端摘要。
 
 当前依据：黄区实际 `include/aclnnop/aclnn_topk.h` 的函数声明，以及 `lib64/libopapi.so` 实际导出的 `aclnnTopk` 和 `aclnnTopkGetWorkspaceSize` 已由用户提供并核对。先用默认aclnnTopk，不把sortPolicy=1当作严格同分升序保证。
@@ -94,6 +96,6 @@ python3 standalone/run_official_topk.py --input results/normal_64k_q1 --scores-f
 - Python `check_output`：用完整排序独立核对K个成员和次序，能发现“分数一样但边界选错文章”的问题。
 - Python `validate_timing`：检查轮数、尺寸、重复验收次数、全部计时样本和中位数，不接收不匹配或非有限计时值。
 
-当前状态：代码完成；本机仅通过Python3.9语法、合成文件和模拟进程的成功/失败检查，未编译此C++程序，未加载真实官方库，未执行或验证950结果，更未证明性能收益。
+当前状态：黄区已编译并加载官方库，513×40/K=32通过；65×1025/K=10执行完成但严格排名失败，已知首差异涉及正负零边界成员。通用语义与性能未通过。当前暂停此路线，继续自研；此前本地Python3.9及模拟检查不作为设备证据。
 
 建议commit备注：`增加官方FP32 Top-K独立对照调用与严格排名验收`
