@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "User actual profile 256K documents x 8 queries: contribution 6.413 us, accumulation 86.572 us, Radix TopK 301.586 us, merge 5.145 us; full chain span median 400.589 us. Faster document-sharded CPU and NPU essentially tied in six resident retests. Add independent topk_radix_zero vendor/project with per-thread zero histogram counts, reuse existing block reduction, fold exact zero count into both histogram reads. Preserve old Radix/operator/CPU/binary bytes and acceptance hashes. 456 Python schedule/model cases plus 19 invalid cases pass; new variant runtime/profile/failure control and old regressions are local synthetic tests, not CANN compilation or NPU evidence. 23-case independent real-device acceptance required before four-stage runtime creation. No ATC/OM, external algorithm runtime, precision change, fallback or performance claim. LF raw-byte Git publication.",
+  "scope": "User actual zero-aggregate Radix compilation/installation and 23 x 5 device calls passed, plus small and 256K x 8 four-stage, repeat-byte and CPU cross-checks. Diagnostic three-repeat batch 0.417896 ms is not performance acceptance. Add a paired NPU-version comparison launcher only: same input/device/C++ runner/other operators/TopK host source, even alternating rounds, real repeated-call wrapper and parent independent formula/full ranking/six-array byte checks, source/input/runtime snapshots and raw timing references; failures preserve partial logs without success summary or CPU replacement. 21 local synthetic orchestration/failure checks passed; new paired real-device performance still pending. All previously validated operator, CPU, C++ runner, independent acceptance and original binary sample bytes preserved. No recompilation/reinstallation needed; no CPU/BM25S/full-query speedup claim. LF Git raw bytes.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -8,7 +8,7 @@
   "files": {
     ".gitattributes": "f3b83fa6dd1322e693b202cdec41cdf168dd8ae13c728b34dbe39427f7f282ac",
     ".gitignore": "513d0bf4e2133dd931a7cb763f5e2be14d6385766e0d49e8d0a51d7e01a0cec1",
-    "README.md": "d51b923c249f99326f6a0fbd8adcbdb9d2617c8b02139687187324a7c5f3edb4",
+    "README.md": "792520462c710177fa0e73507fc8f691a027ecaa069aa23f9cf49aa6807b4d0e",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "cpu_reference/CMakeLists.txt": "f34293672d5259173f5a7cbba2d50e5ec9a52645cf8d996fcfce7aec54d70e30",
@@ -73,7 +73,7 @@
     "npu_prototype/topk_warp_host/warp_runner.cpp": "96ada65ba503523eadf731f8d5c9c334396422ee1d5d4c909f1c1946411fad0b",
     "rebuild_manifest.py": "20c260e3b62dbb64eff657173811870af1d88f1978c6b93b86684f1d669e4f4a",
     "requirements.txt": "43089def480102076d30e02dfe40f349cddd0bc42b67e059e4241d19f7cd7e1c",
-    "standalone/950性能优化路线.md": "56479ed81ebc145181dbce60f68fd384be44d24ce50ce41443a9192ca635c3de",
+    "standalone/950性能优化路线.md": "c997a8e70a7e11a12c8f25e27ca83db32a4731e19f4932f693aaf90e42a8be95",
     "standalone/A5CPU参考验证记录.md": "2625173aa600c27a2be117112a497746c6bb4277a654001dd8a2f7e967bd9276",
     "standalone/A5TopK验证记录.md": "aa6f0864c5f85f5e03d23ccf4da155615ee74fc0998260026bce09ebfdfed037",
     "standalone/A5串联验证记录.md": "ee13164a39dced6d1620f2f2550391cdddcf7551f8097f06319de6b6304b80ab",
@@ -88,8 +88,9 @@
     "standalone/RadixTopK实现与验收步骤.md": "7a945dcdd820d3c61dd0f1c7e6571e23a5c3e480a819397d38b80242d488896a",
     "standalone/Radix四段接入步骤.md": "cc0acd9e6b88f13a508346542252bfe168d8459981f18d8fa0824cc0110130fc",
     "standalone/Radix性能复测步骤.md": "62f0d141cf37994503824b543bedbcc17be932920d4a5094445551e60d6dd097",
+    "standalone/Radix新旧同期对比步骤.md": "f858b1083ee18e23611a5aacf2394dff8c538cf4d4a67da1cc2d8bebe757cc4d",
     "standalone/Radix设备分段诊断步骤.md": "ab06a6089db0d42253bae03cae136740bfd7e67eaecf158ed7bca38f2b1d5bf2",
-    "standalone/Radix零分汇总实验步骤.md": "81a53b86f00114142d8f97646ad8f0b5afbf9afe29b21c70a74ca36bd293a05f",
+    "standalone/Radix零分汇总实验步骤.md": "333be2be4b06102dc7955b11ae6997152d1d10f4793406e92fa4b15ad5b5ef45",
     "standalone/TopK步骤.md": "072d8ba516f576773e3523df9e6118a475f29b85d889cf8f29e234ae71943101",
     "standalone/WarpTopK优化步骤.md": "0c98e7e04e85da661860c9e4913e3fdee9750d58641c379414601858b957f455",
     "standalone/WarpTopK四段步骤.md": "4ddf23e651c1a50cd3892e8a2a71ed1be0f8df5def502b7671bbdf556783e835",
@@ -100,6 +101,7 @@
     "standalone/check_radix_model.py": "410daac12dd98ab85dfbe478822c7b3f9c5421c6af4c7ad83a21e6ab2e1c0e3a",
     "standalone/check_radix_zero_model.py": "16b8487896afe68bd162658a1aba21483020f1fd65ffdcaa56ed93bae61700f0",
     "standalone/compare_compute_outputs.py": "1e05bc9ad1b16b3cd6eb325705436b339e0b8467957730fb059e14861dbc5f5e",
+    "standalone/compare_radix_versions.py": "e6b73e4c7209a08960d7fadac955f6204363b2e108ab21f8449d3e2914664e8e",
     "standalone/confirm_sharded.py": "c83745daa71ef42f444b418bfaae9759e2db74adffc50cbf38a3b77ecc8d22b8",
     "standalone/create_project.py": "93e9280d6fb491a6fb6474ff0c9dd3b574c86d5931e569b7bf606e079166fd00",
     "standalone/operator.json": "7f0eee29078e2146f82b24d5dfdb1ab26cad1e7ccac31397e23af21e08f9707f",
