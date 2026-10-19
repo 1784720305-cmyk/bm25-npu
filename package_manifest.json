@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "User actual zero-aggregate Radix compilation/installation and 23 x 5 device calls passed, plus small and 256K x 8 four-stage, repeat-byte and CPU cross-checks. Diagnostic three-repeat batch 0.417896 ms is not performance acceptance. Add a paired NPU-version comparison launcher only: same input/device/C++ runner/other operators/TopK host source, even alternating rounds, real repeated-call wrapper and parent independent formula/full ranking/six-array byte checks, source/input/runtime snapshots and raw timing references; failures preserve partial logs without success summary or CPU replacement. 21 local synthetic orchestration/failure checks passed; new paired real-device performance still pending. All previously validated operator, CPU, C++ runner, independent acceptance and original binary sample bytes preserved. No recompilation/reinstallation needed; no CPU/BM25S/full-query speedup claim. LF Git raw bytes.",
+  "scope": "User six paired resident rounds: zero aggregation slower every round; original/candidate median of run medians 0.4097545/0.419935 ms. Do not adopt zero variant. Its valid profile shows contribution 6.671 us, accumulation 86.784 us, TopK 311.232 us, merge 5.35 us; profile is diagnostic, not proof of inner-loop instruction costs. Add model and revised candidate-collection route only: retain original exact threshold, one whole-row thread count/prefix and bounded owner rescans, deterministic lazy merge of ordered equal-score ID streams, original final K sorting and score bits. 646 model cases/1938 write orders plus 9 invalid cases passed, including read-count upper bound; not device instructions or performance. No new Ascend kernel written or compiled. Existing operators, CPU, runners, acceptance scripts and binary samples preserved; BM25S/transfers/full-query performance still pending. LF Git raw-byte publication.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -8,7 +8,7 @@
   "files": {
     ".gitattributes": "f3b83fa6dd1322e693b202cdec41cdf168dd8ae13c728b34dbe39427f7f282ac",
     ".gitignore": "513d0bf4e2133dd931a7cb763f5e2be14d6385766e0d49e8d0a51d7e01a0cec1",
-    "README.md": "792520462c710177fa0e73507fc8f691a027ecaa069aa23f9cf49aa6807b4d0e",
+    "README.md": "df7794683300b4b57faf13b9c17fb7b27a160b11e68fa8284d14070aad4d7be2",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "cpu_reference/CMakeLists.txt": "f34293672d5259173f5a7cbba2d50e5ec9a52645cf8d996fcfce7aec54d70e30",
@@ -73,7 +73,7 @@
     "npu_prototype/topk_warp_host/warp_runner.cpp": "96ada65ba503523eadf731f8d5c9c334396422ee1d5d4c909f1c1946411fad0b",
     "rebuild_manifest.py": "20c260e3b62dbb64eff657173811870af1d88f1978c6b93b86684f1d669e4f4a",
     "requirements.txt": "43089def480102076d30e02dfe40f349cddd0bc42b67e059e4241d19f7cd7e1c",
-    "standalone/950性能优化路线.md": "c997a8e70a7e11a12c8f25e27ca83db32a4731e19f4932f693aaf90e42a8be95",
+    "standalone/950性能优化路线.md": "c19404aca9259279aefcb3d39f238d1cd84516b78a0814928e6b7179ed4cd382",
     "standalone/A5CPU参考验证记录.md": "2625173aa600c27a2be117112a497746c6bb4277a654001dd8a2f7e967bd9276",
     "standalone/A5TopK验证记录.md": "aa6f0864c5f85f5e03d23ccf4da155615ee74fc0998260026bce09ebfdfed037",
     "standalone/A5串联验证记录.md": "ee13164a39dced6d1620f2f2550391cdddcf7551f8097f06319de6b6304b80ab",
@@ -86,11 +86,12 @@
     "standalone/IndexSDKTopK借鉴路线.md": "bc8eb8b6ffca0f900ab24ed4bcf1ccb93011169b82c4d42fdfba39fb3e849f8c",
     "standalone/README.md": "9067d910122a021fce418581c0e6a018c746cb96e27bdb3514bbf2e7fab57eff",
     "standalone/RadixTopK实现与验收步骤.md": "7a945dcdd820d3c61dd0f1c7e6571e23a5c3e480a819397d38b80242d488896a",
+    "standalone/Radix候选收集修订路线.md": "70478402f01052167ebe9a2a013143c3af1bfc923320b7fea3a359d3ac29c005",
     "standalone/Radix四段接入步骤.md": "cc0acd9e6b88f13a508346542252bfe168d8459981f18d8fa0824cc0110130fc",
     "standalone/Radix性能复测步骤.md": "62f0d141cf37994503824b543bedbcc17be932920d4a5094445551e60d6dd097",
-    "standalone/Radix新旧同期对比步骤.md": "f858b1083ee18e23611a5aacf2394dff8c538cf4d4a67da1cc2d8bebe757cc4d",
+    "standalone/Radix新旧同期对比步骤.md": "dbbc756fd163bdba84fd823321ef76940fe6bfc8046a8a19919ace7075d83a8c",
     "standalone/Radix设备分段诊断步骤.md": "ab06a6089db0d42253bae03cae136740bfd7e67eaecf158ed7bca38f2b1d5bf2",
-    "standalone/Radix零分汇总实验步骤.md": "333be2be4b06102dc7955b11ae6997152d1d10f4793406e92fa4b15ad5b5ef45",
+    "standalone/Radix零分汇总实验步骤.md": "482c679d15e6c11ba89e2c39c5c0aacf69dc73b59ca53d572d447c0f9cc2857d",
     "standalone/TopK步骤.md": "072d8ba516f576773e3523df9e6118a475f29b85d889cf8f29e234ae71943101",
     "standalone/WarpTopK优化步骤.md": "0c98e7e04e85da661860c9e4913e3fdee9750d58641c379414601858b957f455",
     "standalone/WarpTopK四段步骤.md": "4ddf23e651c1a50cd3892e8a2a71ed1be0f8df5def502b7671bbdf556783e835",
@@ -98,6 +99,7 @@
     "standalone/accumulate_operator.json": "3814a922b1102eb06802211315fa71ef69217d30f566481906c143eda63272c2",
     "standalone/analyze_pipeline_profile.py": "05e55c49589ab6a4f7bef1e3f20ba215b1ffdc4ae8373995a7ff2c5a908a04a5",
     "standalone/benchmark_case.py": "e12860ce3cfb5a67a6a072113b53a4e71849d8bca5e0e5ecfd44454b05cd7b7c",
+    "standalone/check_radix_collect_model.py": "548bd1e5d39c1e0eee93d63d3b69310bb15a59917a8fe15648f13f5e04e9a6c5",
     "standalone/check_radix_model.py": "410daac12dd98ab85dfbe478822c7b3f9c5421c6af4c7ad83a21e6ab2e1c0e3a",
     "standalone/check_radix_zero_model.py": "16b8487896afe68bd162658a1aba21483020f1fd65ffdcaa56ed93bae61700f0",
     "standalone/compare_compute_outputs.py": "1e05bc9ad1b16b3cd6eb325705436b339e0b8467957730fb059e14861dbc5f5e",
