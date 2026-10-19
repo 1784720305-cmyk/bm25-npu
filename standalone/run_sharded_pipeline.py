@@ -14,7 +14,7 @@ from check_result import read_floats
 from standalone.pipeline_fixture import check
 from standalone.run_pipeline import prepare_command
 from standalone.run_pipeline_benchmark import OUTPUT_FILES, validate_timing
-from standalone.prepare_sharded_runtime import validate_runtime, WARP_VARIANT, RADIX_VARIANT, validate_topk_workspace
+from standalone.prepare_sharded_runtime import validate_runtime, WARP_VARIANT, RADIX_VARIANTS, validate_topk_workspace
 from standalone.validate_topk_merge import digest, write_json
 
 FILES = OUTPUT_FILES + ('partial_scores.bin', 'partial_ids.bin')
@@ -66,7 +66,7 @@ def run(directory, output, runner, vendors, device, warmup, repeats, mode, shard
     environment = os.environ.copy()
     environment['ASCEND_CUSTOM_OPP_PATH'] = custom_path
     environment['BM25_EXPECT_TOPK_SCRATCH_BYTES'] = str(scratch)
-    implementation = 'radix' if record['variant'] == RADIX_VARIANT else ('warp' if record['variant'] == WARP_VARIANT else 'parallel')
+    implementation = 'radix' if record['variant'] in RADIX_VARIANTS else ('warp' if record['variant'] == WARP_VARIANT else 'parallel')
     environment['BM25_TOPK_IMPLEMENTATION'] = implementation
     if implementation == 'radix':
         environment['BM25_EXPECT_RADIX_WORKSPACE_BYTES'] = str(record['radix_validation']['workspace_bytes'])

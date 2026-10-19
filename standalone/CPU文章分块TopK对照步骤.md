@@ -1,5 +1,7 @@
 # 补强CPU单查询Top-K对照
 
+最新实机状态：黄区GNU10.3.1/OpenMP4.5编译成功；1647组C++全排序/原FP32字节检查通过，每组3次覆盖/变换编号位置。原小样本、64K单查询、256K单查询及256K/8查询的完整计算和CPU/NPU直接核对均通过。单查询S=8在初筛中优于原CPU；8查询两种CPU方式各有波动，后续两种CPU与NPU各做六轮对照。更快CPU文章分块路径与NPU基本持平，不能沿用较慢CPU成绩宣称加速。下一步见 [零分汇总实验](Radix零分汇总实验步骤.md)。以下编译和验证命令保留供复现，已存在的输出目录不要重复执行或删除。
+
 ## 为什么现在做这个
 
 Radix四段采集已经在设备2完成，68条任务与两张设备表交叉核对通过，排除首次和预热后正式10轮：
@@ -33,7 +35,7 @@ Top-K仍是最大一段。历史Warp局部Top-K为40.643微秒，本次Radix为2
 
 - `cpu_reference/topk_document_shards.h`：`KeepCandidate`复用有界堆规则；`TopKDocumentShards`先并行处理查询×文章分块任务，写出无序局部候选，再合并每条查询的候选，最后排序K项。临时缓冲由主程序在计时前分配，各轮重写。
 - `cpu_reference/cpu_runner.cpp`：原贡献、累加、原Top-K函数体保持原文本；新增可选末尾参数TOPK_DOCUMENT_SHARDS。0沿用原按查询并行路径，正数启用文章分块，须不超过线程数及文章数。报告明确记录模式，不自动替换默认路径。
-- `cpu_reference/topk_document_shards_test.cpp`：用独立的完整数值排序核对所有编号及原FP32字节，覆盖全零、全等、正负零、次正规数、最大有限数、随机同分、K=1/10/32、小分块和不等长分块；复用内存并变换编号位置，输出和候选先填无效值。该C++检查尚待黄区编译执行。
+- `cpu_reference/topk_document_shards_test.cpp`：用独立的完整数值排序核对所有编号及原FP32字节，覆盖全零、全等、正负零、次正规数、最大有限数、随机同分、K=1/10/32、小分块和不等长分块；复用内存并变换编号位置，输出和候选先填无效值。该C++检查现已由用户在黄区实际通过。
 - `standalone/run_cpu.py --topk-document-shards S`：传递明确模式，拒绝旧二进制没有报告新模式的情况。
 - `benchmark_case.read_cpu_result`：性能读表时核对请求的CPU模式，避免把原CPU时间和新CPU时间混在一起。
 - `confirm_sharded.py --cpu-topk-document-shards S`：后续可用指定CPU模式做CPU/NPU轮换复测，报告记录模式；原默认0不变。
@@ -82,6 +84,6 @@ python3 standalone/compare_compute_outputs.py --input results/normal_64k_q1 --cp
 
 先使用这个新CPU二进制分别测原路径S=0和文章分块路径，保持输入、线程及预热/测量数一致；再检查合理线程/分块配置，选实测更快者作为CPU对手。不要因为某个CPU实现更慢就选它来放大NPU收益。
 
-可选模式已接入6轮CPU/NPU轮换入口，但本轮先不执行性能结论性复测，等上面的C++及两组完整计算检查通过。即使S=8正确，也不代表S=8最优或整个服务器CPU已优化到上限。后续仍需同期旧版/Warp/Radix对照、原版BM25S、规模/批量曲线和含传输/完整查询验收。
+可选模式已接入6轮CPU/NPU轮换入口，该模式已在黄区用于正确性通过后的同期复测，具体最新结论见页首。即使S=8正确，也不代表S=8最优或整个服务器CPU已优化到上限。后续仍需同期旧版/Warp/Radix对照、原版BM25S、规模/批量曲线和含传输/完整查询验收。
 
 建议commit备注：`feat: 增加CPU文章分块Top-K可选对照及正确性检查`
