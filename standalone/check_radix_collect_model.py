@@ -175,6 +175,7 @@ def main():
              'npu_prototype/topk_radix/op_kernel/bm25_top_k.cpp',
              'npu_prototype/topk_merge/op_kernel/bm25_top_k_merge.cpp')
     record = {'status': 'candidate_collection_model_passed_not_device_or_performance_evidence',
+              'scope': 'Flags describe operations performed by THIS model tool, not the repository kernel implementation or acceptance status.',
               'cases_passed': count, 'thread_schedules_checked': schedules, 'invalid_cases_passed': invalid,
               'strict_ids_and_original_score_bits': True, 'extra_read_bound_checked': True,
               'examples': examples, 'new_kernel_written': False, 'compiled': False,
@@ -184,7 +185,7 @@ def main():
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes((json.dumps(record, indent=2)+'\n').encode('utf-8'))
     print(f'候选收集模型通过：{count}组、{schedules}种线程执行顺序，完整编号/原FP32字节一致；另{invalid}组非法输入通过。')
-    print('只核对整数/线程模型与逻辑读取上界，没有新NPU内核、设备执行或性能结论。报告：', target)
+    print('本工具只核对整数/线程模型与逻辑读取上界，不编译、运行或验收NPU内核，不提供性能结论。报告：', target)
 
 
 if __name__ == '__main__':

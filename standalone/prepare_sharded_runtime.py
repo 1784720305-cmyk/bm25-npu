@@ -13,21 +13,23 @@ from standalone.validate_topk_merge import digest, dimensions, validate_install,
 from standalone import validate_topk_warp as warp
 from standalone import validate_topk_radix as radix
 from standalone import validate_topk_radix_zero as radix_zero
+from standalone import validate_topk_radix_collect as radix_collect
 
 VARIANT = 'document_sharded_topk_v1'
 WARP_VARIANT = 'document_sharded_warp_sort32_topk_v1'
 RADIX_VARIANT = 'document_sharded_exact_radix_topk_v1'
 RADIX_ZERO_VARIANT = 'document_sharded_exact_radix_zero_aggregate_topk_v1'
-RADIX_VARIANTS = (RADIX_VARIANT, RADIX_ZERO_VARIANT)
+RADIX_COLLECT_VARIANT = 'document_sharded_exact_radix_collect_topk_v1'
+RADIX_VARIANTS = (RADIX_VARIANT, RADIX_ZERO_VARIANT, RADIX_COLLECT_VARIANT)
 ALIASES = ('bm25', 'bm25_accumulate', 'bm25_topk', 'bm25_topk_merge')
 HEADERS = ('aclnn_bm25_contribution.h', 'aclnn_bm25_accumulate.h', 'aclnn_bm25_top_k.h', 'aclnn_bm25_top_k_merge.h')
 
 
 def installed(vendors, parallel_project, merge_project, implementation='parallel', warp_validation=None):
     vendors, parallel_project, merge_project = (p.resolve() for p in (vendors, parallel_project, merge_project))
-    if implementation not in ('parallel', 'warp', 'radix', 'radix_zero'):
+    if implementation not in ('parallel', 'warp', 'radix', 'radix_zero', 'radix_collect'):
         raise ValueError('未知局部Top-K实现')
-    operator = {'parallel': 'topk_parallel', 'warp': 'topk_warp', 'radix': 'topk_radix', 'radix_zero': 'topk_radix_zero'}[implementation]
+    operator = {'parallel': 'topk_parallel', 'warp': 'topk_warp', 'radix': 'topk_radix', 'radix_zero': 'topk_radix_zero', 'radix_collect': 'topk_radix_collect'}[implementation]
     project = json.loads((parallel_project / 'bm25_project.json').read_text(encoding='utf-8'))
     if project['operator'] != operator or project['vendor_name'] != 'bm25_' + operator:
         raise ValueError('需要所选局部Top-K实现的实际工程/vendor，不能自动替换版本')
@@ -36,14 +38,14 @@ def installed(vendors, parallel_project, merge_project, implementation='parallel
             raise ValueError(f'局部Top-K工程与当前源码不一致：{name}')
     topk_vendor = vendors / ('bm25_' + operator)
     # Radix has its own confirmed actual signature/acceptance gate; no legacy Top-K installation required.
-    if implementation not in ('radix', 'radix_zero') and prototypes(vendors / 'bm25_topk/op_api/include/aclnn_bm25_top_k.h') != prototypes(topk_vendor / 'op_api/include/aclnn_bm25_top_k.h'):
+    if implementation not in ('radix', 'radix_zero', 'radix_collect') and prototypes(vendors / 'bm25_topk/op_api/include/aclnn_bm25_top_k.h') != prototypes(topk_vendor / 'op_api/include/aclnn_bm25_top_k.h'):
         raise ValueError('新旧Top-K实际接口不一致')
     accepted = None
     if implementation == 'warp':
         installation = warp.validate_install(topk_vendor, parallel_project)
         accepted = validate_warp_acceptance(warp_validation, installation)
-    elif implementation in ('radix', 'radix_zero'):
-        checker = radix_zero if implementation == 'radix_zero' else radix
+    elif implementation in ('radix', 'radix_zero', 'radix_collect'):
+        checker = {'radix': radix, 'radix_zero': radix_zero, 'radix_collect': radix_collect}[implementation]
         installation = checker.validate_install(topk_vendor, parallel_project)
         accepted = validate_radix_acceptance(warp_validation, installation, checker)
     merge = validate_install(vendors / 'bm25_topk_merge', merge_project)
@@ -59,12 +61,14 @@ def installed(vendors, parallel_project, merge_project, implementation='parallel
                 'vendors': str(vendors), 'warp_project': str(parallel_project), 'merge_project': str(merge_project),
                 'warp_installation': installation, 'warp_validation': accepted, 'merge_installation': merge,
                 'scope': 'four installed vendors and prior warp unit acceptance checked; four-stage execution not yet verified'}
-    if implementation in ('radix', 'radix_zero'):
-        return {'variant': RADIX_ZERO_VARIANT if implementation == 'radix_zero' else RADIX_VARIANT,
+    if implementation in ('radix', 'radix_zero', 'radix_collect'):
+        return {'variant': {'radix': RADIX_VARIANT, 'radix_zero': RADIX_ZERO_VARIANT, 'radix_collect': RADIX_COLLECT_VARIANT}[implementation],
                 'api_libraries': libraries, 'topk_implementation': 'radix',
                 'vendors': str(vendors), 'radix_project': str(parallel_project), 'merge_project': str(merge_project),
                 'radix_installation': installation, 'radix_validation': accepted, 'merge_installation': merge,
-                'scope': ('four installed vendors and all 23 prior zero-aggregate Radix alternating-input unit cases checked; four-stage execution not yet verified'
+                'scope': ('four installed vendors and all 25 prior candidate-collection Radix alternating-input unit cases checked; four-stage execution not yet verified'
+                          if implementation == 'radix_collect' else
+                          'four installed vendors and all 23 prior zero-aggregate Radix alternating-input unit cases checked; four-stage execution not yet verified'
                           if implementation == 'radix_zero' else
                           'four installed vendors and all 19 prior Radix alternating-input unit cases checked; four-stage execution not yet verified')}
     return {'variant': VARIANT, 'api_libraries': libraries,
@@ -120,7 +124,7 @@ def validate_radix_acceptance(directory, installation, checker=radix):
             not 0 <= record['device'] <= 2147483647 or len(record.get('cases', [])) != len(checker.SPECS)):
         raise ValueError('Radix完整验收未完成，或与本次实际安装不一致')
     checker_path = 'standalone/' + checker.__name__.rsplit('.', 1)[-1] + '.py'
-    host_sources = (checker.HOST_SOURCE_PATHS if checker is radix_zero else
+    host_sources = (checker.HOST_SOURCE_PATHS if hasattr(checker, 'HOST_SOURCE_PATHS') else
                     tuple('npu_prototype/topk_radix_host/' + name for name in checker.HOST_FILES))
     expected_tools = {checker_path, 'standalone/topk_fixture.py'} | set(host_sources)
     if set(record.get('tool_source_sha256', {})) != expected_tools or any(
@@ -187,7 +191,7 @@ def validate_runtime(vendors, info, shards):
     is_radix = record['variant'] in RADIX_VARIANTS
     if is_radix:
         current = installed(Path(record['vendors']), Path(record['radix_project']), Path(record['merge_project']),
-                            'radix_zero' if record['variant'] == RADIX_ZERO_VARIANT else 'radix',
+                            {RADIX_VARIANT: 'radix', RADIX_ZERO_VARIANT: 'radix_zero', RADIX_COLLECT_VARIANT: 'radix_collect'}[record['variant']],
                             Path(record['radix_validation']['directory']))
     elif is_warp:
         current = installed(Path(record['vendors']), Path(record['warp_project']), Path(record['merge_project']),
@@ -227,20 +231,22 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--vendors', default=str(ROOT / 'results/custom_opp/vendors'))
     parser.add_argument('--parallel-project', default=str(ROOT / 'results/Bm25TopKParallel'))
-    parser.add_argument('--topk-implementation', choices=('parallel', 'warp', 'radix', 'radix_zero'), default='parallel')
+    parser.add_argument('--topk-implementation', choices=('parallel', 'warp', 'radix', 'radix_zero', 'radix_collect'), default='parallel')
     parser.add_argument('--warp-project', default=str(ROOT / 'results/Bm25TopKWarp'))
     parser.add_argument('--warp-validation', default=str(ROOT / 'results/topk_warp_validation1'))
     parser.add_argument('--radix-project', default=str(ROOT / 'results/Bm25TopKRadix'))
     parser.add_argument('--radix-validation', default=str(ROOT / 'results/radix_topk_validation1'))
     parser.add_argument('--radix-zero-project', default=str(ROOT / 'results/Bm25TopKRadixZero'))
     parser.add_argument('--radix-zero-validation', default=str(ROOT / 'results/radix_zero_topk_validation1'))
+    parser.add_argument('--radix-collect-project', default=str(ROOT / 'results/Bm25TopKRadixCollect'))
+    parser.add_argument('--radix-collect-validation', default=str(ROOT / 'results/radix_collect_topk_validation1'))
     parser.add_argument('--merge-project', default=str(ROOT / 'results/Bm25TopKMerge'))
     parser.add_argument('--output', default=str(ROOT / 'results/sharded_runtime'))
     args = parser.parse_args()
     if sys.platform != 'linux':
         raise ValueError('请在黄区Linux用实际安装文件建立运行目录')
-    project = {'parallel': args.parallel_project, 'warp': args.warp_project, 'radix': args.radix_project, 'radix_zero': args.radix_zero_project}[args.topk_implementation]
-    validation = {'parallel': None, 'warp': args.warp_validation, 'radix': args.radix_validation, 'radix_zero': args.radix_zero_validation}[args.topk_implementation]
+    project = {'parallel': args.parallel_project, 'warp': args.warp_project, 'radix': args.radix_project, 'radix_zero': args.radix_zero_project, 'radix_collect': args.radix_collect_project}[args.topk_implementation]
+    validation = {'parallel': None, 'warp': args.warp_validation, 'radix': args.radix_validation, 'radix_zero': args.radix_zero_validation, 'radix_collect': args.radix_collect_validation}[args.topk_implementation]
     prepare(Path(args.vendors), Path(project), Path(args.merge_project), Path(args.output), args.topk_implementation,
             Path(validation) if validation is not None else None)
 

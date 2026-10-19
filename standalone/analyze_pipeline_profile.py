@@ -89,13 +89,13 @@ def analyze(root, run):
             '运行记录未通过原来的首末/重复/文件检查')
     variant = metadata.get('topk_variant')
     require(variant in ('striped_local_topk_warp_merge_v1', 'document_sharded_topk_v1',
-                        'document_sharded_warp_sort32_topk_v1', 'document_sharded_exact_radix_topk_v1', 'document_sharded_exact_radix_zero_aggregate_topk_v1'),
+                        'document_sharded_warp_sort32_topk_v1', 'document_sharded_exact_radix_topk_v1', 'document_sharded_exact_radix_zero_aggregate_topk_v1', 'document_sharded_exact_radix_collect_topk_v1'),
             '本分析器只接受已核对的三段并行或四段分块Top-K版本')
     sharded = variant in ('document_sharded_topk_v1', 'document_sharded_warp_sort32_topk_v1',
-                          'document_sharded_exact_radix_topk_v1', 'document_sharded_exact_radix_zero_aggregate_topk_v1')
+                          'document_sharded_exact_radix_topk_v1', 'document_sharded_exact_radix_zero_aggregate_topk_v1', 'document_sharded_exact_radix_collect_topk_v1')
     warp_topk = variant == 'document_sharded_warp_sort32_topk_v1'
     radix_topk = variant in ('document_sharded_exact_radix_topk_v1',
-                             'document_sharded_exact_radix_zero_aggregate_topk_v1')
+                             'document_sharded_exact_radix_zero_aggregate_topk_v1', 'document_sharded_exact_radix_collect_topk_v1')
     operators = SHARDED_OPERATORS if sharded else OPERATORS
     stage_count = len(operators)
     outputs = OUTPUTS + ('partial_scores.bin', 'partial_ids.bin') if sharded else OUTPUTS

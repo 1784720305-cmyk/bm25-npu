@@ -1,4 +1,4 @@
-"""同一卡/输入/调用器轮换比较原Radix与零分汇总版；逐轮核对六数组，不自动宣称加速。"""
+"""同一卡/输入/调用器轮换比较原Radix与指定独立实验版；逐轮核对六数组，不自动宣称加速。"""
 import argparse
 import json
 import os
@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT))
 from standalone.benchmark_case import require
 from standalone.confirm_sharded import run_logged, read_npu_result, time_record, summarize
 from standalone.pipeline_fixture import validate_input, check
-from standalone.prepare_sharded_runtime import validate_runtime, RADIX_VARIANT, RADIX_ZERO_VARIANT
+from standalone.prepare_sharded_runtime import validate_runtime, RADIX_VARIANT, RADIX_ZERO_VARIANT, RADIX_COLLECT_VARIANT
 from standalone.run_sharded_pipeline import FILES
 from standalone.validate_topk_merge import digest, write_json
 
@@ -23,20 +23,22 @@ TOOL_FILES = ('standalone/compare_radix_versions.py', 'standalone/run_sharded_pi
               'standalone/run_pipeline_benchmark.py', 'standalone/pipeline_fixture.py',
               'standalone/compare_compute_outputs.py', 'standalone/topk_fixture.py',
               'standalone/validate_topk_merge.py', 'standalone/validate_topk_radix.py',
-              'standalone/validate_topk_radix_zero.py')
+              'standalone/validate_topk_radix_zero.py', 'standalone/validate_topk_radix_collect.py')
 LABELS = ('baseline', 'candidate')
+CANDIDATES = {'radix_zero': RADIX_ZERO_VARIANT, 'radix_collect': RADIX_COLLECT_VARIANT}
 
 
-def validate_pair(vendors, info, shards):
+def validate_pair(vendors, info, shards, candidate_kind='radix_zero'):
+    require(candidate_kind in CANDIDATES, '未知Radix实验版本')
     records = {}
-    for label, variant in zip(LABELS, (RADIX_VARIANT, RADIX_ZERO_VARIANT)):
+    for label, variant in zip(LABELS, (RADIX_VARIANT, CANDIDATES[candidate_kind])):
         installation, scratch, _ = validate_runtime(vendors[label], info, shards)
         require(installation.get('variant') == variant and
                 installation.get('topk_implementation') == 'radix' and scratch == 0,
-                f'{label}运行目录版本错误，必须分别是原Radix与零分汇总版')
+                f'{label}运行目录版本错误，必须分别是原Radix与所选实验版')
         records[label] = installation
     # Prevent a different contribution/accumulation/merge installation from masquerading
-    # as a change isolated to the local Top-K histogram.
+    # as a change isolated to the local Top-K algorithm.
     for alias in ('bm25', 'bm25_accumulate', 'bm25_topk_merge'):
         require(records['baseline']['api_libraries'][alias] == records['candidate']['api_libraries'][alias],
                 '新旧必须使用相同的贡献/累加/合并安装：' + alias)
@@ -45,11 +47,11 @@ def validate_pair(vendors, info, shards):
     for name in ('op_host/bm25_top_k.cpp', 'op_host/bm25_top_k_tiling.h'):
         require(records['baseline']['radix_installation']['project_source_sha256'][name] ==
                 records['candidate']['radix_installation']['project_source_sha256'][name],
-                '本实验只比较计数改动，Top-K注册/分核源码须相同：' + name)
+                '本实验只比较局部Top-K内核改动，Top-K注册/分核源码须相同：' + name)
     return records
 
 
-def run(directory, output, runner, baseline_vendors, candidate_vendors, device, shards, rounds, warmup, repeats):
+def run(directory, output, runner, baseline_vendors, candidate_vendors, device, shards, rounds, warmup, repeats, candidate_kind='radix_zero'):
     directory, output, runner, baseline_vendors, candidate_vendors = (
         path.resolve() for path in (directory, output, runner, baseline_vendors, candidate_vendors))
     require(not output.exists(), '结果目录已存在，请选新目录；不覆盖已有报告')
@@ -66,14 +68,14 @@ def run(directory, output, runner, baseline_vendors, candidate_vendors, device, 
     require(info.get('dataset', {}).get('case') == 'performance_uniform_short_v1',
             '本入口只接受正常performance输入，不将正确性压力样本当性能成绩')
     vendors = dict(zip(LABELS, (baseline_vendors, candidate_vendors)))
-    installations = validate_pair(vendors, info, shards)
+    installations = validate_pair(vendors, info, shards, candidate_kind)
     runner_sha = digest(runner)
     tools = {name: digest(ROOT/name) for name in TOOL_FILES}
     output.mkdir(parents=True)
     report = {'status': 'running', 'input_directory': str(directory), 'input_sha256': info['input_sha256'],
               'dataset': info['dataset'], 'queries': info['num_queries'], 'docs': info['num_docs'], 'k': info['k'],
               'device': device, 'shards': shards, 'rounds': rounds, 'warmup': warmup, 'repeats': repeats,
-              'mode': 'resident', 'order_policy': 'baseline first on odd rounds; candidate first on even rounds',
+              'mode': 'resident', 'candidate_kind': candidate_kind, 'order_policy': 'baseline first on odd rounds; candidate first on even rounds',
               'runner': str(runner), 'runner_sha256': runner_sha, 'tool_source_sha256': tools,
               'runtime_installations': installations, 'per_round': [], 'platform': platform.platform(),
               'shared_load': 'not_measured',
@@ -117,7 +119,7 @@ def run(directory, output, runner, baseline_vendors, candidate_vendors, device, 
             require(fingerprints['baseline'] == expected_outputs, '不同轮次的设备结果字节改变，停止')
             current_info, _ = validate_input(directory)
             require(current_info == info and digest(runner) == runner_sha, '对比过程中输入或调用器改变')
-            require(validate_pair(vendors, info, shards) == installations, '对比过程中算子安装/验收引用改变')
+            require(validate_pair(vendors, info, shards, candidate_kind) == installations, '对比过程中算子安装/验收引用改变')
             require(all(digest(ROOT/name) == sha for name, sha in tools.items()), '对比工具源码在运行中改变')
             baseline_ms = record['runs']['baseline']['median_batch_ms']
             candidate_ms = record['runs']['candidate']['median_batch_ms']
@@ -137,14 +139,14 @@ def run(directory, output, runner, baseline_vendors, candidate_vendors, device, 
                       ratio_rule='baseline time / candidate time; >1 candidate faster, <1 baseline faster; paired per round')
         write_json(report_path, report)
         summary = {key: report[key] for key in ('status', 'queries', 'docs', 'k', 'device', 'shards',
-                   'rounds', 'warmup', 'repeats', 'mode', 'baseline', 'candidate',
+                   'rounds', 'warmup', 'repeats', 'mode', 'candidate_kind', 'baseline', 'candidate',
                    'paired_baseline_over_candidate_ratios', 'median_paired_baseline_over_candidate_ratio',
                    'candidate_faster_rounds', 'ratio_rule', 'scope')}
         summary['report_sha256'] = digest(report_path)
         write_json(output/'summary.json', summary)
         print('新旧各轮完整计算、候选及六数组字节核对全部通过。', flush=True)
         print('原Radix各轮中位数(ms)：' + str(report['baseline']['all_run_medians_ms']), flush=True)
-        print('零分汇总各轮中位数(ms)：' + str(report['candidate']['all_run_medians_ms']), flush=True)
+        print(candidate_kind + '各轮中位数(ms)：' + str(report['candidate']['all_run_medians_ms']), flush=True)
         print('逐轮原版时间/新版时间：' + str(ratios), flush=True)
         print(f'新版更快轮数={report["candidate_faster_rounds"]}/{rounds}；配对比值中位数='
               f'{report["median_paired_baseline_over_candidate_ratio"]:.6g}。报告：{report_path}', flush=True)
@@ -165,16 +167,19 @@ def main():
     parser.add_argument('--output', required=True)
     parser.add_argument('--runner', default=str(ROOT/'results/radix_sharded_host_build/bm25_sharded_benchmark'))
     parser.add_argument('--baseline-vendors', default=str(ROOT/'results/radix_sharded_runtime/vendors'))
-    parser.add_argument('--candidate-vendors', default=str(ROOT/'results/radix_zero_sharded_runtime/vendors'))
+    parser.add_argument('--candidate-kind', choices=tuple(CANDIDATES), default='radix_zero')
+    parser.add_argument('--candidate-vendors', help='默认按candidate-kind选择对应独立运行目录')
     parser.add_argument('--device', type=int, default=2)
     parser.add_argument('--shards', type=int, default=32)
     parser.add_argument('--rounds', type=int, default=6)
     parser.add_argument('--warmup', type=int, default=5)
     parser.add_argument('--repeats', type=int, default=30)
     args = parser.parse_args()
+    candidate_vendors = args.candidate_vendors or str(ROOT/'results'/
+        (args.candidate_kind+'_sharded_runtime')/'vendors')
     try:
         run(Path(args.input), Path(args.output), Path(args.runner), Path(args.baseline_vendors),
-            Path(args.candidate_vendors), args.device, args.shards, args.rounds, args.warmup, args.repeats)
+            Path(candidate_vendors), args.device, args.shards, args.rounds, args.warmup, args.repeats, args.candidate_kind)
     except KeyboardInterrupt:
         print('对比已中断，保留部分日志；不生成成功汇总。', file=sys.stderr)
         return 130
