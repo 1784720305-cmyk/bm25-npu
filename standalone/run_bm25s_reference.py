@@ -65,7 +65,7 @@ def source_still_matches(record):
 
 def package_versions():
     result = {}
-    for name in ('numpy', 'scipy', 'numba', 'jax'):
+    for name in ('numpy', 'scipy', 'numba', 'llvmlite', 'jax'):
         try:
             result[name] = metadata.version(name)
         except metadata.PackageNotFoundError:
@@ -143,7 +143,7 @@ def full_oracle(np, rows, k):
 
 def native_call(model, queries, k, workers):
     result = model.retrieve(queries, k=k, sorted=True, return_as='tuple', n_threads=0 if workers == 1 else workers,
-                            show_progress=False, backend_selection='numpy')
+                            show_progress=False, backend_selection=model.backend)
     return result.scores, result.documents
 
 
@@ -179,7 +179,10 @@ def check_selection(np, result, rows, oracle, sorted_scores, k, strict):
 
 
 def measure(np, call, check, warmup, repeats):
-    check(call())
+    first_start = time.perf_counter_ns()
+    first_result = call()
+    first_call_ms = (time.perf_counter_ns()-first_start)/1e6
+    check(first_result)
     for _ in range(warmup):
         check(call())
     samples = []
@@ -191,10 +194,11 @@ def measure(np, call, check, warmup, repeats):
         check(result)  # Entire check excluded from measured interval.
     return result, {'samples_batch_ms': samples, 'median_batch_ms': statistics.median(samples),
                     'p95_batch_ms': float(np.percentile(samples, 95)), 'warmup': warmup, 'repeats': repeats,
+                    'initial_call_before_warmup_ms': first_call_ms,
                     'every_result_checked_outside_timer': True}
 
 
-def run(directory, output, threads, warmup, repeats, csc_backend='numpy'):
+def run(directory, output, threads, warmup, repeats, csc_backend='numpy', backend='numpy', dependency_dir=None):
     directory, output = directory.resolve(), output.resolve()
     require(not output.exists(), '结果目录已存在，请指定新目录，不覆盖历史结果')
     require(threads and len(set(threads)) == len(threads) and all(type(t) is int and 1 <= t <= 256 for t in threads),
@@ -202,11 +206,26 @@ def run(directory, output, threads, warmup, repeats, csc_backend='numpy'):
     require(type(warmup) is int and 1 <= warmup <= 10000 and type(repeats) is int and 1 <= repeats <= 10000,
             '预热和测量次数须在1..10000')
     require(csc_backend in ('numpy', 'scipy'), 'CSC后端非法')
+    require(backend in ('numpy', 'numba'), '查询后端非法')
+    require(dependency_dir is None or backend == 'numba', '私有Numba依赖只能用于明确的numba路径')
     output.mkdir(parents=True)
     report = {'status': 'running', 'scope': 'CPU BM25S reference only, not NPU execution or a speedup claim.', 'measurements': []}
     path = output/'report.json'
     write_json(path, report)
     try:
+        dependency_record = None
+        if dependency_dir is not None:
+            from standalone.prepare_bm25s_numba import installed_record
+            dependency_record = installed_record(dependency_dir)
+            require(not any(n in sys.modules for n in ('numba','llvmlite')), '进程已加载其他Numba/llvmlite，停止')
+            sys.path.insert(0, str(dependency_dir.resolve()))
+        if backend == 'numba':
+            require('NUMBA_DISABLE_JIT' not in os.environ, '设置了NUMBA_DISABLE_JIT，停止，不退回NumPy或解释执行')
+            numba = importlib.import_module('numba')
+            require(max(threads) <= numba.config.NUMBA_NUM_THREADS, '请求的Numba线程数超过该进程上限')
+            if dependency_dir is not None:
+                require(dependency_dir.resolve() in Path(numba.__file__).resolve().parents,
+                        '没有加载所选私有Numba，停止')
         library, np, source = load_reference()
         info, _ = validate_input(directory)
         require('corpus_sha256' in info, '需要带corpus.json的scale_fixture语料，不能用其他随机语料代替')
@@ -225,12 +244,19 @@ def run(directory, output, threads, warmup, repeats, csc_backend='numpy'):
         queries = [[t for t in query if t < corpus['vocab_size']] or [corpus['vocab_size']]
                    for query in corpus['queries']]
         model = library.BM25(method='atire', idf_method='lucene', k1=1.2, b=.75, dtype='float32', int_dtype='int32',
-                             backend='numpy', csc_backend=csc_backend, auto_compile=False)
+                             backend=backend, csc_backend=csc_backend, auto_compile=False)
         print('stage=build_original_bm25s_index', flush=True)
         start = time.perf_counter_ns()
         model.index((corpus['documents'], vocab), create_empty_token=False, show_progress=False)
         build_ms = (time.perf_counter_ns()-start)/1e6
+        if backend == 'numba':
+            # Public original API: only compile the scorer; keep identical index construction.
+            model.activate_numba_scorer()
+        score_prepare_start = time.perf_counter_ns()
         rows = np.asarray([model.get_scores_from_ids(q) for q in queries])
+        score_prepare_ms = (time.perf_counter_ns()-score_prepare_start)/1e6
+        if backend == 'numba':
+            require(bool(model._compute_relevance_from_scores.nopython_signatures), '原版Numba scorer没有生成编译签名')
         score_error = compare_scores(np, rows, formula, 'BM25S与独立原始语料公式')
         compare_scores(np, rows, expected, 'BM25S与现有参考总分')
         k = info['k']
@@ -239,7 +265,10 @@ def run(directory, output, threads, warmup, repeats, csc_backend='numpy'):
         # Arithmetic tolerance never permits silently changing ranking membership/order.
         require(np.array_equal(oracle, formula_ids), 'BM25S自身严格排名与独立公式不同，停止，不按容差合并同分')
         sorted_scores = np.asarray([np.sort(row)[-k:][::-1] for row in rows])
-        native_mismatches = check_selection(np, native_call(model, queries, k, 1), rows, oracle, sorted_scores, k, False)
+        native_start = time.perf_counter_ns()
+        first_native = native_call(model, queries, k, 1)
+        first_native_ms = (time.perf_counter_ns()-native_start)/1e6
+        native_mismatches = check_selection(np, first_native, rows, oracle, sorted_scores, k, False)
         check_selection(np, adapted_call(np, model, queries, k, 1), rows, oracle, sorted_scores, k, True)
         full_scores_path = output/'bm25s_full_scores.bin'
         full_scores_path.write_bytes(rows.astype('<f4').tobytes())
@@ -247,8 +276,11 @@ def run(directory, output, threads, warmup, repeats, csc_backend='numpy'):
                       wrapper_sha256=digest(Path(__file__)), python=platform.python_version(), platform=platform.platform(),
                       packages=package_versions(), queries=info['num_queries'], docs=info['num_docs'], k=k,
                       parameters={'method': 'atire', 'idf_method': 'lucene', 'k1': 1.2, 'b': .75, 'dtype': 'float32',
-                                  'backend': 'numpy', 'selection_backend': 'numpy', 'csc_backend': csc_backend},
+                                  'backend': backend, 'selection_backend': backend, 'csc_backend': csc_backend},
                       index_build_ms=build_ms, index_array_bytes=sum(model.scores[n].nbytes for n in ('data', 'indices', 'indptr')),
+                      score_validation_prepare_ms_including_possible_jit=score_prepare_ms,
+                      first_native_call_ms_including_possible_jit=first_native_ms,
+                      private_dependency_record=dependency_record,
                       index_postings=len(model.scores['data']),
                       full_score_output={'file': full_scores_path.name, 'sha256': digest(full_scores_path),
                                          'dtype': 'little_endian_float32', 'shape': list(rows.shape)},
@@ -262,23 +294,31 @@ def run(directory, output, threads, warmup, repeats, csc_backend='numpy'):
                       environment={n: os.environ.get(n) for n in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','NUMBA_NUM_THREADS','JAX_PLATFORMS')},
                       scope='Pre-encoded query IDs to Top-K from an original precomputed BM25S index. Index build/precomputation, '
                             'tokenization, corpus loading, validation, file IO excluded. Native retrieve and own strict-tie '
-                            'adapter timed SEPARATELY; thread pool startup inside each call as in original numpy API. '
+                            'adapter timed SEPARATELY; original numpy uses a per-call thread pool, original numba uses '
+                            'its compiled serial/parallel retrieval. Adapter uses public original scorer plus numpy selection '
+                            'and a per-call query thread pool. First calls/JIT/warmup/checks excluded from samples. '
                             'No query-time BM25 formula in BM25S. Not identical computation to current NPU, not full retrieval '
-                            'or optimized-Numba/global-best CPU acceptance; shared load and affinity not controlled.')
+                            'or global-best CPU acceptance; shared load and affinity not controlled.')
         write_json(path, report)
         print(f'全部{len(queries)}条查询总分及严格适配排名通过；原版同分规则不匹配行数={len(native_mismatches)}。', flush=True)
         for workers in threads:
-            for label, strict in (('original_numpy_retrieve', False), ('numpy_scores_plus_strict_tie_adapter', True)):
+            for label, strict in ((f'original_{backend}_retrieve', False), (f'{backend}_scores_plus_strict_tie_adapter', True)):
                 print(f'stage=measure_cpu_reference variant={label} query_workers={workers}', flush=True)
                 call = (lambda: adapted_call(np, model, queries, k, workers)) if strict else (lambda: native_call(model, queries, k, workers))
                 check = lambda result: check_selection(np, result, rows, oracle, sorted_scores, k, strict)
                 result, timing = measure(np, call, check, warmup, repeats)
+                if backend == 'numba' and not strict:
+                    from bm25s.numba import retrieve_utils
+                    compiled = (retrieve_utils._retrieve_internal_jitted_serial if workers == 1 else
+                                retrieve_utils._retrieve_internal_jitted_parallel)
+                    require(bool(compiled.nopython_signatures), '原版Numba检索未生成编译签名')
                 prefix = f'{label}_t{workers}'
                 values_path, ids_path = output/(prefix+'_scores.bin'), output/(prefix+'_ids.bin')
                 values_path.write_bytes(result[0].astype('<f4').tobytes())
                 ids_path.write_bytes(result[1].astype('<i8').tobytes())
                 item = {'variant': label, 'requested_query_workers': workers,
-                        'maximum_active_queries': min(workers, len(queries)),
+                        'maximum_active_queries': min(workers, len(queries)), 'scorer_backend': backend,
+                        'native_compiled_serial_or_parallel_checked': backend == 'numba' and not strict,
                         'strict_id_contract': strict or not native_mismatches, **timing,
                         'batch_queries': len(queries), 'ids_storage': 'little_endian_int64',
                         'output_sha256': {p.name: digest(p) for p in (values_path, ids_path)}}
@@ -288,10 +328,12 @@ def run(directory, output, threads, warmup, repeats, csc_backend='numpy'):
         require(all(digest(directory/n) == h for n, h in before.items()), '运行过程中输入/参考文件改变')
         require(digest(Path(__file__)) == report['wrapper_sha256'], '运行过程中调用脚本改变')
         source_still_matches(source)
-        report['status'] = 'original_bm25s_numpy_and_separate_strict_adapter_checks_completed'
+        if dependency_dir is not None:
+            require(installed_record(dependency_dir) == dependency_record, '运行过程中私有依赖改变')
+        report['status'] = f'original_bm25s_{backend}_and_separate_strict_adapter_checks_completed'
         write_json(path, report)
         print(f'原版CPU对照运行及核对完成：{path}', flush=True)
-        print('原版计时与严格适配计时分别报告；未执行NPU，不计算硬件加速比，不代表Numba/完整检索达标。', flush=True)
+        print('原版计时与严格适配计时分别报告；未执行NPU，不计算硬件加速比，不代表最优CPU/完整检索达标。', flush=True)
         return report
     except (Exception, KeyboardInterrupt) as error:
         report['status'] = 'interrupted' if isinstance(error, KeyboardInterrupt) else 'failed'
@@ -311,6 +353,8 @@ def main():
     r.add_argument('--warmup', type=int, default=5)
     r.add_argument('--repeats', type=int, default=30)
     r.add_argument('--csc-backend', choices=('numpy', 'scipy'), default='numpy')
+    r.add_argument('--backend', choices=('numpy', 'numba'), default='numpy')
+    r.add_argument('--dependency-dir', type=Path, help='已离线安装并核对的项目私有Numba目录；不修改系统环境')
     args = parser.parse_args()
     try:
         if args.command == 'check-source':
@@ -318,7 +362,8 @@ def main():
             print('原版源码指纹通过：', source['commit'], len(source['files']), '个文件；未建索引或检索。')
             print('现有依赖：', json.dumps(package_versions()))
         else:
-            run(Path(args.input), Path(args.output), args.threads, args.warmup, args.repeats, args.csc_backend)
+            run(Path(args.input), Path(args.output), args.threads, args.warmup, args.repeats,
+                args.csc_backend, args.backend, args.dependency_dir)
     except KeyboardInterrupt:
         print('对照中断，保留部分报告；未完成不记为通过。', file=sys.stderr)
         return 130

@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-BINARY_SUFFIXES = {'.bin', '.npz'}
+BINARY_SUFFIXES = {'.bin', '.npz', '.whl'}
 
 
 def main():

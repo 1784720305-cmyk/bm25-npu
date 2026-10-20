@@ -1,14 +1,14 @@
 {
   "format": 1,
-  "scope": "Original A5 operators and acceptance sources preserved; user device evidence: candidate-collection TopK compiled/installed, all 25 isolated cases and four-stage/CPU checks passed. Six paired resident rounds show scenario-specific gains vs original, but with-transfers target first run 2.24092 ms; not full-query acceptance. Add independent original CPU BM25S reference: 25 unchanged upstream Git blobs with license/source provenance, pinned commit, numpy-only entry and separately timed strict-tie adapter. Actual local CPU/oracle/failure tests passed, target Python3.9/numpy2.0.2 reference execution pending; Numba/best CPU/full retrieval still pending. Reference not imported by NPU. LF raw-byte manifest, original binaries unchanged.",
+  "scope": "Original BM25S 25 upstream blobs and all NPU/C++/device acceptance/binary samples preserved. User target NumPy reference completed, native tie differences recorded; not best BM25S/hardware speedup acceptance. Add optional original NumBa backend, verified compiled signatures, first-call/JIT/warmup separation, and official-wheel download/check/private-install source with CPU JIT smoke. Local different-version CPU integration and mock failure tests passed; target NumBa binaries NOT downloaded and target NumBa NOT executed. See optional_offline_dependencies for deployment state. No NPU runtime dependency or system NumPy/CANN changes. Full-query/transfer advantage still unproven. LF/raw Git publication.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
   },
   "files": {
-    ".gitattributes": "f3b83fa6dd1322e693b202cdec41cdf168dd8ae13c728b34dbe39427f7f282ac",
-    ".gitignore": "513d0bf4e2133dd931a7cb763f5e2be14d6385766e0d49e8d0a51d7e01a0cec1",
-    "README.md": "d3c3566cd0eb73b10ff731dca94db54451fb6134cad1d0a79c76d369368da1fb",
+    ".gitattributes": "d659273915231ea367219bf4567a63dacda991b5a7ab66a5c1badf855cbba679",
+    ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
+    "README.md": "9f7807c531642a1ad78a3b76893cab10a1f2d85713f491d6734b2862f22b5166",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "cpu_reference/CMakeLists.txt": "f34293672d5259173f5a7cbba2d50e5ec9a52645cf8d996fcfce7aec54d70e30",
@@ -75,8 +75,11 @@
     "npu_prototype/topk_warp/op_kernel/bm25_top_k.cpp": "7217f01b8599fdf206a3d7a90a5596286e9ecdea80f250380179d39e8a2e7bb9",
     "npu_prototype/topk_warp_host/CMakeLists.txt": "1b1442a76248301b7edd81ee7d8aeef28ed7ae28503449a9fe1db2acdb9746ae",
     "npu_prototype/topk_warp_host/warp_runner.cpp": "96ada65ba503523eadf731f8d5c9c334396422ee1d5d4c909f1c1946411fad0b",
-    "rebuild_manifest.py": "20c260e3b62dbb64eff657173811870af1d88f1978c6b93b86684f1d669e4f4a",
-    "reference_only/README.md": "c5ecf9157d8a46ba2fa276b550493a1e05b6629db62fe30c6687492fac55c8af",
+    "offline_dependencies/numba_py39_linux/llvmlite-0.43.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "bc9efc739cc6ed760f795806f67889923f7274276f0eb45092a1473e40d9b867",
+    "offline_dependencies/numba_py39_linux/lock.json": "1e35d674e7d77c2ff703d7cdc9387cbc222254651c4b594cdba93f01e2046e52",
+    "offline_dependencies/numba_py39_linux/numba-0.60.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "c151748cd269ddeab66334bd754817ffc0cabd9433acb0f551697e5151917d25",
+    "rebuild_manifest.py": "03c5f3f00a7ce374934691f4a964af643e3f79d66c72d8b9809765c8c3a40820",
+    "reference_only/README.md": "2d97df53b055c1f206e43460a4a6b9a75abd162f15e5df631bcb7404b4095419",
     "reference_only/bm25s_original/LICENSE": "8c159b4c621a86c4695c83f42a00932b26183f6da8ab62b0865835594426c8ff",
     "reference_only/bm25s_original/README.md": "9166cd1c822856652c92526802670a1d73976bcc4141e3eb0940af611389a319",
     "reference_only/bm25s_original/bm25s/__init__.py": "acfe408d3cafec38b061d055743a4081ab7ce38c93b300815bfbf9a399b7d6eb",
@@ -104,7 +107,7 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "43089def480102076d30e02dfe40f349cddd0bc42b67e059e4241d19f7cd7e1c",
-    "standalone/950性能优化路线.md": "e86718768f72604ddd44f7ea0356855852ef709539d4cc690b771c4315d1e37c",
+    "standalone/950性能优化路线.md": "aa56a6a3836e023b77702bd936886addf4a67a14b0381db599e4f3b8f5af5470",
     "standalone/A5CPU参考验证记录.md": "2625173aa600c27a2be117112a497746c6bb4277a654001dd8a2f7e967bd9276",
     "standalone/A5TopK验证记录.md": "aa6f0864c5f85f5e03d23ccf4da155615ee74fc0998260026bce09ebfdfed037",
     "standalone/A5串联验证记录.md": "ee13164a39dced6d1620f2f2550391cdddcf7551f8097f06319de6b6304b80ab",
@@ -113,7 +116,8 @@
     "standalone/A5累加验证记录.md": "de2a9c2dc168f0deddc00ce1f334feb32032b48da3707bc5646234ae2457ebe5",
     "standalone/A5贡献验证记录.md": "e9ed1769c7cdd0c1f4509e2e915429610243fec2dc7ddab3034a37a7841c5361",
     "standalone/ACLNN路线.md": "afff929e3af7e34f914791a3027f0dc8fbeca7a4b06209f43604ce2d5299c2fb",
-    "standalone/BM25S离线对照步骤.md": "b68bd2baa79ce5d2563a0ac6693a3cd092a256c9d8030b9bd76a831631194525",
+    "standalone/BM25SNumba离线步骤.md": "c3f36e07bfdb6313c8746a29e5b1fcd8b8ccb788cc10e1029ec4023c7b1d8ecd",
+    "standalone/BM25S离线对照步骤.md": "d9765105c80b38a20a1ec22c999db20afa89d859e85635db2574cdf2b4d2826d",
     "standalone/CPU文章分块TopK对照步骤.md": "6261efb7a321a51d2bbb9fd12f72484fa7404498f12fde6de7b61e9dc96c84d2",
     "standalone/IndexSDKTopK借鉴路线.md": "bc8eb8b6ffca0f900ab24ed4bcf1ccb93011169b82c4d42fdfba39fb3e849f8c",
     "standalone/README.md": "9067d910122a021fce418581c0e6a018c746cb96e27bdb3514bbf2e7fab57eff",
@@ -141,10 +145,11 @@
     "standalone/create_project.py": "3d50bb4e89a89cd467a674ff964fe01b357c71fca17d9ed96e2945e94892e470",
     "standalone/operator.json": "7f0eee29078e2146f82b24d5dfdb1ab26cad1e7ccac31397e23af21e08f9707f",
     "standalone/pipeline_fixture.py": "3acfbd6b9cd0847470d63caae65accf3c7e950304cb8d83c282e810b354a728a",
+    "standalone/prepare_bm25s_numba.py": "3b3101e94fe85dd1a5420babb010a546f577c97233331a78f817904ad540c570",
     "standalone/prepare_sharded_runtime.py": "611bdc33d19ca559485981bd3e52e0c495676135fd4f0488226bb7cd02a828bc",
     "standalone/prepare_topk_parallel_runtime.py": "649732c22cae6c6b9a96628eb495fee4335e725a4fcf2a1098d33bc30deb1863",
     "standalone/repair_project_presets.py": "1131cca75722be7c9e4b311e4ec75728419dce0df53cacd1f70ae3cd71d0ccab",
-    "standalone/run_bm25s_reference.py": "2bf1e513c096ca2f73e82a6ea03dccd5d0d252d94c321f97adf620b344827e51",
+    "standalone/run_bm25s_reference.py": "a25ce3712f3a27afc4eddb8e33348bd6dc029ccddbe9382fe9683f9564a1d2b2",
     "standalone/run_cpu.py": "54087c65d847f3e3b71ea2f15335b6369233ab87a637437e6019e1e1ef9bec62",
     "standalone/run_official_topk.py": "0f7aa6f95b2f5fdee9afd14d80b766d6989ae6c340e30c9291cb0d42fda566b6",
     "standalone/run_pipeline.py": "1b682ce95f320dc3551815d37bbe98cd5e3d2e9c2c284c32479ff3454f97d9ee",
@@ -172,5 +177,15 @@
     "standalone/跨块TopK步骤.md": "2352376a554ff4c8d88eb8573e95ed322e0beca69a27354e6b49be647d8a1bdd",
     "verify_package.py": "214d02a263dd06c95ac17429a4836ac961898191dbcb533f9220778d4090e038"
   },
-  "text_line_endings": "LF"
+  "text_line_endings": "LF",
+  "optional_offline_dependencies": {
+    "numba": {
+      "state": "downloaded_verified_not_installed",
+      "pins": {
+        "numba": "0.60.0",
+        "llvmlite": "0.43.0"
+      },
+      "lock": "offline_dependencies/numba_py39_linux/lock.json"
+    }
+  }
 }

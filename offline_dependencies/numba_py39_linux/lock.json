@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "pins": {
+    "numba": "0.60.0",
+    "llvmlite": "0.43.0"
+  },
+  "target": "CPython3.9 Linux x86_64, NumPy2.0.2, glibc>=2.17",
+  "compatibility_source": "https://numba.readthedocs.io/en/0.60.0/user/installing.html#version-support-information",
+  "scope": "Official wheel archive/hash checks only; installation/JIT/BM25S target validation still required.",
+  "wheels": [
+    {
+      "name": "numba",
+      "version": "0.60.0",
+      "filename": "numba-0.60.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "bytes": 3695086,
+      "sha256": "c151748cd269ddeab66334bd754817ffc0cabd9433acb0f551697e5151917d25",
+      "url": "https://files.pythonhosted.org/packages/54/9b/cd73d3f6617ddc8398a63ef97d8dc9139a9879b9ca8a7ca4b8789056ea46/numba-0.60.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "metadata_url": "https://pypi.org/pypi/numba/0.60.0/json"
+    },
+    {
+      "name": "llvmlite",
+      "version": "0.43.0",
+      "filename": "llvmlite-0.43.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "bytes": 43871777,
+      "sha256": "bc9efc739cc6ed760f795806f67889923f7274276f0eb45092a1473e40d9b867",
+      "url": "https://files.pythonhosted.org/packages/e0/d0/889e9705107db7b1ec0767b03f15d7b95b4c4f9fdf91928ab1c7e9ffacf6/llvmlite-0.43.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "metadata_url": "https://pypi.org/pypi/llvmlite/0.43.0/json"
+    }
+  ]
+}

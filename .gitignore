@@ -1,6 +1,7 @@
 .venv/
 __pycache__/
 *.pyc
+*.whl.part
 results/
 build/
 *.om

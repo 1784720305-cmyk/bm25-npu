@@ -6,3 +6,4 @@
 CMakeLists.txt text eol=lf
 *.bin binary
 *.npz binary
+*.whl binary
