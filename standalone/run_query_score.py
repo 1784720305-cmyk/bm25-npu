@@ -12,12 +12,14 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from standalone import resident_index as r, query_score_fixture as fixture
+from standalone import query_score_edge_fixture as edges
 
 SOURCES = ('op_host/bm25_query_score.cpp','op_host/bm25_query_score_tiling.h','op_kernel/bm25_query_score.cpp')
 HOST_SOURCES = ('npu_prototype/query_score_host/CMakeLists.txt',
                 'npu_prototype/query_score_host/query_score_runtime.h',
                 'npu_prototype/query_score_host/query_score_runner.cpp')
 TOOL_SOURCES = ('standalone/run_query_score.py','standalone/query_score_fixture.py',
+                'standalone/query_score_edge_fixture.py',
                 'standalone/resident_index.py','standalone/accumulate_fixture.py','check_result.py')
 SEQUENCE = ('A','B','A','empty','B')
 # Verbatim parameter names/types confirmed from the installed header on 2026-10-20.
@@ -73,21 +75,30 @@ def validate_install(vendor, project):
 
 def validate_inputs(directory):
     index, unused = r.validate_index(directory/'index')
-    source, vocab, documents, cases = fixture.small_definition()
-    expected_index, unused = r.build_index(documents,len(vocab))
-    r.require(index['index_id'] == expected_index['index_id'],'本阶段只验收原始小语料，索引不匹配')
     preparation = json.loads((directory/'preparation_report.json').read_text(encoding='utf-8'))
+    if 'fixture_profile' in preparation:
+        documents, cases = edges.definition(preparation['fixture_profile'])
+        vocab = {i:i for i in range(edges.VOCAB_SIZE)}
+        score_reference = lambda original:edges.independent_scores(documents,original)
+        r.require(preparation.get('source_contract_sha256') == edges.source_identity(documents,cases),
+                  '边界语料来源不匹配')
+    else:
+        source, vocab, documents, cases = fixture.small_definition()
+        score_reference = lambda original:fixture.independent_scores(source['documents'],original)
+        r.require(preparation.get('source_contract_sha256') == digest(ROOT/'fixtures/compute_contract_small.json'),
+                  '小样本原始语料来源不匹配')
+    expected_index, unused = r.build_index(documents,len(vocab))
+    r.require(index['index_id'] == expected_index['index_id'],'索引与指定原始验收语料不匹配')
     r.require(preparation.get('status') == 'host_query_score_fixtures_checked_device_not_run' and
-              preparation.get('index_id') == index['index_id'] and set(preparation.get('cases',{})) == set(cases) and
-              preparation.get('source_contract_sha256') == digest(ROOT/'fixtures/compute_contract_small.json'),
-              '小样本准备状态或来源不匹配')
+              preparation.get('index_id') == index['index_id'] and set(preparation.get('cases',{})) == set(cases),
+              '样本准备状态或来源不匹配')
     records = {}
     for name, original in cases.items():
         path = directory/name
         record, queries = r.validate_queries(path,index)
-        wanted = [[vocab.get(t,len(vocab)) for t in row] for row in original]
+        wanted = original if 'fixture_profile' in preparation else [[vocab.get(t,len(vocab)) for t in row] for row in original]
         r.require(queries == wanted and record['files'] == preparation['cases'][name]['query_files'],'验收查询不是原A/B/全空输入')
-        expected = r.encode(array('f',fixture.independent_scores(source['documents'],original)))
+        expected = r.encode(array('f',score_reference(original)))
         r.require((path/'expected_scores.bin').read_bytes() == expected and
                   digest(path/'expected_scores.bin') == preparation['cases'][name]['expected_sha256'], '期望文件与独立原始语料公式不符')
         reference = json.loads((path/'reference.json').read_text(encoding='utf-8'))

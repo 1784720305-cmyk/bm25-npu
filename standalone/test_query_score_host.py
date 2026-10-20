@@ -140,6 +140,25 @@ def main():
             if mode == 'process_failure': assert not (output/'device').exists()
             checks += 4
 
+        # Run the complete Python session checker with larger edge shapes and the
+        # same explicitly MOCKED child; exercise changing Q and reused buffer capacities.
+        small_inputs,small_index,small_records,small_snapshot = inputs,index,records,snapshot
+        for n in (129,2049,4097):
+            inputs = root/f'edge_input_{n}'
+            with redirect_stdout(io.StringIO()): tool.edges.prepare_case(inputs,n)
+            index,records,snapshot = tool.validate_inputs(inputs)
+            mode = 'pass'
+            invocations = []
+            output = root/f'edge_mock_session_{n}'
+            with patch.object(tool,'execute',mock_execute),redirect_stdout(io.StringIO()):
+                tool.run(inputs,output,runner,vendor,project,2)
+            report = json.loads((output/'report.json').read_text())
+            assert report['status'] == 'device_score_session_and_independent_formula_checks_passed'
+            assert len(invocations) == 1 and report['session']['requests'][0]['queries'] == 65
+            assert report['session']['requests'][1]['queries'] == 7
+            checks += 3
+        inputs,index,records,snapshot = small_inputs,small_index,small_records,small_snapshot
+
         existing = root/'existing'; existing.mkdir()
         sentinel = existing/'keep'; sentinel.write_bytes(b'UNCHANGED')
         with patch.object(tool,'execute') as child:
