@@ -1,0 +1,74 @@
+# 原始词编号 Search 入口：先核实真正的查询计时边界
+
+用户黄区设备2的新日志确认，三段流程四项补验全部通过：6篇/K1/S2、6篇/K6/S1、2048篇/K10/S8、2048篇/K32/S32。每项五批A/B/A/全空/B，共20次补验；完整分数、局部候选、最终严格排名、同输入FP32 CPU编号、重复输出字节及静态索引复用均通过。2048篇A批65条查询、B批7条；A最大绝对误差3.0517578e-05，B为1.9073486e-06，空查询为0，仍使用原容差。
+
+现在结束这轮固定输入三段正确性补验，开始实现MT要求的公共调用入口。本次增加独立`NpuSearchSession::Search(Queries)`源码，**尚未在黄区编译/执行**。已有评分/Top-K/合并内核、评分程序、三段程序及样本原字节均不改。本机128项测试用假安装产物/模拟子进程检查协议、失败保护及源码时序，不能作为C++编译、设备正确性或实际耗时证据。
+
+## 先用普通话说明这次改什么
+
+旧三段验证程序先从文件读好连续词数组和查询边界，再调用算子。本次给调用者一个函数：**输入CPU内存中的二维词编号，输出CPU可用的Top-K编号和FP32分数。** 在函数第一行启动主机单调时钟；它自己把二维输入整理成NPU所需数组，不能提前整理完再停掉这项成本。
+
+| 阶段 | 处理 | 是否在每次Search时间内 |
+|---|---|---|
+| 会话构造 | 读取/校验整库索引，加载实际API，初始化设备，上传五组静态索引，预分配容量和工作区，合成空查询启动 | 单列冷启动 |
+| `Search(raw_ids)` | 参数检查、生成连续INT32词编号和INT64边界、请求Tensor及结果缓冲、查询上传、三个接口准备/执行、同步、最终编号和分数下载、必要范围/顺序检查、请求资源释放 | 全部计入 |
+| 函数返回后 | 日志/文件输出，完整分数及局部候选调试下载、CPU独立核对、最终索引回读 | 计时外，传输单列 |
+
+合成启动查询是容量上限数量的全空查询，不是预存某一批真实查询的结果。报告单列其两次查询上传及两次Top-K下载。构造后每次Search重新查索引计算；真实请求也使用新executor。固定K/分块数在会话创建时确定，超出预设查询容量就停止，不暗中扩容或回退。
+
+冷启动字段只覆盖C++侧索引读取/检查、API加载、设备初始化、容量分配和合成启动；不包含Python验收器的来源/独立答案预检查，也不包含调用者从测试文件读入原始词编号的过程。它不是整个命令启动到结束的总时间。
+
+默认容量为最多65条查询、合计512个词编号。这个容量不是每批实际输入大小；实际上传仍只传该批词编号和边界。比如A批6条、合计8词时为88字节；全空3条的逻辑输入32字节，加一个未读取的物理占位为36字节。调试输出污染容量按65条计算，其较大上传量显式记录在Search外，不能当成生产请求传输。
+
+本次是**五次公共Search的边界/正确性诊断**，每次前后都有调试工作，且还没有配套同边界CPU入口。因此只记录`search_call_ms`和冷启动时间，不汇总稳态中位数/p95，不计算加速比。后续正常性能循环不逐次下载完整分数或污染输出；清零文章分数仍由每次NPU评分实现，不能删除生产必需工作。
+
+## 输入与输出
+
+第一次继续使用已验收的6篇小语料、K=3/S=2，不重复生成样本。Python验收器将已有测试词编号恢复成调用者的二维原始ID列表，写为`BM25_QUERY_IDS_V1`纯文本输入。C++在计时前读成内存中的`vector<vector<int32_t>>`，仅代表“CPU已经有词编号”；**文件中没有TF、IDF、长度项、逐文章展开记录或可直接提交的后端offset数组**。公共Search内部仍重新生成后端offset和连续词数组，时间计入；CPU对照后续使用同一种原始对象边界。文件解析本身不是文本检索的分词，后续也不把本诊断说成文本到结果服务。
+
+C++调用器不读CPU期望分数文件。输出包含每次Search真正返回的`top_scores.bin/top_ids.bin`，以及返回后为了核对才下载的完整分数和局部候选；计时外继续复用已通过的完整排序/原始公式/同输入FP32 CPU编号检查。完整中间结果只能用来检查，不能覆盖返回的Top-K。
+
+成功必须同时满足：五次真实Search调用完成，实际编译的六个源码指纹与当前文件一致，整库一次上传且回读不变，每次只有查询输入上传、CPU收到Top-K后才停表，重复五组输出字节一致，完整分数及严格排名全部通过。任何一步失败都停，不用CPU结果代替。
+
+## 黄区操作
+
+提交推送后拉取，只编译新的主机程序，不重装算子。逐条执行，失败就停；设备2可换成空闲同规格卡。
+
+```bash
+cd /test/w50066029/bm25-npu
+git pull --ff-only
+python3 verify_package.py
+source /usr/local/Ascend/cann-9.2.0/set_env.sh
+set -o pipefail
+cmake -S npu_prototype/search_host -B results/search_host_build -DTOOLKIT_HOME=/usr/local/Ascend/cann-9.2.0 -DBM25_VENDOR_DIR=/test/w50066029/bm25-npu/results/custom_opp/vendors -DBUILD_TESTING=ON 2>&1 | tee results/search_host_configure1.log
+cmake --build results/search_host_build -j 2>&1 | tee results/search_host_build1.log
+results/search_host_build/bm25_search_input_tests 2>&1 | tee results/search_input_tests1.log
+```
+
+输入检查只核对公共词编号整理、空/重复/未知词及容量拒绝，不运行NPU。编译和输入检查通过后检查实际API来源：
+
+```bash
+results/search_host_build/bm25_search_runner --check-libraries /test/w50066029/bm25-npu/results/custom_opp/vendors 2>&1 | tee results/search_api_load1.log
+```
+
+再进行五次实际Search诊断并自动核对：
+
+```bash
+python3 standalone/run_search.py --input results/query_score_small_input1 --output results/search_small_s2_k3_check1 --device 2 --k 3 --shards 2 --max-queries 65 --max-words 512 2>&1 | tee results/search_small_s2_k3_check1.log
+```
+
+沿用原`results/radix_collect_topk_validation1`独立验收；若以前的真实目录不同，用`--topk-acceptance 实际目录`指定。不覆盖已存在输出，换check2等名字，不删旧日志。黄区文件留在黄区，仅分享允许的终端汇总或首个错误。
+
+总报告成功状态为`search_boundary_device_calls_and_all_checks_passed`，C++单独的`device_search_calls_completed_independent_check_pending`只表示函数执行结束，不能代替Python独立排名核对。报告包含所有五次单次时间、索引/实际查询/最终输出/调试传输字节、冷启动和合成启动信息；这些仍不是稳定性能或加速成绩。
+
+## 关键函数向MT怎么讲
+
+- `PackQueries`：只整理原始词编号，保留空查询、重复词和未知词顺序，不查文章索引；必须由Search在计时内调用。
+- `NpuSearchSession`构造器：一次加载和上传全索引，声明服务容量，预先建立可复用设备内存和普通工作区。
+- `Search/SearchImpl`：计时从入口第一行开始；准备新请求并执行评分、选择和合并，下载最终两组数组、完成必要检查与请求资源释放后停表。不在计时段打印日志或下载完整分数。
+- `PoisonForDiagnostic/DownloadDebug/VerifyIndex`：函数返回前后独立执行的验收辅助，明确不属于生产Search；其流量另报。
+- `run_search.check_session`：核对输入类型、编译源码、容量、冷启动、计时记录和字节；再复用`check_outputs`核对真实结果，失败不生成成功报告。
+
+本轮完成后，下一阶段补同一公共输入/输出边界的合理优化C++CPU常驻索引Search，而不是复用旧展开数组时间。随后扩展正常64K/Q1和256K/Q1、Q8，补原版BM25S的同边界包装和Numba参考，做预热、多轮交替进程、中位数/p95及批量吞吐。BM25S预计算贡献与当前查询时公式仍分开解释。最终验收继续遵守[search合同](search计时与验收合同.md)。
+
+建议commit备注：`feat: 增加原始查询词编号的常驻NPU Search入口与计时边界验收`
