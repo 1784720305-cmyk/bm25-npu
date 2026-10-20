@@ -12,20 +12,25 @@ from standalone import resident_index as r
 from standalone.accumulate_fixture import independent_scores
 
 
-def prepare(output):
-    r.require(not output.exists(), '输出目录已存在，请换新名字，不覆盖')
+def small_definition():
     source = json.loads((ROOT/'fixtures/compute_contract_small.json').read_text(encoding='utf-8'))
     vocab = source['vocabulary']
     r.require(sorted(vocab.values()) == list(range(len(vocab))), '小语料词编号不连续')
     documents = [[vocab[t] for t in row] for row in source['documents']]
-    index, arrays = r.build_index(documents, len(vocab))
-    r.save_arrays(output/'index', index, arrays)
-    index, arrays = r.validate_index(output/'index')
     cases = {
         'A':source['queries'],
         'B':[['GPU'], ['编程'], [], ['不存在的词'], ['GPU', 'GPU', 'NPU'], ['NPU', '实践']],
         'empty':[[], [], []],
     }
+    return source, vocab, documents, cases
+
+
+def prepare(output):
+    r.require(not output.exists(), '输出目录已存在，请换新名字，不覆盖')
+    source, vocab, documents, cases = small_definition()
+    index, arrays = r.build_index(documents, len(vocab))
+    r.save_arrays(output/'index', index, arrays)
+    index, arrays = r.validate_index(output/'index')
     report = {'status':'host_query_score_fixtures_checked_device_not_run', 'index_id':index['index_id'],
               'source_contract_sha256':r.digest((ROOT/'fixtures/compute_contract_small.json').read_bytes()),
               'cases':{}, 'device_verified':False}
