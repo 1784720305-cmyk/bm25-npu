@@ -1,5 +1,7 @@
 # 局部Top-K：有界正分名单压缩实验
 
+**后续实机状态：37组全部在950设备4通过，共185次实际调用。** 每次输出污染、完整排序和原始分数字节核对通过，安装/API符号归属检查通过；独立正确性已完成。下文生成/编译/安装/37组命令保留复现，不要求重跑。当前只做[完整Search局部Top-K对照](完整SearchTopK压缩对照.md)，不重做评分采集，性能仍待实测。
+
 ## 先用简单的话说明
 
 新评分已经让256K文章、8查询整批完整Search从约0.583ms降到0.394ms，六轮全部更快；评分固定保留。本轮只尝试改局部Top-K，不重新做266us/271us那张瓶颈采集。
@@ -55,7 +57,7 @@
 
 `check_topk_positive_compact_model.py`的899项整数/线程模型与独立完整数值排序通过：1023/1024/1025正分容量、1024/1025和8192/8193行长分界、128线程尾部、成员标记低/高位含31/32/63、同分原编号反例、K=1/10/32、正负零原字节、次正规数、最大有限数、同一缓存稠密/稀疏/全零轮换和非法分数。47项假模板/备份/元数据/拒绝保护/任务覆盖检查也通过。
 
-上述本地检查只是模型及主机工具检查。**随后用户在黄区已完成950实际编译和打包**：独立vendor正确，设备目标`Bm25TopK_23cbb04723633b70cf874275924b41b4.o`生成，安装包生成；两份实际自动生成头文件已读到并核对。尚未安装此vendor或完成设备正确性验收，没有新Top-K性能结果。
+上述本地检查只是模型及主机工具检查。**随后用户在黄区已完成950实际编译和打包**：独立vendor正确，设备目标`Bm25TopK_23cbb04723633b70cf874275924b41b4.o`生成，安装包生成；两份实际自动生成头文件已读到并核对。此后安装及37组设备正确性已通过；尚无新Top-K完整Search性能结果。
 
 实际准备接口为`aclnnBm25TopKGetWorkspaceSize(scores, int64_t k, topScoresOut, topIdsOut, workspaceSize, executor)`，执行接口为`aclnnBm25TopK(workspace, workspaceSize, executor, stream)`；四个张量参数为`const aclTensor*`，其余实际类型由下述调用器直接包含安装头文件并静态核对。没有用IR相同代替实际声明核对。
 
@@ -105,7 +107,7 @@ cmake --build results/topk_positive_compact_host_build -j 2>&1 | tee results/top
 python3 standalone/validate_topk_positive_compact.py --output results/topk_positive_compact_validation1 --device 2 2>&1 | tee results/topk_positive_compact_validation1.log
 ```
 
-脚本给子进程只设置新vendor，绝对路径加载API并核对符号归属；不用在当前终端混合source多个同名Top-K。无需再次采集旧评分或扫描CPU线程。`results/topk_positive_compact_validation1/report.json`记录37组状态；当前只有工具准备通过，以上新的主机编译及设备验收仍待黄区执行。黄区原文件留黄区，仅分享允许的错误或末尾摘要。
+脚本给子进程只设置新vendor，绝对路径加载API并核对符号归属；不用在当前终端混合source多个同名Top-K。无需再次采集旧评分或扫描CPU线程。`results/topk_positive_compact_validation1/report.json`记录37组状态；上述主机编译及设备验收后续已由用户完成，37组全通过；当前无需重跑。黄区原文件留黄区，仅分享允许的错误或末尾摘要。
 
 ## Windows提交：新文件要明确加入Git
 
