@@ -1,0 +1,24 @@
+[
+  {
+    "op": "Bm25FusedScoreTopK",
+    "input_desc": [
+      {"name": "term_offsets", "param_type": "required", "format": ["ND"], "type": ["int64"]},
+      {"name": "posting_doc_ids", "param_type": "required", "format": ["ND"], "type": ["int32"]},
+      {"name": "posting_tf", "param_type": "required", "format": ["ND"], "type": ["float32"]},
+      {"name": "doc_norm", "param_type": "required", "format": ["ND"], "type": ["float32"]},
+      {"name": "idf", "param_type": "required", "format": ["ND"], "type": ["float32"]},
+      {"name": "query_offsets", "param_type": "required", "format": ["ND"], "type": ["int64"]},
+      {"name": "query_term_ids", "param_type": "required", "format": ["ND"], "type": ["int32"]}
+    ],
+    "output_desc": [
+      {"name": "partial_scores", "param_type": "required", "format": ["ND"], "type": ["float32"]},
+      {"name": "partial_ids", "param_type": "required", "format": ["ND"], "type": ["int32"]},
+      {"name": "debug_scores", "param_type": "required", "format": ["ND"], "type": ["float32"]}
+    ],
+    "attr": [
+      {"name": "k", "param_type": "required", "type": "int"},
+      {"name": "shards", "param_type": "required", "type": "int"},
+      {"name": "debug", "param_type": "required", "type": "int"}
+    ]
+  }
+]
