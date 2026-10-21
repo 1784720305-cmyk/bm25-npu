@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "Freeze current fused operator/128 threads/dynamicUB64KiB and all existing device acceptance/CPU/old Search sources at eaa1951. Prepare independent public fused Search using already reviewed actual ACLNN ABI, resident raw-TF index, timed raw grouped query IDs validation/packing/upload/fused+merge/sync/CPU Top-K/download/request cleanup. Normal path allocates one FP32 debug placeholder and no full-score array; untimed temporary debug checkpoints verify independent formula and all strict rankings before measurement. One sequenced shell waits for current small acceptance success without restarting; checks current workload only, then six balanced complete Search rounds against accepted range+compact old implementation; conditional CPU32/32 six rounds only after predefined improvement gate. Read-only actual-header device capability and existing compiler resource evidence; absent register/stack data remains UNKNOWN, no flags/env/kernel changes. New affected checks use MOCK children, no local CANN/C++/device proof; no actual fused Search speed result yet. No route document rewrite, no old suite rerun, no CPU fallback. Original samples/wheels unchanged; LF/Git raw-byte publication.",
+  "scope": "User target log confirmed frozen fusion256K/Q8/K10/S32 correctness and six balanced complete Search comparisons: A old0.337416/fused0.242331ms(-28.18%),B old0.33554325/fused0.24223575ms(-27.81%),6/6 each; retain fused. Separate concurrent CPU32/32 phase: CPU A0.113102/fused0.239647ms,B0.11270175/0.23903825ms; NPU still~2.12x slower, target unmet. Runtime capability query reported56AIV,warp32,max-resident2048threads,AIV usableUB221184bytes; existing objects lacked attributed VF register/stack data, actual compiler help supports --cce-res-usage. This update adds ONLY frozen fused profile/provenance/CSV diagnostics and resource-copy inspection; existing kernels/128threads/UB64KiB/host/CPU/acceptance/route docs unchanged at859c21a. One short msprof pass,39two-stage chains/78tasks,only20formal Search samples; excludes four extra debug chains/cold/checkpoints/warmup; no occupancy or sub-phase inference from generic counters. Resource option applied only to a fresh source-identical project copy after actual-template hook verification; no install/execution of copy, original source/install fingerprints checked. New affected tests use MOCK child/build and synthetic CSV; no local CANN/msprof/NPU proof. Original binary samples/wheels unchanged; LF/raw Git publication.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -180,6 +180,7 @@
     "standalone/accumulate_fixture.py": "0b0d7a38d9e43eec6ad291f70dd28f16856d43cbba279a7d4c04bf70b4111f08",
     "standalone/accumulate_operator.json": "3814a922b1102eb06802211315fa71ef69217d30f566481906c143eda63272c2",
     "standalone/analyze_compact_search_profile.py": "c88fca3a8ab6638e8cbe177efd6a2304a373fa62e314d52716d7887f31342ddf",
+    "standalone/analyze_fused_search_profile.py": "ac3551659470a999447bfbc6d476f3660e0ba219b45a210d483eba446daf9a89",
     "standalone/analyze_pipeline_profile.py": "14827cc02764cebf8b927cf24bc782f9d85de7246d765b1d2117743e10ce85a4",
     "standalone/analyze_search_profile.py": "e47564c2284816592d703ac0a1f813dbb8233f8a4eecd11259275792c08d1ad9",
     "standalone/benchmark_case.py": "e12860ce3cfb5a67a6a072113b53a4e71849d8bca5e0e5ecfd44454b05cd7b7c",
@@ -200,6 +201,7 @@
     "standalone/create_query_score_range.py": "ec54944f03b597cc38142c430773a3ad410b443fe38d644b151cd6ca10134964",
     "standalone/create_topk_positive_compact.py": "7264cad1eb04adaebf75f1de5757db872b675b9ea89b54698933ad6573982c98",
     "standalone/finish_fused_search.sh": "868e43be7bf6129078defd03dc6b2bf0938c0f2a226a1789f2bb48bb67676864",
+    "standalone/fused_resource_report.py": "1c6e94b5393266a04fc81eee6365a7b3ec5d6aa0a0213f9dffc997335808f365",
     "standalone/fused_score_topk_operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "standalone/fused_search_checks.py": "81f34c7f8299bd6a8992d727207893c41dc2f02d2ae6c7660a207c3e39a7c941",
     "standalone/inspect_fused_hardware.py": "549f6c73d54f097816e768f4c62637fc79d96750580667ab6bc3a5f6d3b19fd5",
@@ -209,6 +211,7 @@
     "standalone/prepare_sharded_runtime.py": "611bdc33d19ca559485981bd3e52e0c495676135fd4f0488226bb7cd02a828bc",
     "standalone/prepare_topk_parallel_runtime.py": "649732c22cae6c6b9a96628eb495fee4335e725a4fcf2a1098d33bc30deb1863",
     "standalone/profile_compact_search.py": "6dba94c8d11a4abafc49435421fa78785aea72b17eaa3079db7c7810a30b6071",
+    "standalone/profile_fused_search.py": "8f3ff4c5c7fd2ee454cd4921ed3d90ad07dbe53ae7288f5339f3544107959173",
     "standalone/profile_search.py": "c85a4b09473c211fa0eccc4763e46d03b00ce218ba35abdda8c0bb861e06e1a4",
     "standalone/query_score_edge_fixture.py": "b4d6acf763a7dc1b49781a50b2a1e80c28490be0ad41d1f56679147f417871f4",
     "standalone/query_score_fixture.py": "65610152d0c15a1760884c5d4be9a20e0582d98740b3a4e90dfc66fe474a0242",
@@ -240,6 +243,7 @@
     "standalone/test_compact_search_profile.py": "b1ceb5f41822eed53b4c14ab186b67f46b326ee1772a1eee54ae7009df2eea16",
     "standalone/test_cpu_index_search.py": "bf17ee421a67b71053a084ee75c0f09090060b2de9a8883e7f9af4376c5358f0",
     "standalone/test_fused_chain_host.py": "0047df107ee594c6fc9162e1aacf7374bd4ffc785fcf65f7459591858e3a878b",
+    "standalone/test_fused_profile.py": "2a4fd7949e27f9d106a2b23fdc9735d236ba21522448b82123e9999bcddaa294",
     "standalone/test_fused_score_topk.py": "25801127a9e267c40f2c94edff3ce82b61615ed8871c48e90d1a31d9ab062a27",
     "standalone/test_fused_search_closure.py": "fdce026a5b278cd5c9f4f043251a2a4e8fb35d0948098528dffe17ea3644320d",
     "standalone/test_fused_ub_contract.py": "84c696f653b58342dbfaecf71b8c0741b35021a37e5302b682e834f7b94ba2ea",
