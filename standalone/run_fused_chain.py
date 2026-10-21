@@ -45,7 +45,8 @@ def validate_install(vendor, project):
     data = json.loads((project/'bm25_project.json').read_text(encoding='utf-8'))
     expected = {'operator':'fused_score_topk', 'vendor_name':generator.VENDOR, 'compute_unit':'ascend950',
         'max_terms_per_query':64, 'max_docs_per_shard':8192, 'max_shards':64,
-        'explicit_ub_bytes':50816, 'simt_local_bytes':32768, 'debug_disabled_score_elements':1}
+        'ub_contract_version':2, 'explicit_ub_bytes':50816, 'dynamic_ub_bytes':65536,
+        'min_dcache_bytes':32768, 'compiler_reserved_ub_bytes':8192, 'debug_disabled_score_elements':1}
     r.require(all(type(data.get(key)) is type(value) and data[key] == value for key,value in expected.items()) and
         set(data.get('source_sha256',{})) == set(generator.SOURCES) and
         data.get('selection_source_sha256') == digest(ROOT/'npu_prototype/topk_positive_compact/op_kernel/bm25_top_k.cpp'),

@@ -220,7 +220,8 @@ def main():
             record = json.loads((project/'bm25_project.json').read_text())
             assert record['operator'] == 'fused_score_topk' and record['vendor_name'] == 'bm25_fused_score_topk'
             assert record['status'] == 'project_generated_not_compiled_not_device_verified'
-            assert record['explicit_ub_bytes']+record['simt_local_bytes'] == 83584
+            assert record['ub_contract_version'] == 2 and record['explicit_ub_bytes'] <= record['dynamic_ub_bytes'] == 65536
+            assert record['min_dcache_bytes']+record['compiler_reserved_ub_bytes'] == 40960
             for name in generator.SOURCES:
                 assert (project/name).read_bytes() == (ROOT/'npu_prototype/fused_score_topk'/name).read_bytes()
                 assert record['source_sha256'][name] == hashlib.sha256((project/name).read_bytes()).hexdigest()

@@ -84,6 +84,9 @@ def main():
         record_path=project/'bm25_project.json'; original=record_path.read_bytes()
         data=json.loads(original); data['explicit_ub_bytes']=8192; tool.r.write_json(record_path,data)
         fails(lambda:tool.validate_install(vendor,project)); record_path.write_bytes(original)
+        for key,value in (('dynamic_ub_bytes',32768),('ub_contract_version',1)):
+            data=json.loads(original); data[key]=value; tool.r.write_json(record_path,data)
+            fails(lambda:tool.validate_install(vendor,project)); record_path.write_bytes(original)
         merge_project=base/'merge_project'; (vendors/'bm25_topk_merge').mkdir()
         installation={'fused':valid,'merge':{'MOCK':True},'merge_device_objects':{'MOCK.o':'fake'}}
         runner=base/'FAKE_NOT_EXECUTABLE'; runner.write_bytes(b'MOCK RUNNER')

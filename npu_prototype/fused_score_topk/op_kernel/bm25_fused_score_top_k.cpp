@@ -357,7 +357,8 @@ __simt_callee__ __aicore__ inline void SelectLocal(
 }
 
 // Three disjoint regions: full local scores, score metadata, accepted selector scratch.
-// 50,816 bytes of explicit UB plus 32 KiB SIMT local reservation; checked by Host.
+// 50,816 bytes of explicit UB inside the Host's 64 KiB dynamic-UB declaration.
+// SIMT DCache (at least32 KiB) and the compiler reserve are separate capacity checks.
 constexpr uint32_t kMaxDocs = 8192, kTerms = 64;
 constexpr uint32_t kBegins = kMaxDocs, kEnds = kBegins + 2*kTerms;
 constexpr uint32_t kTermIds = kEnds + 2*kTerms, kScoreControl = kTermIds + kTerms;

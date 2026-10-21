@@ -9,7 +9,14 @@
 
 namespace {
 constexpr uint32_t kBufferBytes = 50816;
-constexpr uint32_t kSimtLocalBytes = 32*1024;
+// SetLocalMemorySize declares DYNAMIC UB accessible to the kernel, not SIMT DCache.
+// The old 32 KiB declaration was smaller than our 50,816-byte TBuf. In particular,
+// control at byte34,048 was already out of bounds even for a three-document shard.
+constexpr uint32_t kDynamicUbBytes = 64*1024;
+constexpr uint32_t kMinDCacheBytes = 32*1024;
+constexpr uint32_t kCompilerReservedBytes = 8*1024;
+static_assert(kDynamicUbBytes >= kBufferBytes && kDynamicUbBytes%32 == 0,
+              "Declared dynamic UB must cover the complete TBuf layout");
 constexpr int64_t kLimit = std::numeric_limits<int32_t>::max();
 struct Dimensions { uint32_t queries, docs, vocab, postings, queryStorage, k, shards, debug; };
 
@@ -92,7 +99,9 @@ ge::graphStatus Tiling(gert::TilingContext *context)
     const uint32_t cores = platform.GetCoreNumAiv();
     uint64_t ubBytes = 0;
     platform.GetCoreMemSize(platform_ascendc::CoreMemType::UB, ubBytes);
-    if (cores == 0 || ubBytes < kBufferBytes+kSimtLocalBytes) return ge::GRAPH_FAILED;
+    // Conservatively require room for the declared UB AND the separate cache/reserve.
+    if (cores == 0 || ubBytes < kDynamicUbBytes+kMinDCacheBytes+kCompilerReservedBytes)
+        return ge::GRAPH_FAILED;
     const uint32_t blocks = static_cast<uint32_t>(std::min<uint64_t>(cores, static_cast<uint64_t>(dims.queries)*dims.shards));
     optiling::Bm25FusedScoreTopKTilingData data;
     data.set_queryCount(dims.queries); data.set_docCount(dims.docs); data.set_vocabSize(dims.vocab);
@@ -103,7 +112,8 @@ ge::graphStatus Tiling(gert::TilingContext *context)
     if (workspace == nullptr || raw->GetData() == nullptr || data.GetDataSize() > raw->GetCapacity() ||
         systemBytes > std::numeric_limits<std::size_t>::max()) return ge::GRAPH_FAILED;
     workspace[0] = static_cast<std::size_t>(systemBytes); // No expanded TF or full-score GM workspace.
-    context->SetBlockDim(blocks); context->SetLocalMemorySize(kSimtLocalBytes);
+    context->SetBlockDim(blocks);
+    if (context->SetLocalMemorySize(kDynamicUbBytes) != ge::GRAPH_SUCCESS) return ge::GRAPH_FAILED;
     data.SaveToBuffer(raw->GetData(), raw->GetCapacity()); raw->SetDataSize(data.GetDataSize());
     return ge::GRAPH_SUCCESS;
 }
