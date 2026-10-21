@@ -55,7 +55,57 @@
 
 `check_topk_positive_compact_model.py`的899项整数/线程模型与独立完整数值排序通过：1023/1024/1025正分容量、1024/1025和8192/8193行长分界、128线程尾部、成员标记低/高位含31/32/63、同分原编号反例、K=1/10/32、正负零原字节、次正规数、最大有限数、同一缓存稠密/稀疏/全零轮换和非法分数。47项假模板/备份/元数据/拒绝保护/任务覆盖检查也通过。
 
-这些是模型及主机工具检查，**没有CANN编译，没有设备同步或UB实际行为验证，也没有新Top-K性能结果。** 本轮先完成真实编译及实际接口核对；不把模型、打包或安装当作实机正确性。
+上述本地检查只是模型及主机工具检查。**随后用户在黄区已完成950实际编译和打包**：独立vendor正确，设备目标`Bm25TopK_23cbb04723633b70cf874275924b41b4.o`生成，安装包生成；两份实际自动生成头文件已读到并核对。尚未安装此vendor或完成设备正确性验收，没有新Top-K性能结果。
+
+实际准备接口为`aclnnBm25TopKGetWorkspaceSize(scores, int64_t k, topScoresOut, topIdsOut, workspaceSize, executor)`，执行接口为`aclnnBm25TopK(workspace, workspaceSize, executor, stream)`；四个张量参数为`const aclTensor*`，其余实际类型由下述调用器直接包含安装头文件并静态核对。没有用IR相同代替实际声明核对。
+
+现在新增独立`topk_positive_compact_host`和`validate_topk_positive_compact.py`。主机沿用已验证的ACL资源、绝对路径加载及逐次全排序核对逻辑；不改旧调用器。旧调用器会在记录中写8512字节算法UB，不能直接用作新算子的正确验收记录。新调用器改为16704，并把实际编译时三份主机源码SHA256写入报告，拒绝拿旧可执行文件配新脚本。生成器元数据的`project_generated_not_compiled_not_device_verified`仅记录生成时状态，不能推翻后续真实编译日志，也不是运行证据。
+
+### 本次集中验收怎么做
+
+输入是人工构造的FP32分数矩阵；设备输出每行K个编号及分数。保留旧25组输入，再加12组：行长1024/1025/8192/8193分别配K=1/10/32，每组65行包含0、K-1/K/K+1、730、1023/1024/1025个正分、全稠密、同分原ID反例、次正规数、最大有限数、正负零。超过容量必须保留正确完整路径，不能截断。
+
+每组同进程A/B/A/B/A五次，每次先把输出覆写成NaN和-1，再实际上传、准备、执行、同步、下载；C++完整数值排序逐个核对编号及原始分数字节，并检查A/B重复字节一致。Python重新完整排序复核保存的两组输出。安装头/API库/950设备目标均须匹配工程产物，源码及输入在运行前后必须不变。全部37组通过，才允许进入完整Search对照；任何失败保留报告并停止，无CPU替代输出。
+
+`boundary_rows/prepare_boundary`组织容量及同分输入；`validate_install`检查实际声明及安装产物；`validate_record`核对实际调用次数、覆写检查和编译源码；`run`依次运行37组并保存每组输入/日志/设备输出指纹。原C++中的`FullSortIds`只生成核对答案，`CheckFullOutput`只验证下载结果，不写入设备输出文件。
+
+本地57项工具/失败保护检查通过，包含全部37组实际输入准备和Python完整排序；其中调用器和设备产物均为明确的假文件、子进程被模拟，**不是C++编译或设备验收**。原899项算子模型和47项生成器检查继续保留。
+
+### 提交本次验收工具
+
+```powershell
+cd F:\Ascend\bm25\bm25-a5
+git add -- npu_prototype/topk_positive_compact_host standalone/validate_topk_positive_compact.py standalone/test_topk_positive_compact_validation.py package_manifest.json README.md 'standalone/*.md'
+git commit -m "test: 增加正分压缩Top-K的37组独立设备验收"
+git push
+```
+
+### 黄区安装、编译调用器、一次运行全套
+
+已完成的算子工程不重新生成、不重新编译；仅安装其现有产物。以下逐条成功再执行下一条。运行目录已存在就改用新名字，保留旧日志。
+
+```bash
+cd /test/w50066029/bm25-npu
+git pull --ff-only
+python3 verify_package.py
+source /usr/local/Ascend/cann-9.2.0/set_env.sh
+set -o pipefail
+bash results/Bm25TopKPositiveCompact/build_out/custom_opp_openEuler_x86_64.run --install-path=/test/w50066029/bm25-npu/results/custom_opp
+```
+
+```bash
+cmake -S npu_prototype/topk_positive_compact_host -B results/topk_positive_compact_host_build -DTOOLKIT_HOME=/usr/local/Ascend/cann-9.2.0 -DBM25_OPP_ROOT=/test/w50066029/bm25-npu/results/custom_opp/vendors/bm25_topk_positive_compact 2>&1 | tee results/topk_positive_compact_host_configure1.log
+```
+
+```bash
+cmake --build results/topk_positive_compact_host_build -j 2>&1 | tee results/topk_positive_compact_host_build1.log
+```
+
+```bash
+python3 standalone/validate_topk_positive_compact.py --output results/topk_positive_compact_validation1 --device 2 2>&1 | tee results/topk_positive_compact_validation1.log
+```
+
+脚本给子进程只设置新vendor，绝对路径加载API并核对符号归属；不用在当前终端混合source多个同名Top-K。无需再次采集旧评分或扫描CPU线程。`results/topk_positive_compact_validation1/report.json`记录37组状态；当前只有工具准备通过，以上新的主机编译及设备验收仍待黄区执行。黄区原文件留黄区，仅分享允许的错误或末尾摘要。
 
 ## Windows提交：新文件要明确加入Git
 
@@ -66,7 +116,7 @@ git commit -m "feat: 增加1024容量正分压缩的独立Top-K实验"
 git push
 ```
 
-## 黄区先生成和编译
+## 黄区生成和编译（已完成，以下仅保留复现步骤）
 
 逐条成功再继续。新目录已存在就停止并保留日志，不能覆盖原工程：
 
@@ -92,7 +142,7 @@ bash build.sh 2>&1 | tee ../topk_positive_compact_build1.log
 find build_out -type f -name aclnn_bm25_top_k.h -print -exec cat {} \;
 ```
 
-失败停在第一处错误，暂不安装或改变当前Search运行目录。只分享黄区允许的编译摘要/错误和生成声明，文件不外传。IR与旧版相同不等于可以不看新生成头文件，先核对再准备独立验收与接入。
+本阶段已完成；当前执行上方“黄区安装、编译调用器、一次运行全套”，不重复生成工程。旧Search运行目录不变。只分享黄区允许的编译摘要/错误和生成声明，文件不外传。IR与旧版相同不等于可以不看新生成头文件，先核对再准备独立验收与接入。
 
 ## 后续验收和保留标准
 
