@@ -2,6 +2,7 @@
 from contextlib import redirect_stdout, redirect_stderr
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -87,35 +88,57 @@ def main():
             def symlink(path):return path==original/'build.sh' or real_is_symlink(path)
             with patch.object(Path,'is_symlink',symlink):
                 reject(lambda:res.prepare(original,fake_root/'results/symlink_copy'))
-            for mode in ('pass','compile_failed','flags_changed','source_changed','option_unconfirmed'):
+            for mode in ('pass','saved_stage_only','no_report','compile_failed','flags_changed','source_changed','option_unconfirmed'):
                 directory=fake_root/'results'/mode;commands=[]
                 def build(command,**kwargs):
                     commands.append(command);copy=kwargs['cwd']
                     assert command==['bash','build.sh'] and copy==directory/'project_copy'
                     assert kwargs['timeout']==900
+                    assert kwargs['env']['ASCENDC_BUILD_LOG_DIR']==str((directory/'compiler_logs').resolve())
+                    assert os.environ['ASCENDC_BUILD_LOG_DIR']=='PARENT_VALUE_UNCHANGED'
                     assert '--cce-res-usage' in (copy/'op_kernel/CMakeLists.txt').read_text()
                     (copy/'build_out').mkdir()
                     (copy/'build_out/CMakeCache.txt').write_bytes(
                         (CONFIG.replace('Release','Debug') if mode=='flags_changed' else CONFIG).encode())
                     if mode=='source_changed':(copy/res.fused.generator.SOURCES[0]).write_bytes(b'UNEXPECTED CHANGE')
-                    kwargs['stdout'].write(b'FusedScoreTopKSimt\nRegisters count: 70\nStack size: 0\n')
+                    if mode!='saved_stage_only' and mode!='no_report':
+                        kwargs['stdout'].write(b'FusedScoreTopKSimt\nRegisters count: 70\nStack size: 0\n')
+                    if mode=='saved_stage_only':
+                        saved=Path(kwargs['env']['ASCENDC_BUILD_LOG_DIR'])/'ascend950/compile.log_success'
+                        saved.parent.mkdir()
+                        saved.write_bytes(b'[BISHENG] Function properties for _Z18FusedScoreTopKSimt_simt_entry: Stack size: 0 bytes, Used register number: 70\n')
                     return SimpleNamespace(returncode=7 if mode=='compile_failed' else 0)
                 with patch.object(res.fused,'installed',return_value=installation), \
                      patch.object(res.shutil,'which',return_value=None if mode=='option_unconfirmed' else '/FAKE_COMPILER'), \
-                     patch.object(res.subprocess,'run',build):
+                     patch.object(res.subprocess,'run',build),patch.dict(os.environ,{'ASCENDC_BUILD_LOG_DIR':'PARENT_VALUE_UNCHANGED'}):
                     if mode in ('compile_failed','flags_changed','source_changed'):
                         reject(lambda:res.run(original,directory,runner,base,base))
                         assert json.loads((directory/'report.json').read_text())['status']=='failed'
                     else:
                         record=res.run(original,directory,runner,base,base)
-                        if mode=='pass':
+                        if mode in ('pass','saved_stage_only','no_report'):
                             assert record['status']=='resource_diagnostic_compile_completed' and record['accepted_artifacts_unchanged']
                             assert record['configuration']['CMAKE_BUILD_TYPE']=='Release'
-                            assert any('Registers count: 70' in x for x in record['resource_context_lines'])
+                            assert not record['compiler_logging']['parent_environment_modified']
+                            if mode=='pass':assert any('Registers count: 70' in x for x in record['resource_context_lines'])
+                            elif mode=='saved_stage_only':
+                                assert record['fused_vf_reports']==[{'path':'compiler_logs/ascend950/compile.log_success',
+                                    'function':'_Z18FusedScoreTopKSimt_simt_entry','stack_size_bytes':0,'used_register_number':70}]
+                                assert len(record['compiler_log_records'])==2
+                            else:assert record['fused_vf_reports']==[] and record['resource_context_lines']==[]
                         else:assert record['status']=='resource_option_not_confirmed'
                         count+=1
                 assert commands==([] if mode=='option_unconfirmed' else [['bash','build.sh']])
                 assert snapshot(original)==before;count+=1
+            # A foreign function, missing register field and non-UTF8 logs must not turn UNKNOWN into zero.
+            logs=fake_root/'results/parser';(logs/'compiler_logs').mkdir(parents=True)
+            (logs/'resource_build.log').write_bytes(b'[BISHENG] Function properties for Other: Stack size: 0 bytes, Used register number: 1\n')
+            (logs/'compiler_logs/partial_success').write_bytes(
+                b'[BISHENG] Function properties for _ZFusedScoreTopKSimt_simt_entry: Stack size: 8 bytes\n')
+            (logs/'compiler_logs/not_text_success').write_bytes(b'\xff\xfe\0')
+            found,reports=res.compiler_reports(logs)
+            assert len(reports)==1 and reports[0]['stack_size_bytes']==8 and reports[0]['used_register_number'] is None
+            assert any('unread_reason' in x for x in found);count+=2
             # Resource-only CLI routes straight to the copy build; no profiler/Search child is reachable here.
             for status,code in (('resource_diagnostic_compile_completed',0),('resource_template_unavailable',1)):
                 with patch.object(res.sys,'platform','linux'),patch.object(res,'run',return_value={'status':status}) as mocked:

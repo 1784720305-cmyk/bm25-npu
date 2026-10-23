@@ -13,6 +13,7 @@ sys.path.insert(0,str(ROOT))
 from standalone import run_fused_chain as fused, resident_index as r
 
 EXCLUDED={'build_out','build','build_host','build_device','autogen','.git','bm25_template_backup','__pycache__'}
+LOGGING_REFERENCE='https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/asc-devkit/docs/zh/guide/programming_guide/advanced_programming/aclnn_operator_development/compilation_and_deployment/basic_process.md'
 
 
 def cache(path):
@@ -27,10 +28,37 @@ def cache(path):
 
 def resource_lines(text):
     lines=text.splitlines();selected=set()
-    pattern=re.compile(r'FusedScoreTopKSimt|Stack[_\s]*size|register(?:s|\s+count|\s+size|\s+usage)|\b(?:GPR|VGPR|SGPR|RegNum|UsedRegs)\b|spill',re.I)
+    pattern=re.compile(r'FusedScoreTopKSimt|Function properties for|Stack[_\s]*size|register(?:s|\s+count|\s+number|\s+size|\s+usage)|\b(?:GPR|VGPR|SGPR|RegNum|UsedRegs)\b|spill',re.I)
     for i,line in enumerate(lines):
         if pattern.search(line):selected.update(range(max(0,i-2),min(len(lines),i+4)))
     return [lines[i][:1000] for i in sorted(selected)][:120]
+
+
+def compiler_reports(output):
+    """Read saved stage logs, including *_success files without a .log suffix; missing fields stay UNKNOWN."""
+    stage=output/'compiler_logs'
+    paths=[output/'resource_build.log']+sorted(p for p in stage.rglob('*') if p.is_file())
+    records=[];vf=[]
+    pattern=re.compile(r'Function properties for\s+([^:\n]+):\s*Stack\s+size:\s*(\d+)\s+bytes'
+        r'(?:,[ \t]*Used register number:[ \t]*(\d+))?',re.I)
+    for path in paths:
+        r.require(not path.is_symlink() and path.resolve().is_relative_to(output.resolve()),'资源日志路径越界或包含符号链接')
+        size=path.stat().st_size
+        item={'path':path.relative_to(output).as_posix(),'bytes':size,'sha256':fused.digest(path)}
+        if size>16*1024*1024:
+            records.append(dict(item,unread_reason='Log exceeds 16MiB; fields UNKNOWN, inspect this saved file separately.'));continue
+        data=path.read_bytes()
+        try:text=data.decode('utf-8')
+        except UnicodeError:
+            records.append(dict(item,unread_reason='Not UTF-8 text; fields UNKNOWN.'));continue
+        if '\0' in text:
+            records.append(dict(item,unread_reason='Binary data; not interpreted as compiler report.'));continue
+        records.append(dict(item,resource_context_lines=resource_lines(text)))
+        for match in pattern.finditer(text):
+            if 'FusedScoreTopKSimt' not in match[1]:continue
+            vf.append({'path':item['path'],'function':match[1],'stack_size_bytes':int(match[2]),
+                'used_register_number':int(match[3]) if match[3] is not None else None})
+    return records,vf
 
 
 def prepare(project,target):
@@ -97,22 +125,41 @@ def run(project,output,runner,vendors,merge_project):
             if record['preparation']['status']!='prepared_resource_only_copy':record['status']='resource_template_unavailable'
             else:
                 target=output/'project_copy';log=output/'resource_build.log'
+                stage_logs=output/'compiler_logs';stage_logs.mkdir()
+                # Official CANN9.2: successful intermediate compiler diagnostics are not persisted by default.
+                # Set logging for this child only; never mutate the caller's environment or accepted project.
+                env=os.environ.copy();env['ASCENDC_BUILD_LOG_DIR']=str(stage_logs.resolve())
+                record['compiler_logging']={'child_environment':{'ASCENDC_BUILD_LOG_DIR':str(stage_logs.resolve())},
+                    'reference':LOGGING_REFERENCE,'parent_environment_modified':False}
                 print('仅编译资源报告副本，不安装或执行；实际源文件/128线程/公式保持相同。',flush=True)
                 print('编译日志：'+str(log)+'；本步骤不调用msprof或Search程序。',flush=True)
+                print('单个编译阶段日志保存至：'+str(stage_logs)+'；只对子进程启用。',flush=True)
                 with log.open('wb') as stream:
-                    child=subprocess.run(['bash','build.sh'],cwd=target,stdout=stream,stderr=subprocess.STDOUT,timeout=900)
+                    child=subprocess.run(['bash','build.sh'],cwd=target,env=env,stdout=stream,stderr=subprocess.STDOUT,timeout=900)
+                logs,vf_reports=compiler_reports(output)
+                record.update(compiler_log_records=logs,fused_vf_reports=vf_reports)
                 r.require(child.returncode==0,'资源副本编译失败，查看 '+str(log)+'；不安装或执行副本')
                 options_before=cache(project/'build_out/CMakeCache.txt');options_after=cache(target/'build_out/CMakeCache.txt')
                 r.require(options_before and options_before==options_after,'资源副本优化/目标配置不同，不能将其资源数值当作已验收配置')
                 for name in fused.generator.SOURCES:r.require(fused.digest(target/name)==before[name],'副本编译修改了计算源码')
-                text=log.read_text(encoding='utf-8',errors='replace');matched=resource_lines(text)
+                matched=[line for item in logs for line in item.get('resource_context_lines',[])]
                 accepted_hashes=set(installation['fused']['device_object_sha256'].values())
                 objects={p.relative_to(target).as_posix():fused.digest(p) for p in target.rglob('*.o') if 'op_kernel' in p.parts}
                 record.update(status='resource_diagnostic_compile_completed',build_log_sha256=fused.digest(log),
                     configuration=options_after,resource_context_lines=matched,diagnostic_device_objects=objects,
                     any_object_byte_identical_to_accepted=bool(set(objects.values())&accepted_hashes),
                     interpretation='Resource contexts retain function names; absent/unattributed fields remain UNKNOWN. Source/config-matched diagnostic compile is not a newly validated runtime binary.')
-                print('寄存器/栈资源上下文：\n'+'\n'.join(matched[:65]) if matched else '编译未输出可识别的VF寄存器/栈字段；仍记UNKNOWN。',flush=True)
+                remaining=80
+                for item in logs:
+                    if item.get('resource_context_lines'):
+                        lines=item['resource_context_lines'][:min(40,remaining)]
+                        print('资源上下文来源：'+item['path']+'\n'+'\n'.join(lines),flush=True)
+                        remaining-=len(lines)
+                        if remaining==0:break
+                if vf_reports:
+                    print('实际融合VF资源报告：'+json.dumps(vf_reports,ensure_ascii=False),flush=True)
+                else:
+                    print('未找到可归属FusedScoreTopKSimt的完整资源行：寄存器/栈继续记UNKNOWN；不据此判断溢出或自动重编译。',flush=True)
         r.require({name:fused.digest(project/name) for name in source_names}==before and
             fused.digest(runner)==runner_sha and fused.installed(vendors,project,merge_project)==installation,
             '已验收工程/调用器/安装在诊断期间改变')
