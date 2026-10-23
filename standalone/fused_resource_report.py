@@ -1,4 +1,5 @@
 """Resource-only build of a verified copy. Never install/run its output or modify the accepted project."""
+import argparse
 import json
 import os
 from pathlib import Path
@@ -39,10 +40,18 @@ def prepare(project,target):
         target!=project and not target.is_relative_to(project) and not project.is_relative_to(target),
         '资源副本必须是results下新独立目录，不能覆盖/嵌套原工程')
     cmake=project/'op_kernel/CMakeLists.txt';text=cmake.read_text(encoding='utf-8')
-    # Same hook used by group IndexSDK; match the actual generated file rather than assume it exists.
-    hook=re.search(r'(?im)^[ \t]*if\s*\([^\n]*CMAKE_BUILD_TYPE[^\n]*\)\s*\n[ \t]*add_ops_compile_options\s*\(\s*ALL\s+OPTIONS\b',text)
-    if not hook:return {'status':'unsupported_actual_template','actual_cmake_sha256':fused.digest(cmake),
-        'reason':'实际模板未提供已核对的Debug add_ops_compile_options(ALL OPTIONS ...)钩子；不猜新API，不编译'}
+    # CANN 9.2 target template supplied from the actual A5 project. Keep the older known hook too.
+    prefix=r'(?im)^[ \t]*if\s*\([^\n]*CMAKE_BUILD_TYPE[^\n]*Debug[^\n]*\)\s*\n[ \t]*'
+    hooks=[]
+    for api,args in (('npu_op_kernel_options',r'ascendc_kernels\s+ALL\s+OPTIONS'),
+                     ('add_ops_compile_options',r'ALL\s+OPTIONS')):
+        for match in re.finditer(prefix+api+r'\s*\(\s*'+args+r'\b[^)]*\)\s*endif\s*\(\s*\)',text):
+            hooks.append((match,api))
+    if len(hooks)!=1:return {'status':'unsupported_actual_template','actual_cmake_sha256':fused.digest(cmake),
+        'reason':'实际模板没有唯一已核对的Debug选项钩子；仅支持npu_op_kernel_options(ascendc_kernels ALL OPTIONS ...)或旧版add_ops_compile_options；不猜API/目标'}
+    hook,api=hooks[0]
+    r.require('--cce-res-usage' not in text,'实际模板已含资源选项，不重复插入')
+    arguments='ascendc_kernels ALL OPTIONS' if api=='npu_op_kernel_options' else 'ALL OPTIONS'
     for directory,dirs,files in os.walk(project,followlinks=False):
         dirs[:]=[name for name in dirs if name not in EXCLUDED]
         for name in dirs+files:r.require(not (Path(directory)/name).is_symlink(),'资源副本拒绝符号链接：'+name)
@@ -55,11 +64,13 @@ def prepare(project,target):
         if source.is_file() and (source.suffix in ('.sh','.cmake') or source.name=='CMakeLists.txt'):
             r.require(str(project) not in source.read_text(encoding='utf-8',errors='replace'),
                 '副本构建脚本硬编码原工程路径；停止，不能在原目录构建')
-    added='\n# Resource diagnostic COPY ONLY; no precision/optimization/thread changes.\nadd_ops_compile_options(ALL OPTIONS --cce-res-usage)\n'
+    # Outside the Debug condition: preserve Release optimization and the existing Debug block byte-for-byte.
+    added='\n# Resource diagnostic COPY ONLY; no precision/optimization/thread changes.\n'+api+'('+arguments+' --cce-res-usage)\n'
     (target/'op_kernel/CMakeLists.txt').write_bytes((text[:hook.start()]+added+text[hook.start():]).encode('utf-8'))
     return {'status':'prepared_resource_only_copy','actual_cmake_sha256':fused.digest(cmake),
         'copy_cmake_sha256':fused.digest(target/'op_kernel/CMakeLists.txt'),
         'source_sha256':{name:fused.digest(target/name) for name in fused.generator.SOURCES},
+        'compile_options_api':api,'compile_options_target':'ascendc_kernels' if api=='npu_op_kernel_options' else 'ALL',
         'only_added_compile_option':'--cce-res-usage','install_or_device_execution':False}
 
 
@@ -87,6 +98,7 @@ def run(project,output,runner,vendors,merge_project):
             else:
                 target=output/'project_copy';log=output/'resource_build.log'
                 print('仅编译资源报告副本，不安装或执行；实际源文件/128线程/公式保持相同。',flush=True)
+                print('编译日志：'+str(log)+'；本步骤不调用msprof或Search程序。',flush=True)
                 with log.open('wb') as stream:
                     child=subprocess.run(['bash','build.sh'],cwd=target,stdout=stream,stderr=subprocess.STDOUT,timeout=900)
                 r.require(child.returncode==0,'资源副本编译失败，查看 '+str(log)+'；不安装或执行副本')
@@ -109,3 +121,23 @@ def run(project,output,runner,vendors,merge_project):
         return record
     except (Exception,KeyboardInterrupt) as e:
         record.update(status='failed',first_error=str(e));r.write_json(output/'report.json',record);raise
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description='只补融合内核资源编译报告；不重新采集、测速、安装或执行设备程序。')
+    defaults={'project':'results/Bm25FusedScoreTopKUbFix1',
+        'runner':'results/fused_search_host_build/bm25_fused_search_benchmark',
+        'vendors':'results/custom_opp/vendors','merge-project':'results/Bm25TopKMerge'}
+    for name,value in defaults.items():parser.add_argument('--'+name,type=Path,default=ROOT/value)
+    parser.add_argument('--output',type=Path,required=True)
+    args=parser.parse_args(argv)
+    try:
+        r.require(sys.platform=='linux','资源副本编译仅在已有CANN的A5 Linux环境执行')
+        report=run(args.project.resolve(),args.output.resolve(),args.runner.resolve(),args.vendors.resolve(),args.merge_project.resolve())
+        r.require(report['status']=='resource_diagnostic_compile_completed','资源报告未编译完成：'+report['status']+'；查看新目录report.json，首错停止')
+    except (Exception,KeyboardInterrupt) as e:
+        print('FAILED：'+str(e)+'；不重跑设备采集/性能测试，不安装副本。',file=sys.stderr);return 1
+    return 0
+
+
+if __name__=='__main__':sys.exit(main())

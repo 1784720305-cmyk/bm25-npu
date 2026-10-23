@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "User target log confirmed frozen fusion256K/Q8/K10/S32 correctness and six balanced complete Search comparisons: A old0.337416/fused0.242331ms(-28.18%),B old0.33554325/fused0.24223575ms(-27.81%),6/6 each; retain fused. Separate concurrent CPU32/32 phase: CPU A0.113102/fused0.239647ms,B0.11270175/0.23903825ms; NPU still~2.12x slower, target unmet. Runtime capability query reported56AIV,warp32,max-resident2048threads,AIV usableUB221184bytes; existing objects lacked attributed VF register/stack data, actual compiler help supports --cce-res-usage. This update adds ONLY frozen fused profile/provenance/CSV diagnostics and resource-copy inspection; existing kernels/128threads/UB64KiB/host/CPU/acceptance/route docs unchanged at859c21a. One short msprof pass,39two-stage chains/78tasks,only20formal Search samples; excludes four extra debug chains/cold/checkpoints/warmup; no occupancy or sub-phase inference from generic counters. Resource option applied only to a fresh source-identical project copy after actual-template hook verification; no install/execution of copy, original source/install fingerprints checked. New affected tests use MOCK child/build and synthetic CSV; no local CANN/msprof/NPU proof. Original binary samples/wheels unchanged; LF/raw Git publication.",
+  "scope": "Frozen fused256K/Q8/K10/S32 full Search retained: prior six balanced rounds improved old Search by ~28%, but current concurrent CPU32/32 remains ~2.12x faster; target unmet. Actual latest frozen device profile passed 78 tasks/39 chains, only20 measured Search calls; fused ~194.7us and merge ~5.27us, not subphase or occupancy evidence. Resource compile did not start: actual CANN9.2 uses npu_op_kernel_options(ascendc_kernels ALL OPTIONS ...) rather than the previous legacy hook. This update ONLY adapts resource-copy helper to that actual template and adds a resource-only CLI plus affected MOCK tests. Adds --cce-res-usage outside Debug block in a fresh copy, retains Release/source/128threads, rejects unknown/ambiguous targets. No msprof/Search/device/install command from standalone resource entry; existing profile evidence untouched, no rerun. Original installation and runner fingerprint checks remain. Actual resource compilation/register/stack/spill attribution still pending on A5; no local CANN or new performance conclusion. All other tracked kernels/hosts/CPU/profile/analyzer/docs unchanged against60770b6. Binary samples and offline wheels immutable; LF and raw Git/ZIP checks.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -201,7 +201,7 @@
     "standalone/create_query_score_range.py": "ec54944f03b597cc38142c430773a3ad410b443fe38d644b151cd6ca10134964",
     "standalone/create_topk_positive_compact.py": "7264cad1eb04adaebf75f1de5757db872b675b9ea89b54698933ad6573982c98",
     "standalone/finish_fused_search.sh": "868e43be7bf6129078defd03dc6b2bf0938c0f2a226a1789f2bb48bb67676864",
-    "standalone/fused_resource_report.py": "1c6e94b5393266a04fc81eee6365a7b3ec5d6aa0a0213f9dffc997335808f365",
+    "standalone/fused_resource_report.py": "2cbd9c06838cde4dee7cadf7627db3dbf5861231055b16a2a6682361362a32c9",
     "standalone/fused_score_topk_operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "standalone/fused_search_checks.py": "81f34c7f8299bd6a8992d727207893c41dc2f02d2ae6c7660a207c3e39a7c941",
     "standalone/inspect_fused_hardware.py": "549f6c73d54f097816e768f4c62637fc79d96750580667ab6bc3a5f6d3b19fd5",
@@ -244,6 +244,7 @@
     "standalone/test_cpu_index_search.py": "bf17ee421a67b71053a084ee75c0f09090060b2de9a8883e7f9af4376c5358f0",
     "standalone/test_fused_chain_host.py": "0047df107ee594c6fc9162e1aacf7374bd4ffc785fcf65f7459591858e3a878b",
     "standalone/test_fused_profile.py": "2a4fd7949e27f9d106a2b23fdc9735d236ba21522448b82123e9999bcddaa294",
+    "standalone/test_fused_resource_report.py": "132225495bfeaeaeba4abcce94b7f11fba529f719c4bfc5512d1c427c7383055",
     "standalone/test_fused_score_topk.py": "25801127a9e267c40f2c94edff3ce82b61615ed8871c48e90d1a31d9ab062a27",
     "standalone/test_fused_search_closure.py": "fdce026a5b278cd5c9f4f043251a2a4e8fb35d0948098528dffe17ea3644320d",
     "standalone/test_fused_ub_contract.py": "84c696f653b58342dbfaecf71b8c0741b35021a37e5302b682e834f7b94ba2ea",
