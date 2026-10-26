@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "2026-10-26 MT requirement clarified: stable NPU advantage over reasonably optimized CPU at large ARTICLE DATABASE sizes, not all small sizes or merely faster than old NPU. User A5 register_select_close2 completed build/install/correctness and six rounds; at262144/Q8/three words/K10 NPU A97.48125us B97.286us versus faster frozen CPU per round A64.84us B64.524us, wins0/6 both. Keep verified register selector as bounded leaf baseline; defer further threshold tuning and optional four-stage profiler. Add independent bounded8192 global-ID leaf vendor, bounded32-way hierarchical merge vendor, captured multi-level NPU Search and checked U64 memory plan; do not enlarge UB or remove INT32/posting/Q*N limits. Add file-backed two-pass corpus/index plus independent original-document ordered-FP32 oracle, exact all-level ranking/guards and device merge boundary checker. Mainline large_search.py defaults262144/1048576/4194304/10000000 articles at fixedQ8/three words/K10, same seed/vocabulary/query IDs; records actual bytes/postings/TF/DF/query-hit and leaf-density distributions, actual memory/disk budgets and explicit unmeasured tiers. Both accepted32thread/32shard CPU source/build/binaries remain frozen; compare faster per-round CPU across six rounds including full caller Search and p95 gate; small losses continue. User has no MT-approved corpus: default synthetic data only, no business generalization. Local streamed oracle/source/72 hierarchical ranking/contract/gate tests passed; not CANN compilation, device execution, occupancy or performance evidence. New large-scale build/installation/correctness and actual A5 crossover remain PENDING. Optional four-stage diagnostic also unrun; package integrity does not imply compiled operators or hardware success.",
+  "scope": "2026-10-26 actual A5 large_scale_close1 user terminal run completed isolated fused/global-ID merge build-install, NPU host compilation, affected device checks and all four six-round full Search comparisons. Recomputed72 process summaries of30 measured samples per A/B case: all four gates and final crossover match printed decisions exactly. FixedQ8/three words/K10, unchanged two accepted32thread/32shard CPU binaries, faster opponent per round, full caller Search boundary. At10000000 articles,M314795949,host index2558379888bytes: six-round median-of-batch-medians NPU A3.02956925/B3.002268ms versus faster-per-round CPU A5.85829225/B5.85553025ms, speedups1.9337046843/1.9503689377, wins6/6 both and p95 gates passed. Minimum same-round speedups1.3762/1.3809. At262144/1048576/4194304 articles wins0/6,3/6,5/6 both, not stable gate passes. First tested stable large winner10m; no interpolation or all-scale claim. Scope is declared uniform synthetic data, not MT-approved business data or arbitrary query/TF/DF distributions. Evidence is user-supplied terminal summaries with attachmentSHA, not independent local hardware reproduction or raw timing samples. Full workload/HBM/workspace/hash and raw checkpoint records remain in yellow-zone report; omitted terminal values not invented. Keep tested bounded8192 leaf and32-way hierarchical merge version; defer threshold/phase tuning. This acceptance update changes only evidence/docs/manifest; original CPU, kernels, generators, runtime, benchmark and tested data source bytes remain unchanged. Add a separately UNVERIFIED score-bitmap optimization candidate for the same tested large-library/global-ID leaf. Review fixed posting-thread vs document-residue ownership and concurrent owner-word updates using950 SIMT uint32 UB atomic OR; reuse owner scratch and unchanged50848byte explicit UB. Debug2 retains original dense raw-score validation. Preserve FP32 operation/query order, strict IDs, compact order, register threshold and fallback. Replace old256k-only experiment driver with paired10m validation reusing accepted source fingerprints,index/oracle,large host,tree merge and both frozen CPU binaries. Only candidate fused vendor is newly built; no CPU/host/merge rebuild or corpus regrowth. Run54 raw cases plus8193-doc targeted collision/zero/repeat/1023-1024-1025/tail fixture, then six balanced rounds of baseline NPU,candidate NPU,two frozen CPU roles; verify paired full-score/tree bits and retain original independent checkpoint/guard/index checks. Predeclared retention requires A/B6of6 faster than paired baseline,>=5percent median reduction,lower median p95 and original faster-CPU gate.232 local models,wrong-owner mutation rejection,actual-posting ownership,source/UB/global-ID/fixture/API-header and gate checks passed; NO candidate CANN compilation or A5 performance result yet. Actual950 SIMT atomic/popcount declarations and resources are recorded at device build; no occupancy claims. Independent vendor does not replace the accepted10m result; if candidate fails keep the accepted baseline.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -8,7 +8,7 @@
   "files": {
     ".gitattributes": "d659273915231ea367219bf4567a63dacda991b5a7ab66a5c1badf855cbba679",
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
-    "README.md": "cadfb7db2f5d6694ba89b2f4d440acdc582f83a8bbbda1654772504492b7ef7a",
+    "README.md": "974fbe2eb4f992b5c762f22002145bd816a1d964d3121001f84f07787fd829cb",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "common/fixed_query_packet.h": "11e9e3285b0baf177394f14bce5d8aaf17cec6906ae1aca07fef57e129cf8f34",
@@ -247,6 +247,7 @@
     "standalone/graph_search.py": "cf9e583e0cb3559d298c69f5093944a98a7aeaba6243294d3b45234e654a23d1",
     "standalone/inspect_fused_hardware.py": "549f6c73d54f097816e768f4c62637fc79d96750580667ab6bc3a5f6d3b19fd5",
     "standalone/large_corpus.py": "24dd1f15b3c05464beb95fdf9740fb99abc42171eea1c5fe4b64724a07342679",
+    "standalone/large_scale_device_evidence_20261026.json": "5fe8f9e462ac1c17d1de4bb30170ecdd89c05fe87489bfa4e10902a8a5c8c86a",
     "standalone/large_search.py": "084a9f9f8a0c7c44abfd198a841eb87c49a316dd4a12d3199bccdf43ce7d5703",
     "standalone/large_search_sources.py": "2362262ac5e12c9f202e3d5b58e13a7bc3818a1a659232af00aac2eeb21c7a92",
     "standalone/operator.json": "7f0eee29078e2146f82b24d5dfdb1ab26cad1e7ccac31397e23af21e08f9707f",
@@ -286,6 +287,8 @@
     "standalone/run_sharded_pipeline.py": "a7bb522cf092ab3f0a1bde9683375ec1b48256dce707d60d38aa338dfbf72d20",
     "standalone/run_topk.py": "751746efcc75fc7576c73c60528e243acab0a042abf8c4f202de605082bc08b9",
     "standalone/scale_fixture.py": "a65b9a5560c84f314c575b95e5d379c49f10437e2bad33b494149449e27c5490",
+    "standalone/score_bitmap.py": "8748148189fe069ae137c874c26821f22c7e21da1e69f56d22740351b903433d",
+    "standalone/score_bitmap_sources.py": "b851d902609bb715bbe5737e0d55a2fdb546f95356f9bd907f8b009bc27020f0",
     "standalone/search_benchmark_checks.py": "f29190b83d7ce553afd59267ce6367c481ea21d5986b935f9f9f8d6a9a0ef845",
     "standalone/search_scale_fixture.py": "defda5bd0f1f59aedff62db22e162d68eca5504255c2e685ed90a760c810600e",
     "standalone/search计时与验收合同.md": "453f47aa949fb1e1eb8eeece3ef66d301c4b5f29612427b7610b1c2f3ebff93a",
@@ -320,6 +323,7 @@
     "standalone/test_resident_chain.py": "af5e6a637ca2e11fc260f3eb724fdb24a0673484b4641b8c06eef092f12a1560",
     "standalone/test_resident_index.py": "f02c7c4cd9351fa4038f06659b596114d787711b9883e012a9c992f1b107ffae",
     "standalone/test_resume_fused_threads256.py": "3ba961982880a3e030863fbcf9b9f857bbb711b3f5caaef2c2828013ec66ce52",
+    "standalone/test_score_bitmap.py": "d4317618f749a7d6957daf2440d2e5898ae9a58a4f1d5904a0532d3b08f1565f",
     "standalone/test_search.py": "9b2b1efba93384a5b18f19ff704d7b1a51056de7e0af4958196316cdc49614f7",
     "standalone/test_search_benchmark.py": "ca8fc67eb67c2fbcba851e35dc0e3b971458742e17e689647db295791ea3be62",
     "standalone/test_search_profile.py": "fd44e893ecdc816a093977f30a51dba9ce2eba670111be2045c566b12c99589f",
@@ -344,7 +348,7 @@
     "standalone/原始查询Search入口步骤.md": "1b1f86bc1e349f0720c5250d50d0facf0b7c242e655d87b87e5bb8340cd91b85",
     "standalone/同进程串联步骤.md": "729601c3aedafde80435d4f7804582650d95a3e0f487f142eccf1c1d7699153d",
     "standalone/四段运行步骤.md": "8810781f46c6be222788d8ac2e32cd3c40bee974d5ff0fc1f060f8219a19b631",
-    "standalone/大规模检索扩库与交叉点验证.md": "98dff439cfe4b48301c491ce714b551cebec4d08e035c58ed90163c47ef370a6",
+    "standalone/大规模检索扩库与交叉点验证.md": "cc76da256743c34a0ea5cf4c4767f4fb0246a72b0c16420a73bb2db13712f8c2",
     "standalone/完整SearchTopK压缩对照.md": "339c1be1b5cb2218f73d451cc429b772a3b7a610c6a46c85faec861936b578ad",
     "standalone/完整Search新旧评分对照.md": "4a9cc2c515944112cc4bbe0d7a1c3e48260365866e3ffbbd4ee5ec06383e75e8",
     "standalone/完整Search正式计时步骤.md": "2090258fee7e8eb997ce735d6b11949e1564bcfe14b6780930a08edfae6bb235",
@@ -366,6 +370,7 @@
     "standalone/融合算子寄存器选择步骤.md": "c77565ffa08736162f2d3c5c62c13506dfd55e1e6f1077f6788f42b7f6df35b1",
     "standalone/融合评分TopK优化步骤.md": "0ab497e52ad58ab9adbcf5697f04ae7fa0b8304fda468342230275f571358f63",
     "standalone/融合调用与验收步骤.md": "e3cce98d9fa68f6380441eb639ec55a051f7c0c9008f8d5e83fd245fc92af4f3",
+    "standalone/评分位图候选验证步骤.md": "139d10713dc3010b3ecb3a12ca7f5089109d4f295863f70a9cf8251181d524fc",
     "standalone/跨块TopK步骤.md": "2352376a554ff4c8d88eb8573e95ed322e0beca69a27354e6b49be647d8a1bdd",
     "standalone/连续文章分区评分实验步骤.md": "b33f7a05fa3ee24bfaedb07181891d992bf70fb41869b4be8d9f44ecad2da6c8",
     "verify_package.py": "214d02a263dd06c95ac17429a4836ac961898191dbcb533f9220778d4090e038"

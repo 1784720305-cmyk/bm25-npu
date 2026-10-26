@@ -1,0 +1,1674 @@
+{
+  "date": "2026-10-26",
+  "status": "user_A5_terminal_large_scale_six_round_target_met_on_declared_synthetic_data",
+  "source": "User supplied yellow-zone A5 terminal summary. Per-process sample summaries, not raw sample files or independent local hardware reproduction.",
+  "terminal_attachment_sha256": "319d520b73683e83197250cbade421e1142433aa127d831125f0af725014755c",
+  "source_commit_at_review": "4c811d924087a90fac5cd7db39e10d013e255d5d",
+  "review_method": "Recomputed all four scale gates from72 process summaries with30 samples per A/B case; exact equality with all printed decisions and final crossover.",
+  "device": 5,
+  "dataset_kind": "uniform_synthetic_not_MT_approved",
+  "query_condition": {
+    "queries_per_batch": 8,
+    "words_per_query": 3,
+    "k": 10,
+    "fixed_A_B_IDs_across_scales": true
+  },
+  "timer_policy": "caller steady_clock before Search through returned CPU Top-K",
+  "cpu_policy": "Two frozen accepted32thread/32shard binaries; faster median opponent per round and lower p95 per round; six medians all faster and median p95 lower for both A/B.",
+  "hardware_pipeline_checks": "Log reached all final scale decisions after isolated fused/merge build-install, NPU host compilation, memory probe, raw selector checks, merge checks,8193-tail checks and full checkpoint verifiers. Individual raw check reports remain in yellow-zone results.",
+  "hardware_result_root": "/test/w50066029/bm25-npu/results/large_scale_close1",
+  "unavailable_in_terminal_attachment": [
+    "actual free/total HBM probe values",
+    "workspace capacities",
+    "per-query posting-hit counts",
+    "TF/DF distributions",
+    "full source/installation hashes and raw timing samples"
+  ],
+  "unavailable_fields_location": "Existing report.json tiers[].workload, tiers[].memory_plan, device_memory_probe and per-round reports in yellow-zone results; not inferred or fabricated here.",
+  "tiers": [
+    {
+      "docs": 262144,
+      "status": "six_rounds_checked",
+      "workload_from_host_index_preparation": {
+        "docs": 262144,
+        "queries_per_batch": 8,
+        "k": 10,
+        "posting_records": 8246342,
+        "host_index_bytes": 67031608
+      },
+      "per_role_terminal_summaries": {
+        "cpu": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.068768,
+              "p95_batch_ms": 0.0734,
+              "mean_batch_ms": 0.06886726666666666,
+              "search_time_throughput_qps": 116165.49323384406
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.069274,
+              "p95_batch_ms": 0.073931,
+              "mean_batch_ms": 0.0695536,
+              "search_time_throughput_qps": 115019.2082077707
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.070932,
+              "p95_batch_ms": 0.081002,
+              "mean_batch_ms": 0.0708298,
+              "search_time_throughput_qps": 112946.81052325435
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.0671655,
+              "p95_batch_ms": 0.082914,
+              "mean_batch_ms": 0.07037223333333334,
+              "search_time_throughput_qps": 113681.20096610073
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.1066,
+              "p95_batch_ms": 0.122584,
+              "mean_batch_ms": 0.6963505,
+              "search_time_throughput_qps": 11488.467373829702
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.1058985,
+              "p95_batch_ms": 0.116745,
+              "mean_batch_ms": 0.5335862,
+              "search_time_throughput_qps": 14992.891495319782
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.091452,
+              "p95_batch_ms": 0.101482,
+              "mean_batch_ms": 0.09231266666666667,
+              "search_time_throughput_qps": 86661.9965479638
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.09291450000000001,
+              "p95_batch_ms": 0.098598,
+              "mean_batch_ms": 0.09302753333333333,
+              "search_time_throughput_qps": 85996.04561516913
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.0814675,
+              "p95_batch_ms": 0.083365,
+              "mean_batch_ms": 0.0808783,
+              "search_time_throughput_qps": 98914.04740208437
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.0832145,
+              "p95_batch_ms": 0.092129,
+              "mean_batch_ms": 0.0837195,
+              "search_time_throughput_qps": 95557.18799085039
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.0754035,
+              "p95_batch_ms": 0.079309,
+              "mean_batch_ms": 0.07543246666666667,
+              "search_time_throughput_qps": 106055.129223756
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.076364,
+              "p95_batch_ms": 0.078849,
+              "mean_batch_ms": 0.07593243333333333,
+              "search_time_throughput_qps": 105356.82380783267
+            }
+          }
+        ],
+        "npu": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.09762599999999999,
+              "p95_batch_ms": 0.099289,
+              "mean_batch_ms": 0.09816316666666666,
+              "search_time_throughput_qps": 81496.96338918705
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.09737599999999999,
+              "p95_batch_ms": 0.100981,
+              "mean_batch_ms": 0.0987371,
+              "search_time_throughput_qps": 81023.24252991025
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.09653999999999999,
+              "p95_batch_ms": 0.097616,
+              "mean_batch_ms": 0.09645296666666667,
+              "search_time_throughput_qps": 82941.9796660825
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.096224,
+              "p95_batch_ms": 0.097276,
+              "mean_batch_ms": 0.0962831,
+              "search_time_throughput_qps": 83088.30937101111
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.098007,
+              "p95_batch_ms": 0.100751,
+              "mean_batch_ms": 0.09830453333333333,
+              "search_time_throughput_qps": 81379.76681984148
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.098442,
+              "p95_batch_ms": 0.10003,
+              "mean_batch_ms": 0.0984333,
+              "search_time_throughput_qps": 81273.30893102233
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.09798699999999999,
+              "p95_batch_ms": 0.100471,
+              "mean_batch_ms": 0.0981903,
+              "search_time_throughput_qps": 81474.44299487832
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.097872,
+              "p95_batch_ms": 0.09998,
+              "mean_batch_ms": 0.09812786666666667,
+              "search_time_throughput_qps": 81526.28067596156
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.09814200000000001,
+              "p95_batch_ms": 0.099299,
+              "mean_batch_ms": 0.0981511,
+              "search_time_throughput_qps": 81506.98260131573
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.098272,
+              "p95_batch_ms": 0.10022,
+              "mean_batch_ms": 0.0983952,
+              "search_time_throughput_qps": 81304.7790949152
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.0981925,
+              "p95_batch_ms": 0.100681,
+              "mean_batch_ms": 0.09843426666666667,
+              "search_time_throughput_qps": 81272.51079231215
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.0986025,
+              "p95_batch_ms": 0.100841,
+              "mean_batch_ms": 0.09864103333333334,
+              "search_time_throughput_qps": 81102.15120076803
+            }
+          }
+        ],
+        "cpu_directory": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.11946899999999999,
+              "p95_batch_ms": 0.124827,
+              "mean_batch_ms": 0.11906693333333333,
+              "search_time_throughput_qps": 67189.09924053922
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.119609,
+              "p95_batch_ms": 0.125548,
+              "mean_batch_ms": 0.12135036666666667,
+              "search_time_throughput_qps": 65924.81110481468
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.06643,
+              "p95_batch_ms": 0.084937,
+              "mean_batch_ms": 0.06827663333333334,
+              "search_time_throughput_qps": 117170.39358023413
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.0668955,
+              "p95_batch_ms": 0.144217,
+              "mean_batch_ms": 0.07648213333333333,
+              "search_time_throughput_qps": 104599.59275891887
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.0651475,
+              "p95_batch_ms": 0.06663,
+              "mean_batch_ms": 0.064952,
+              "search_time_throughput_qps": 123167.87781746521
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.065964,
+              "p95_batch_ms": 0.07303,
+              "mean_batch_ms": 0.06619903333333334,
+              "search_time_throughput_qps": 120847.6860941071
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.0856985,
+              "p95_batch_ms": 0.09952,
+              "mean_batch_ms": 0.08795356666666666,
+              "search_time_throughput_qps": 90957.08455256883
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.086274,
+              "p95_batch_ms": 0.10006,
+              "mean_batch_ms": 0.08744103333333333,
+              "search_time_throughput_qps": 91490.22712830093
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.0698445,
+              "p95_batch_ms": 0.08632,
+              "mean_batch_ms": 0.07057623333333334,
+              "search_time_throughput_qps": 113352.60642510912
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.06796150000000001,
+              "p95_batch_ms": 0.075393,
+              "mean_batch_ms": 0.06893593333333334,
+              "search_time_throughput_qps": 116049.78148793227
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.06920899999999999,
+              "p95_batch_ms": 0.076906,
+              "mean_batch_ms": 0.0695429,
+              "search_time_throughput_qps": 115036.90527717423
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.06924949999999999,
+              "p95_batch_ms": 0.079769,
+              "mean_batch_ms": 0.06954626666666666,
+              "search_time_throughput_qps": 115031.33645323881
+            }
+          }
+        ]
+      },
+      "summary": {
+        "A": {
+          "npu_median_of_batch_medians_ms": 0.097997,
+          "faster_cpu_median_of_batch_medians_ms": 0.0689885,
+          "npu_median_of_batch_p95_ms": 0.099885,
+          "faster_cpu_median_of_batch_p95_ms": 0.078954,
+          "minimum_same_round_cpu_over_npu": 0.6647229279541257,
+          "speedup_ratio_of_six_medians": 0.7039858363011112,
+          "wins": 0,
+          "passed": false
+        },
+        "B": {
+          "npu_median_of_batch_medians_ms": 0.09807199999999999,
+          "faster_cpu_median_of_batch_medians_ms": 0.0686055,
+          "npu_median_of_batch_p95_ms": 0.10012499999999999,
+          "faster_cpu_median_of_batch_p95_ms": 0.077121,
+          "minimum_same_round_cpu_over_npu": 0.6700798439690375,
+          "speedup_ratio_of_six_medians": 0.6995421730973163,
+          "wins": 0,
+          "passed": false
+        }
+      },
+      "decision": {
+        "performance_target_met_at_this_scale": false,
+        "cases": {
+          "A": {
+            "cpu_medians_ms": [
+              0.068768,
+              0.06643,
+              0.0651475,
+              0.0856985,
+              0.0698445,
+              0.06920899999999999
+            ],
+            "npu_medians_ms": [
+              0.09762599999999999,
+              0.09653999999999999,
+              0.098007,
+              0.09798699999999999,
+              0.09814200000000001,
+              0.0981925
+            ],
+            "cpu_p95_ms": [
+              0.0734,
+              0.081002,
+              0.06663,
+              0.09952,
+              0.083365,
+              0.076906
+            ],
+            "npu_p95_ms": [
+              0.099289,
+              0.097616,
+              0.100751,
+              0.100471,
+              0.099299,
+              0.100681
+            ],
+            "wins": 0,
+            "cpu_over_npu": 0.7039858363011112,
+            "passed": false
+          },
+          "B": {
+            "cpu_medians_ms": [
+              0.069274,
+              0.0668955,
+              0.065964,
+              0.086274,
+              0.06796150000000001,
+              0.06924949999999999
+            ],
+            "npu_medians_ms": [
+              0.09737599999999999,
+              0.096224,
+              0.098442,
+              0.097872,
+              0.098272,
+              0.0986025
+            ],
+            "cpu_p95_ms": [
+              0.073931,
+              0.082914,
+              0.07303,
+              0.098598,
+              0.075393,
+              0.078849
+            ],
+            "npu_p95_ms": [
+              0.100981,
+              0.097276,
+              0.10003,
+              0.09998,
+              0.10022,
+              0.100841
+            ],
+            "wins": 0,
+            "cpu_over_npu": 0.6995421730973163,
+            "passed": false
+          }
+        }
+      }
+    },
+    {
+      "docs": 1048576,
+      "status": "six_rounds_checked",
+      "workload_from_host_index_preparation": {
+        "docs": 1048576,
+        "queries_per_batch": 8,
+        "k": 10,
+        "posting_records": 33008867,
+        "host_index_bytes": 268277536
+      },
+      "per_role_terminal_summaries": {
+        "cpu": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.35740150000000004,
+              "p95_batch_ms": 0.396836,
+              "mean_batch_ms": 0.36578683333333334,
+              "search_time_throughput_qps": 21870.66146448683
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.354867,
+              "p95_batch_ms": 0.396515,
+              "mean_batch_ms": 0.36484106666666666,
+              "search_time_throughput_qps": 21927.356130961867
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.355418,
+              "p95_batch_ms": 0.364416,
+              "mean_batch_ms": 0.35670263333333335,
+              "search_time_throughput_qps": 22427.64491319053
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.3564445,
+              "p95_batch_ms": 0.363485,
+              "mean_batch_ms": 0.3569762,
+              "search_time_throughput_qps": 22410.4576159419
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.25676,
+              "p95_batch_ms": 0.287431,
+              "mean_batch_ms": 0.25651213333333334,
+              "search_time_throughput_qps": 31187.608539375135
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.2639855,
+              "p95_batch_ms": 0.29314,
+              "mean_batch_ms": 0.2629204,
+              "search_time_throughput_qps": 30427.460174258063
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.2009465,
+              "p95_batch_ms": 0.245058,
+              "mean_batch_ms": 0.2082091,
+              "search_time_throughput_qps": 38422.912351093204
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.2051025,
+              "p95_batch_ms": 0.252278,
+              "mean_batch_ms": 0.21285386666666667,
+              "search_time_throughput_qps": 37584.471098794544
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.3636005,
+              "p95_batch_ms": 0.37304,
+              "mean_batch_ms": 0.3649033666666667,
+              "search_time_throughput_qps": 21923.612470552707
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.364311,
+              "p95_batch_ms": 0.381502,
+              "mean_batch_ms": 0.3667222666666667,
+              "search_time_throughput_qps": 21814.873890031948
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.354286,
+              "p95_batch_ms": 0.370376,
+              "mean_batch_ms": 0.35698983333333334,
+              "search_time_throughput_qps": 22409.601767370594
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.355563,
+              "p95_batch_ms": 0.368593,
+              "mean_batch_ms": 0.3567401333333333,
+              "search_time_throughput_qps": 22425.287352025807
+            }
+          }
+        ],
+        "npu": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.311172,
+              "p95_batch_ms": 0.314422,
+              "mean_batch_ms": 0.31155703333333334,
+              "search_time_throughput_qps": 25677.48162963421
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.31039,
+              "p95_batch_ms": 0.313851,
+              "mean_batch_ms": 0.31051403333333333,
+              "search_time_throughput_qps": 25763.730914577023
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.309985,
+              "p95_batch_ms": 0.313681,
+              "mean_batch_ms": 0.30997026666666666,
+              "search_time_throughput_qps": 25808.92704977725
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.309775,
+              "p95_batch_ms": 0.311918,
+              "mean_batch_ms": 0.3096121333333333,
+              "search_time_throughput_qps": 25838.78065071524
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.310235,
+              "p95_batch_ms": 0.314092,
+              "mean_batch_ms": 0.31032713333333334,
+              "search_time_throughput_qps": 25779.247576804435
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.309304,
+              "p95_batch_ms": 0.31297,
+              "mean_batch_ms": 0.3095931,
+              "search_time_throughput_qps": 25840.369181354494
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.3115925,
+              "p95_batch_ms": 0.318678,
+              "mean_batch_ms": 0.31303183333333334,
+              "search_time_throughput_qps": 25556.506233924025
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.312068,
+              "p95_batch_ms": 0.314361,
+              "mean_batch_ms": 0.3118602,
+              "search_time_throughput_qps": 25652.519943230975
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.31092200000000003,
+              "p95_batch_ms": 0.314792,
+              "mean_batch_ms": 0.31102616666666666,
+              "search_time_throughput_qps": 25721.308550138066
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.311207,
+              "p95_batch_ms": 0.314372,
+              "mean_batch_ms": 0.3116658,
+              "search_time_throughput_qps": 25668.52057556524
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.311958,
+              "p95_batch_ms": 0.315413,
+              "mean_batch_ms": 0.31182540000000003,
+              "search_time_throughput_qps": 25655.38278793196
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.311883,
+              "p95_batch_ms": 0.315243,
+              "mean_batch_ms": 0.3117739333333333,
+              "search_time_throughput_qps": 25659.617898353274
+            }
+          }
+        ],
+        "cpu_directory": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.35212299999999996,
+              "p95_batch_ms": 0.391226,
+              "mean_batch_ms": 0.3549179,
+              "search_time_throughput_qps": 22540.42413752589
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.351242,
+              "p95_batch_ms": 0.402253,
+              "mean_batch_ms": 0.35782376666666665,
+              "search_time_throughput_qps": 22357.374621939125
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.35660000000000003,
+              "p95_batch_ms": 0.362584,
+              "mean_batch_ms": 0.3569431,
+              "search_time_throughput_qps": 22412.535779512196
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.35689499999999996,
+              "p95_batch_ms": 0.364677,
+              "mean_batch_ms": 0.3577556333333333,
+              "search_time_throughput_qps": 22361.632507254253
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.352549,
+              "p95_batch_ms": 0.361783,
+              "mean_batch_ms": 0.35382396666666666,
+              "search_time_throughput_qps": 22610.113371818887
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.35392049999999997,
+              "p95_batch_ms": 0.36723,
+              "mean_batch_ms": 0.35623356666666667,
+              "search_time_throughput_qps": 22457.176270212978
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.376405,
+              "p95_batch_ms": 0.390686,
+              "mean_batch_ms": 0.3842086,
+              "search_time_throughput_qps": 20822.022203563378
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.37855249999999996,
+              "p95_batch_ms": 0.407521,
+              "mean_batch_ms": 0.3806870666666667,
+              "search_time_throughput_qps": 21014.635642993562
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.19603900000000002,
+              "p95_batch_ms": 0.227762,
+              "mean_batch_ms": 0.19946993333333332,
+              "search_time_throughput_qps": 40106.29505064924
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.1963895,
+              "p95_batch_ms": 0.229504,
+              "mean_batch_ms": 0.19969213333333333,
+              "search_time_throughput_qps": 40061.66826134363
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.362454,
+              "p95_batch_ms": 0.372669,
+              "mean_batch_ms": 0.3650072,
+              "search_time_throughput_qps": 21917.37587642107
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.362394,
+              "p95_batch_ms": 0.371076,
+              "mean_batch_ms": 0.3643422,
+              "search_time_throughput_qps": 21957.37962827254
+            }
+          }
+        ]
+      },
+      "summary": {
+        "A": {
+          "npu_median_of_batch_medians_ms": 0.311047,
+          "faster_cpu_median_of_batch_medians_ms": 0.3044415,
+          "npu_median_of_batch_p95_ms": 0.31460699999999997,
+          "faster_cpu_median_of_batch_p95_ms": 0.3250075,
+          "minimum_same_round_cpu_over_npu": 0.6305086163089135,
+          "speedup_ratio_of_six_medians": 0.9787636595112634,
+          "wins": 3,
+          "passed": false
+        },
+        "B": {
+          "npu_median_of_batch_medians_ms": 0.3107985,
+          "faster_cpu_median_of_batch_medians_ms": 0.30761375,
+          "npu_median_of_batch_p95_ms": 0.314106,
+          "faster_cpu_median_of_batch_p95_ms": 0.3283125,
+          "minimum_same_round_cpu_over_npu": 0.6310574633603999,
+          "speedup_ratio_of_six_medians": 0.9897530071734582,
+          "wins": 3,
+          "passed": false
+        }
+      },
+      "decision": {
+        "performance_target_met_at_this_scale": false,
+        "cases": {
+          "A": {
+            "cpu_medians_ms": [
+              0.35212299999999996,
+              0.355418,
+              0.25676,
+              0.2009465,
+              0.19603900000000002,
+              0.354286
+            ],
+            "npu_medians_ms": [
+              0.311172,
+              0.309985,
+              0.310235,
+              0.3115925,
+              0.31092200000000003,
+              0.311958
+            ],
+            "cpu_p95_ms": [
+              0.391226,
+              0.362584,
+              0.287431,
+              0.245058,
+              0.227762,
+              0.370376
+            ],
+            "npu_p95_ms": [
+              0.314422,
+              0.313681,
+              0.314092,
+              0.318678,
+              0.314792,
+              0.315413
+            ],
+            "wins": 3,
+            "cpu_over_npu": 0.9787636595112634,
+            "passed": false
+          },
+          "B": {
+            "cpu_medians_ms": [
+              0.351242,
+              0.3564445,
+              0.2639855,
+              0.2051025,
+              0.1963895,
+              0.355563
+            ],
+            "npu_medians_ms": [
+              0.31039,
+              0.309775,
+              0.309304,
+              0.312068,
+              0.311207,
+              0.311883
+            ],
+            "cpu_p95_ms": [
+              0.396515,
+              0.363485,
+              0.29314,
+              0.252278,
+              0.229504,
+              0.368593
+            ],
+            "npu_p95_ms": [
+              0.313851,
+              0.311918,
+              0.31297,
+              0.314361,
+              0.314372,
+              0.315243
+            ],
+            "wins": 3,
+            "cpu_over_npu": 0.9897530071734582,
+            "passed": false
+          }
+        }
+      }
+    },
+    {
+      "docs": 4194304,
+      "status": "six_rounds_checked",
+      "workload_from_host_index_preparation": {
+        "docs": 4194304,
+        "queries_per_batch": 8,
+        "k": 10,
+        "posting_records": 132022139,
+        "host_index_bytes": 1072966624
+      },
+      "per_role_terminal_summaries": {
+        "cpu": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.349779,
+              "p95_batch_ms": 2.499048,
+              "mean_batch_ms": 2.3604438333333335,
+              "search_time_throughput_qps": 3389.1931199662095
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 2.3454629999999996,
+              "p95_batch_ms": 2.419639,
+              "mean_batch_ms": 2.3489407333333334,
+              "search_time_throughput_qps": 3405.7904852487977
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 0.897726,
+              "p95_batch_ms": 1.078898,
+              "mean_batch_ms": 0.9236553,
+              "search_time_throughput_qps": 8661.23975037008
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 0.904156,
+              "p95_batch_ms": 1.062654,
+              "mean_batch_ms": 0.9301060666666667,
+              "search_time_throughput_qps": 8601.169572703213
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.411067,
+              "p95_batch_ms": 2.42638,
+              "mean_batch_ms": 2.4099630333333333,
+              "search_time_throughput_qps": 3319.5529928667925
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 2.4082375000000003,
+              "p95_batch_ms": 2.428663,
+              "mean_batch_ms": 2.4053873666666665,
+              "search_time_throughput_qps": 3325.8676381452133
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.9704905,
+              "p95_batch_ms": 2.001001,
+              "mean_batch_ms": 1.9742054666666666,
+              "search_time_throughput_qps": 4052.263118036819
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.9753729999999998,
+              "p95_batch_ms": 2.004467,
+              "mean_batch_ms": 1.9755251333333332,
+              "search_time_throughput_qps": 4049.556173705307
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.2784325,
+              "p95_batch_ms": 2.422553,
+              "mean_batch_ms": 2.2894293,
+              "search_time_throughput_qps": 3494.320615185627
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 2.2968555,
+              "p95_batch_ms": 2.412378,
+              "mean_batch_ms": 2.3101865333333333,
+              "search_time_throughput_qps": 3462.9238308548706
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.174677,
+              "p95_batch_ms": 2.323695,
+              "mean_batch_ms": 2.187021533333333,
+              "search_time_throughput_qps": 3657.9429502949874
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 2.164592,
+              "p95_batch_ms": 2.297896,
+              "mean_batch_ms": 2.1776857333333335,
+              "search_time_throughput_qps": 3673.6246546257084
+            }
+          }
+        ],
+        "npu": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.207181,
+              "p95_batch_ms": 1.211667,
+              "mean_batch_ms": 1.2009383333333332,
+              "search_time_throughput_qps": 6661.457776766224
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.2036105,
+              "p95_batch_ms": 1.214782,
+              "mean_batch_ms": 1.2032962333333332,
+              "search_time_throughput_qps": 6648.404423105899
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.210851,
+              "p95_batch_ms": 1.216936,
+              "mean_batch_ms": 1.2047227333333332,
+              "search_time_throughput_qps": 6640.532114692393
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.2010565,
+              "p95_batch_ms": 1.214581,
+              "mean_batch_ms": 1.2013321666666668,
+              "search_time_throughput_qps": 6659.273947685576
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.208918,
+              "p95_batch_ms": 1.215002,
+              "mean_batch_ms": 1.2021567666666666,
+              "search_time_throughput_qps": 6654.706126375143
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.201247,
+              "p95_batch_ms": 1.214753,
+              "mean_batch_ms": 1.2014913,
+              "search_time_throughput_qps": 6658.391950070716
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.215834,
+              "p95_batch_ms": 1.222904,
+              "mean_batch_ms": 1.2090318666666666,
+              "search_time_throughput_qps": 6616.8644686398675
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.2047575,
+              "p95_batch_ms": 1.220141,
+              "mean_batch_ms": 1.2047026333333333,
+              "search_time_throughput_qps": 6640.64290941618
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.20988,
+              "p95_batch_ms": 1.216495,
+              "mean_batch_ms": 1.2055817666666666,
+              "search_time_throughput_qps": 6635.800425316099
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.2031545000000001,
+              "p95_batch_ms": 1.216324,
+              "mean_batch_ms": 1.2030380999999999,
+              "search_time_throughput_qps": 6649.830957140925
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.212564,
+              "p95_batch_ms": 1.218277,
+              "mean_batch_ms": 1.2073386666666668,
+              "search_time_throughput_qps": 6626.144114217054
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.205052,
+              "p95_batch_ms": 1.217596,
+              "mean_batch_ms": 1.2052447333333334,
+              "search_time_throughput_qps": 6637.656053368082
+            }
+          }
+        ],
+        "cpu_directory": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.7115875,
+              "p95_batch_ms": 1.812318,
+              "mean_batch_ms": 1.7371283,
+              "search_time_throughput_qps": 4605.301750020421
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.7098145,
+              "p95_batch_ms": 1.790616,
+              "mean_batch_ms": 1.7142242333333333,
+              "search_time_throughput_qps": 4666.83403748405
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.07001,
+              "p95_batch_ms": 2.171477,
+              "mean_batch_ms": 2.0587603,
+              "search_time_throughput_qps": 3885.833625216107
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 2.0790984999999997,
+              "p95_batch_ms": 2.158608,
+              "mean_batch_ms": 2.0639858666666666,
+              "search_time_throughput_qps": 3875.9955333027474
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.2117025000000003,
+              "p95_batch_ms": 2.234762,
+              "mean_batch_ms": 2.209364566666667,
+              "search_time_throughput_qps": 3620.950621141641
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 2.2092635,
+              "p95_batch_ms": 2.229134,
+              "mean_batch_ms": 2.2074209,
+              "search_time_throughput_qps": 3624.1389215803842
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.4359535,
+              "p95_batch_ms": 1.895633,
+              "mean_batch_ms": 1.4928312,
+              "search_time_throughput_qps": 5358.944802332642
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.4465245,
+              "p95_batch_ms": 1.89348,
+              "mean_batch_ms": 1.5262668666666666,
+              "search_time_throughput_qps": 5241.547316998255
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.0360585,
+              "p95_batch_ms": 2.061893,
+              "mean_batch_ms": 2.036630833333333,
+              "search_time_throughput_qps": 3928.0560173521876
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 2.0361640000000003,
+              "p95_batch_ms": 2.064517,
+              "mean_batch_ms": 2.033124133333333,
+              "search_time_throughput_qps": 3934.8310655699597
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.5630145,
+              "p95_batch_ms": 1.622454,
+              "mean_batch_ms": 1.5697391333333333,
+              "search_time_throughput_qps": 5096.388202421915
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.5705054999999999,
+              "p95_batch_ms": 1.587691,
+              "mean_batch_ms": 1.5650171666666666,
+              "search_time_throughput_qps": 5111.765014718157
+            }
+          }
+        ]
+      },
+      "summary": {
+        "A": {
+          "npu_median_of_batch_medians_ms": 1.2103655,
+          "faster_cpu_median_of_batch_medians_ms": 1.637301,
+          "npu_median_of_batch_p95_ms": 1.2167155,
+          "faster_cpu_median_of_batch_p95_ms": 1.8539755,
+          "minimum_same_round_cpu_over_npu": 0.7414008825198146,
+          "speedup_ratio_of_six_medians": 1.3527327075994813,
+          "wins": 5,
+          "passed": false
+        },
+        "B": {
+          "npu_median_of_batch_medians_ms": 1.2033825,
+          "faster_cpu_median_of_batch_medians_ms": 1.6401599999999998,
+          "npu_median_of_batch_p95_ms": 1.2155529999999999,
+          "faster_cpu_median_of_batch_p95_ms": 1.8420480000000001,
+          "minimum_same_round_cpu_over_npu": 0.7528005551778788,
+          "speedup_ratio_of_six_medians": 1.3629581616817594,
+          "wins": 5,
+          "passed": false
+        }
+      },
+      "decision": {
+        "performance_target_met_at_this_scale": false,
+        "cases": {
+          "A": {
+            "cpu_medians_ms": [
+              1.7115875,
+              0.897726,
+              2.2117025000000003,
+              1.4359535,
+              2.0360585,
+              1.5630145
+            ],
+            "npu_medians_ms": [
+              1.207181,
+              1.210851,
+              1.208918,
+              1.215834,
+              1.20988,
+              1.212564
+            ],
+            "cpu_p95_ms": [
+              1.812318,
+              1.078898,
+              2.234762,
+              1.895633,
+              2.061893,
+              1.622454
+            ],
+            "npu_p95_ms": [
+              1.211667,
+              1.216936,
+              1.215002,
+              1.222904,
+              1.216495,
+              1.218277
+            ],
+            "wins": 5,
+            "cpu_over_npu": 1.3527327075994813,
+            "passed": false
+          },
+          "B": {
+            "cpu_medians_ms": [
+              1.7098145,
+              0.904156,
+              2.2092635,
+              1.4465245,
+              2.0361640000000003,
+              1.5705054999999999
+            ],
+            "npu_medians_ms": [
+              1.2036105,
+              1.2010565,
+              1.201247,
+              1.2047575,
+              1.2031545000000001,
+              1.205052
+            ],
+            "cpu_p95_ms": [
+              1.790616,
+              1.062654,
+              2.229134,
+              1.89348,
+              2.064517,
+              1.587691
+            ],
+            "npu_p95_ms": [
+              1.214782,
+              1.214581,
+              1.214753,
+              1.220141,
+              1.216324,
+              1.217596
+            ],
+            "wins": 5,
+            "cpu_over_npu": 1.3629581616817594,
+            "passed": false
+          }
+        }
+      }
+    },
+    {
+      "docs": 10000000,
+      "status": "six_rounds_checked",
+      "workload_from_host_index_preparation": {
+        "docs": 10000000,
+        "queries_per_batch": 8,
+        "k": 10,
+        "posting_records": 314795949,
+        "host_index_bytes": 2558379888
+      },
+      "per_role_terminal_summaries": {
+        "cpu": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 6.054887000000001,
+              "p95_batch_ms": 6.334672,
+              "mean_batch_ms": 6.074458,
+              "search_time_throughput_qps": 1316.9899273317883
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 6.06687,
+              "p95_batch_ms": 6.126149,
+              "mean_batch_ms": 6.0605283,
+              "search_time_throughput_qps": 1320.0169364773035
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 6.623941,
+              "p95_batch_ms": 6.86729,
+              "mean_batch_ms": 6.621719866666667,
+              "search_time_throughput_qps": 1208.1453400454934
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 6.6171005,
+              "p95_batch_ms": 7.028522,
+              "mean_batch_ms": 6.656212633333333,
+              "search_time_throughput_qps": 1201.8846813782927
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 6.908958,
+              "p95_batch_ms": 7.026188,
+              "mean_batch_ms": 6.807714466666667,
+              "search_time_throughput_qps": 1175.1374178766232
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 6.91356,
+              "p95_batch_ms": 7.071347,
+              "mean_batch_ms": 6.825527933333333,
+              "search_time_throughput_qps": 1172.070509144206
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 4.169209,
+              "p95_batch_ms": 4.849053,
+              "mean_batch_ms": 4.164175333333334,
+              "search_time_throughput_qps": 1921.148693226654
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 4.14661,
+              "p95_batch_ms": 4.28022,
+              "mean_batch_ms": 4.064694433333333,
+              "search_time_throughput_qps": 1968.167627655947
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 6.0312315,
+              "p95_batch_ms": 6.182524,
+              "mean_batch_ms": 6.0119321,
+              "search_time_throughput_qps": 1330.6870182382797
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 6.0498145,
+              "p95_batch_ms": 6.251797,
+              "mean_batch_ms": 6.028932466666666,
+              "search_time_throughput_qps": 1326.9347507591367
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 6.0632395,
+              "p95_batch_ms": 6.137536,
+              "mean_batch_ms": 6.061859,
+              "search_time_throughput_qps": 1319.7271662042947
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 6.058057,
+              "p95_batch_ms": 6.141181,
+              "mean_batch_ms": 6.0543729,
+              "search_time_throughput_qps": 1321.358980052253
+            }
+          }
+        ],
+        "npu": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 3.025067,
+              "p95_batch_ms": 3.032829,
+              "mean_batch_ms": 2.9987306,
+              "search_time_throughput_qps": 2667.795499869178
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 2.994041,
+              "p95_batch_ms": 3.030105,
+              "mean_batch_ms": 2.994316366666667,
+              "search_time_throughput_qps": 2671.7283748162395
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 3.0171755,
+              "p95_batch_ms": 3.024907,
+              "mean_batch_ms": 2.9930373666666665,
+              "search_time_throughput_qps": 2672.8700714183087
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 2.990846,
+              "p95_batch_ms": 3.020952,
+              "mean_batch_ms": 2.9909655666666666,
+              "search_time_throughput_qps": 2674.7215311193763
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 3.037275,
+              "p95_batch_ms": 3.043956,
+              "mean_batch_ms": 3.010845466666667,
+              "search_time_throughput_qps": 2657.060977910922
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 3.027486,
+              "p95_batch_ms": 3.039469,
+              "mean_batch_ms": 3.0248443,
+              "search_time_throughput_qps": 2644.764228029853
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 3.029469,
+              "p95_batch_ms": 3.036635,
+              "mean_batch_ms": 3.0070867666666667,
+              "search_time_throughput_qps": 2660.382164119574
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 3.0028485,
+              "p95_batch_ms": 3.03312,
+              "mean_batch_ms": 3.0031048,
+              "search_time_throughput_qps": 2663.9096977235026
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 3.0299544999999997,
+              "p95_batch_ms": 3.037185,
+              "mean_batch_ms": 3.0118128333333334,
+              "search_time_throughput_qps": 2656.207554287487
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 3.0129194999999998,
+              "p95_batch_ms": 3.040862,
+              "mean_batch_ms": 3.0123013,
+              "search_time_throughput_qps": 2655.776830823663
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 3.0296695,
+              "p95_batch_ms": 3.037166,
+              "mean_batch_ms": 3.0044584333333333,
+              "search_time_throughput_qps": 2662.7094957423997
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 3.0016875,
+              "p95_batch_ms": 3.029875,
+              "mean_batch_ms": 3.0406926,
+              "search_time_throughput_qps": 2630.979534070626
+            }
+          }
+        ],
+        "cpu_directory": [
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 5.2711115,
+              "p95_batch_ms": 5.425378,
+              "mean_batch_ms": 5.288641033333334,
+              "search_time_throughput_qps": 1512.6759312226843
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 5.267500999999999,
+              "p95_batch_ms": 5.457346,
+              "mean_batch_ms": 5.295317533333333,
+              "search_time_throughput_qps": 1510.7687026587253
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 6.004056,
+              "p95_batch_ms": 6.109534,
+              "mean_batch_ms": 6.0002583666666665,
+              "search_time_throughput_qps": 1333.2759209907579
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 6.005178,
+              "p95_batch_ms": 6.118227,
+              "mean_batch_ms": 6.0074164,
+              "search_time_throughput_qps": 1331.6872790772418
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 5.823460000000001,
+              "p95_batch_ms": 5.957135,
+              "mean_batch_ms": 5.810363133333333,
+              "search_time_throughput_qps": 1376.8502615791758
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 5.817235500000001,
+              "p95_batch_ms": 6.002413,
+              "mean_batch_ms": 5.8049982,
+              "search_time_throughput_qps": 1378.1227356797458
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 6.310420000000001,
+              "p95_batch_ms": 6.402623,
+              "mean_batch_ms": 6.289055266666667,
+              "search_time_throughput_qps": 1272.0511524841743
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 6.3017520000000005,
+              "p95_batch_ms": 6.394522,
+              "mean_batch_ms": 6.285071266666667,
+              "search_time_throughput_qps": 1272.857484119326
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 5.893124500000001,
+              "p95_batch_ms": 5.962052,
+              "mean_batch_ms": 5.841387266666667,
+              "search_time_throughput_qps": 1369.5376859622468
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 5.893825,
+              "p95_batch_ms": 5.982663,
+              "mean_batch_ms": 5.844547,
+              "search_time_throughput_qps": 1368.7972737664697
+            }
+          },
+          {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 6.0331645,
+              "p95_batch_ms": 6.238958,
+              "mean_batch_ms": 6.026230333333333,
+              "search_time_throughput_qps": 1327.5297420593117
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 6.0248565,
+              "p95_batch_ms": 6.189855,
+              "mean_batch_ms": 6.0136047,
+              "search_time_throughput_qps": 1330.3169062642246
+            }
+          }
+        ]
+      },
+      "summary": {
+        "A": {
+          "npu_median_of_batch_medians_ms": 3.0295692499999998,
+          "faster_cpu_median_of_batch_medians_ms": 5.858292250000001,
+          "npu_median_of_batch_p95_ms": 3.0369005,
+          "faster_cpu_median_of_batch_p95_ms": 5.9595935,
+          "minimum_same_round_cpu_over_npu": 1.3762177464103447,
+          "speedup_ratio_of_six_medians": 1.933704684255031,
+          "wins": 6,
+          "passed": true
+        },
+        "B": {
+          "npu_median_of_batch_medians_ms": 3.002268,
+          "faster_cpu_median_of_batch_medians_ms": 5.85553025,
+          "npu_median_of_batch_p95_ms": 3.0316124999999996,
+          "faster_cpu_median_of_batch_p95_ms": 5.992538,
+          "minimum_same_round_cpu_over_npu": 1.38089217621202,
+          "speedup_ratio_of_six_medians": 1.950368937749728,
+          "wins": 6,
+          "passed": true
+        }
+      },
+      "decision": {
+        "performance_target_met_at_this_scale": true,
+        "cases": {
+          "A": {
+            "cpu_medians_ms": [
+              5.2711115,
+              6.004056,
+              5.823460000000001,
+              4.169209,
+              5.893124500000001,
+              6.0331645
+            ],
+            "npu_medians_ms": [
+              3.025067,
+              3.0171755,
+              3.037275,
+              3.029469,
+              3.0299544999999997,
+              3.0296695
+            ],
+            "cpu_p95_ms": [
+              5.425378,
+              6.109534,
+              5.957135,
+              4.849053,
+              5.962052,
+              6.137536
+            ],
+            "npu_p95_ms": [
+              3.032829,
+              3.024907,
+              3.043956,
+              3.036635,
+              3.037185,
+              3.037166
+            ],
+            "wins": 6,
+            "cpu_over_npu": 1.933704684255031,
+            "passed": true
+          },
+          "B": {
+            "cpu_medians_ms": [
+              5.267500999999999,
+              6.005178,
+              5.817235500000001,
+              4.14661,
+              5.893825,
+              6.0248565
+            ],
+            "npu_medians_ms": [
+              2.994041,
+              2.990846,
+              3.027486,
+              3.0028485,
+              3.0129194999999998,
+              3.0016875
+            ],
+            "cpu_p95_ms": [
+              5.457346,
+              6.118227,
+              6.002413,
+              4.28022,
+              5.982663,
+              6.141181
+            ],
+            "npu_p95_ms": [
+              3.030105,
+              3.020952,
+              3.039469,
+              3.03312,
+              3.040862,
+              3.029875
+            ],
+            "wins": 6,
+            "cpu_over_npu": 1.950368937749728,
+            "passed": true
+          }
+        }
+      }
+    }
+  ],
+  "crossover": {
+    "large_scale_hardware_target_met": true,
+    "first_tested_large_winning_docs": 10000000,
+    "tested_large_winning_docs": [
+      10000000
+    ],
+    "previous_tested_losing_docs": 4194304,
+    "nonmonotonic_tested_results": false,
+    "all_planned_scales_measured": true,
+    "scope": "Only tested article counts, workload and frozen opponents. No interpolation, all-small-scale requirement or MT business-data acceptance."
+  },
+  "scope": "Measured stable advantage proven at10000000 articles for declared synthetic fixedQ8/three-word/K10 workload against these frozen CPU opponents. No precise interpolated crossover, all-small-scale win, all-large-workload claim, occupancy claim or MT business-data acceptance."
+}
