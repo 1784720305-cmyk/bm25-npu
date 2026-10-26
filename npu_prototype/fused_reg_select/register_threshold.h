@@ -25,7 +25,11 @@ __aicore__ inline void RegisterThreshold(
         V::Arange((V::RegTensor<int16_t>&)indexHi,static_cast<int16_t>(128));
         uint32_t prefixMask=0;
         const uint16_t tiles=static_cast<uint16_t>((count+63)/64);
-        for (int16_t shift=24;shift>=0;shift-=8) {
+        // CANN9.2 vector loops require a uint16_t induction variable.
+        // Derive the descending byte shift from a canonical ascending pass loop.
+        const uint16_t passes=4;
+        for (uint16_t pass=0;pass<passes;++pass) {
+            const int16_t shift=static_cast<int16_t>(24-8*pass);
             V::RegTensor<uint16_t> histLo,histHi;
             V::Duplicate(histLo,static_cast<uint16_t>(0),all16);
             V::Duplicate(histHi,static_cast<uint16_t>(0),all16);

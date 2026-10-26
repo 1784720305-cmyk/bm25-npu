@@ -5,6 +5,7 @@ import contextlib
 import io
 from pathlib import Path
 import random
+import re
 import sys
 import tempfile
 from types import SimpleNamespace
@@ -16,9 +17,32 @@ from standalone import register_select as x
 from standalone.test_fused_simd_select import key
 
 
-def threshold(words,k):
+def pass_shifts(header=None):
+    if header is None:header=(ROOT/x.source.HEADER).read_text(encoding='utf-8')
+    # Regression for the actual CANN9.2 INFERCHANNEL failure at generated line469.
+    # Check ALL loops in this vector scope, including the bounded tile loop.
+    vector=header[:header.index('__aicore__ inline void VectorToScalar')]
+    loops=re.findall(r'for\s*\(([^;]+);([^;]+);([^)]*)\)',vector)
+    assert len(loops)==2
+    for declaration,condition,step in loops:
+        typed=re.fullmatch(r'uint16_t\s+(\w+)=0',declaration.strip())
+        assert typed,'Vector loop induction must be uint16_t: '+declaration
+        variable=typed.group(1)
+        bounded=re.fullmatch(variable+r'<(\w+)',condition.strip())
+        assert bounded,'Vector loop must use its bounded ascending counter: '+condition
+        bound=bounded.group(1)
+        assert step.strip()=='++'+variable
+        assert re.search(r'const uint16_t '+bound+r'=',vector)
+    passes=int(re.search(r'const uint16_t passes=(\d+);',vector).group(1))
+    high,stride=map(int,re.search(r'shift=static_cast<int16_t>\((\d+)-(\d+)\*pass\)',vector).groups())
+    shifts=[high-stride*p for p in range(passes)]
+    assert shifts==[24,16,8,0]
+    return shifts
+
+
+def threshold(words,k,shifts):
     prefix=mask=0;rank=k
-    for shift in (24,16,8,0):
+    for shift in shifts:
         frequencies=Counter((key(bits)>>shift)&255 for bits in words if key(bits)&mask==prefix)
         cdf=[];total=0
         for b in range(256):total+=frequencies[b];cdf.append(total)
@@ -36,7 +60,7 @@ def threshold(words,k):
 
 
 def exact_models():
-    rng=random.Random(950);rows=0
+    shifts=pass_shifts();rng=random.Random(950);rows=0
     fixed=(1,2,0x7f,0x80,0xff,0x100,0x007fffff,0x00800000,
         0x3f7f7f7f,0x3f808080,0x3fffffff,0x40000000,0x7f7fffff)
     for n in (2,11,33,63,64,65,127,128,129,511,512,513,1023,1024):
@@ -45,7 +69,7 @@ def exact_models():
             for kind in range(12):
                 words=[(0x3f800000 if kind==0 else rng.choice(fixed) if kind<6 else
                     rng.randrange(1,0x7f800000)) for _ in range(n)]
-                prefix,rank=threshold(words,k)
+                prefix,rank=threshold(words,k,shifts)
                 ordered=sorted(key(word) for word in words)
                 assert prefix==ordered[k-1]
                 assert rank==k-sum(word<prefix for word in ordered)
@@ -156,8 +180,15 @@ def first_error_stops():
 
 
 def main():
+    header=(ROOT/x.source.HEADER).read_text(encoding='utf-8')
+    old_failure=header.replace('for (uint16_t pass=0;pass<passes;++pass)',
+        'for (int16_t shift=24;shift>=0;shift-=8)',1)
+    assert old_failure!=header
+    try:pass_shifts(old_failure)
+    except AssertionError:pass
+    else:raise AssertionError('Actual failed CANN loop was accepted')
     rows=exact_models();source_contracts();command_contracts();counter_contracts();first_error_stops()
-    print(f'PASS: {rows} exact register-threshold model rows; source isolation, frozen CPU commands, six-round gate, counter provenance, first-error stop. Not CANN/device/performance evidence.')
+    print(f'PASS: {rows} exact register-threshold model rows; CANN uint16 loop regression, source isolation, frozen CPU commands, six-round gate, counter provenance, first-error stop. Not CANN/device/performance evidence.')
 
 
 if __name__=='__main__':main()
