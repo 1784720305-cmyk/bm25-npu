@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "2026-10-26 actual A5 large_scale_close1 user terminal run completed isolated fused/global-ID merge build-install, NPU host compilation, affected device checks and all four six-round full Search comparisons. Recomputed72 process summaries of30 measured samples per A/B case: all four gates and final crossover match printed decisions exactly. FixedQ8/three words/K10, unchanged two accepted32thread/32shard CPU binaries, faster opponent per round, full caller Search boundary. At10000000 articles,M314795949,host index2558379888bytes: six-round median-of-batch-medians NPU A3.02956925/B3.002268ms versus faster-per-round CPU A5.85829225/B5.85553025ms, speedups1.9337046843/1.9503689377, wins6/6 both and p95 gates passed. Minimum same-round speedups1.3762/1.3809. At262144/1048576/4194304 articles wins0/6,3/6,5/6 both, not stable gate passes. First tested stable large winner10m; no interpolation or all-scale claim. Scope is declared uniform synthetic data, not MT-approved business data or arbitrary query/TF/DF distributions. Evidence is user-supplied terminal summaries with attachmentSHA, not independent local hardware reproduction or raw timing samples. Full workload/HBM/workspace/hash and raw checkpoint records remain in yellow-zone report; omitted terminal values not invented. Keep tested bounded8192 leaf and32-way hierarchical merge version; defer threshold/phase tuning. This acceptance update changes only evidence/docs/manifest; original CPU, kernels, generators, runtime, benchmark and tested data source bytes remain unchanged. Add a separately UNVERIFIED score-bitmap optimization candidate for the same tested large-library/global-ID leaf. Review fixed posting-thread vs document-residue ownership and concurrent owner-word updates using950 SIMT uint32 UB atomic OR; reuse owner scratch and unchanged50848byte explicit UB. Debug2 retains original dense raw-score validation. Preserve FP32 operation/query order, strict IDs, compact order, register threshold and fallback. Replace old256k-only experiment driver with paired10m validation reusing accepted source fingerprints,index/oracle,large host,tree merge and both frozen CPU binaries. Only candidate fused vendor is newly built; no CPU/host/merge rebuild or corpus regrowth. Run54 raw cases plus8193-doc targeted collision/zero/repeat/1023-1024-1025/tail fixture, then six balanced rounds of baseline NPU,candidate NPU,two frozen CPU roles; verify paired full-score/tree bits and retain original independent checkpoint/guard/index checks. Predeclared retention requires A/B6of6 faster than paired baseline,>=5percent median reduction,lower median p95 and original faster-CPU gate.232 local models,wrong-owner mutation rejection,actual-posting ownership,source/UB/global-ID/fixture/API-header and gate checks passed; NO candidate CANN compilation or A5 performance result yet. Actual950 SIMT atomic/popcount declarations and resources are recorded at device build; no occupancy claims. Independent vendor does not replace the accepted10m result; if candidate fails keep the accepted baseline.",
+  "scope": "2026-10-26 user A5 terminal score_bitmap_large_close1 completed actual corrected bitmap operator build/install,54 raw checks,both8193-document adversarial checks and six balanced rounds of baseline NPU,candidate NPU,two frozen32thread/32shard CPUs. Recomputed24 process summaries,30 measured samples per A/B,exact original decision equality and checked process orders,device,separate vendors and unchanged timing arguments. Candidate retained: at10000000 uniform synthetic articles,fixedQ8/three words/K10,paired original NPU median-of-six-batch-medians A3.02249125/B2.99588875ms,candidate A2.82277625/B2.79394325ms,reductions6.6076287/6.7407543percent,both6of6 faster,lower median p95 and predeclared>=5percent gate passed. Faster of unchanged CPUs per round yields A4.280663/B4.2873135ms,speedups1.516472657/1.534502714,both6of6 and p95 passed; minimum same-round CPU speedups1.2737/1.2965. FP32/query order/strict rank/full Search/all score and tree bits/index/guards passed via fingerprinted driver before final success. Retain independent corrected atomic document-owner bitmap as tested experimental baseline; previous large vendor and four-scale evidence remain. Previous original large-scale curve262144/1048576/4194304/10000000 wins0/3/5/6 of6 eachcase; no new bitmap small-scale curve or interpolated crossover. Previous CPU ratios1.93/1.95 are from another session and cannot be compared to1.52/1.53 to attribute regression; use paired NPU comparison. Source is user-supplied terminal summary with attachmentSHA and source commit,not independently reproduced local device execution or raw samples. Full workload,HBM,workspace,API/resource/artifact records stay in yellow-zone reports. Scope remains declared synthetic data and frozen CPU opponents,not arbitrary workloads or MT-approved business data,occupancy or all-card utilization. This result-acceptance update changes only evidence/docs/manifest; tested candidate,old NPU,CPU,host,tree,data tools and verification source bytes remain unchanged. Do not repeat completed10m validation; newly requested smaller scale coverage is separate and pending. Add score_bitmap_scales.py for fresh1024/8192/65536/262144/1048576/4194304 article points at unchangedQ8/three words/K10. Reuse installed tested bitmap/original NPU,tree,host and CPU binaries; no builds/installs or repeated54/36/8193 old edge tests. Reuse existing262144/1048576/4194304 inputs,generate only smaller deterministic prefixes. At each fresh scale run six balanced paired rounds,full ordered-FP32/strict-rank/all-tree-bit/guard/index/repeat checks and immutable per-process reports. Preserve two32/32 CPU opponents; add same binaries at1/1 only for<=65536,validated directly as actual1/1 without rewriting reports. Separate bitmap-vs-original gain,common32CPU gate and strongest declaredCPU-config gate; small losses continue and budgets skip as unmeasured. Coverage exit0 does NOT mean all small points beat CPU. Reuse completed10m report with explicit prior-session label and hashes,no10m process scheduled or exact crossover interpolation. Local scheduling/command remapping/singleCPU-contract/corrupt-score/gate/history-origin checks passed; six fresh scale points have NO A5 result yet. All previously tested source bytes including score_bitmap.py and score_bitmap_sources.py unchanged; only new Python sweep/tests/docs/manifest added.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -8,7 +8,7 @@
   "files": {
     ".gitattributes": "d659273915231ea367219bf4567a63dacda991b5a7ab66a5c1badf855cbba679",
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
-    "README.md": "974fbe2eb4f992b5c762f22002145bd816a1d964d3121001f84f07787fd829cb",
+    "README.md": "15359bdda0210b6b0594b5be326d0a0971a228c30eeb0ea5df4e7664a7172a6b",
     "check_npu_environment.py": "1f3e4d6a2bdc0fa67e022699c15083ed2e16b9bee2097e20b6294af7dcb6eb7c",
     "check_result.py": "477821329df9ff9a5ff86e2bb8b376fdf962dabe77d8d89e130c135b6bbde893",
     "common/fixed_query_packet.h": "11e9e3285b0baf177394f14bce5d8aaf17cec6906ae1aca07fef57e129cf8f34",
@@ -288,6 +288,8 @@
     "standalone/run_topk.py": "751746efcc75fc7576c73c60528e243acab0a042abf8c4f202de605082bc08b9",
     "standalone/scale_fixture.py": "a65b9a5560c84f314c575b95e5d379c49f10437e2bad33b494149449e27c5490",
     "standalone/score_bitmap.py": "8748148189fe069ae137c874c26821f22c7e21da1e69f56d22740351b903433d",
+    "standalone/score_bitmap_device_evidence_20261026.json": "5967ec0edd4f42067d451752d8e7bfc7e07670d09edb7abdf25eaf3a174708d5",
+    "standalone/score_bitmap_scales.py": "70f4f8bea69f8a9fa1149279e9930932a0f89b60bc9f8a7ad64cce47a684ca60",
     "standalone/score_bitmap_sources.py": "b851d902609bb715bbe5737e0d55a2fdb546f95356f9bd907f8b009bc27020f0",
     "standalone/search_benchmark_checks.py": "f29190b83d7ce553afd59267ce6367c481ea21d5986b935f9f9f8d6a9a0ef845",
     "standalone/search_scale_fixture.py": "defda5bd0f1f59aedff62db22e162d68eca5504255c2e685ed90a760c810600e",
@@ -324,6 +326,7 @@
     "standalone/test_resident_index.py": "f02c7c4cd9351fa4038f06659b596114d787711b9883e012a9c992f1b107ffae",
     "standalone/test_resume_fused_threads256.py": "3ba961982880a3e030863fbcf9b9f857bbb711b3f5caaef2c2828013ec66ce52",
     "standalone/test_score_bitmap.py": "d4317618f749a7d6957daf2440d2e5898ae9a58a4f1d5904a0532d3b08f1565f",
+    "standalone/test_score_bitmap_scales.py": "09513b96a09eb761fc353a3409213c68de49e1c11dcd20df4e318609b54237ff",
     "standalone/test_search.py": "9b2b1efba93384a5b18f19ff704d7b1a51056de7e0af4958196316cdc49614f7",
     "standalone/test_search_benchmark.py": "ca8fc67eb67c2fbcba851e35dc0e3b971458742e17e689647db295791ea3be62",
     "standalone/test_search_profile.py": "fd44e893ecdc816a093977f30a51dba9ce2eba670111be2045c566b12c99589f",
@@ -344,11 +347,12 @@
     "standalone/validate_topk_radix_collect.py": "aa9edde3b38c574f81ea17dabd45802eecd837f8bd378731dc355d0a69c38348",
     "standalone/validate_topk_radix_zero.py": "787dc807c5b01c50c16dd4ab8d1425c27b3c49ad7887bf2ba9e1fb2c1ba00114",
     "standalone/validate_topk_warp.py": "4827eb4a32d8ac92aec0773dd03ee21f8f9c9b494bee36f7458393122dbfc4cb",
+    "standalone/位图版中小规模覆盖步骤.md": "9ee5ae895e65b2d380e498050eb6c31fdf2e121b6e3b6b2297ff2dc1aaedad6b",
     "standalone/分段定位步骤.md": "8fa884d47b3f840f2d2b9ea56ff4a8cef8022905bd3bd36e05ef82bf88b5e91b",
     "standalone/原始查询Search入口步骤.md": "1b1f86bc1e349f0720c5250d50d0facf0b7c242e655d87b87e5bb8340cd91b85",
     "standalone/同进程串联步骤.md": "729601c3aedafde80435d4f7804582650d95a3e0f487f142eccf1c1d7699153d",
     "standalone/四段运行步骤.md": "8810781f46c6be222788d8ac2e32cd3c40bee974d5ff0fc1f060f8219a19b631",
-    "standalone/大规模检索扩库与交叉点验证.md": "cc76da256743c34a0ea5cf4c4767f4fb0246a72b0c16420a73bb2db13712f8c2",
+    "standalone/大规模检索扩库与交叉点验证.md": "7770570d3be0646897f581a307e390f94ffb2090a9a0a1a5a604146da0d10b3f",
     "standalone/完整SearchTopK压缩对照.md": "339c1be1b5cb2218f73d451cc429b772a3b7a610c6a46c85faec861936b578ad",
     "standalone/完整Search新旧评分对照.md": "4a9cc2c515944112cc4bbe0d7a1c3e48260365866e3ffbbd4ee5ec06383e75e8",
     "standalone/完整Search正式计时步骤.md": "2090258fee7e8eb997ce735d6b11949e1564bcfe14b6780930a08edfae6bb235",
@@ -370,7 +374,7 @@
     "standalone/融合算子寄存器选择步骤.md": "c77565ffa08736162f2d3c5c62c13506dfd55e1e6f1077f6788f42b7f6df35b1",
     "standalone/融合评分TopK优化步骤.md": "0ab497e52ad58ab9adbcf5697f04ae7fa0b8304fda468342230275f571358f63",
     "standalone/融合调用与验收步骤.md": "e3cce98d9fa68f6380441eb639ec55a051f7c0c9008f8d5e83fd245fc92af4f3",
-    "standalone/评分位图候选验证步骤.md": "139d10713dc3010b3ecb3a12ca7f5089109d4f295863f70a9cf8251181d524fc",
+    "standalone/评分位图候选验证步骤.md": "229e9924bdc6b70ecaa49a0a9f912ae82097694ff35a59a6eba440dcedd96bc0",
     "standalone/跨块TopK步骤.md": "2352376a554ff4c8d88eb8573e95ed322e0beca69a27354e6b49be647d8a1bdd",
     "standalone/连续文章分区评分实验步骤.md": "b33f7a05fa3ee24bfaedb07181891d992bf70fb41869b4be8d9f44ecad2da6c8",
     "verify_package.py": "214d02a263dd06c95ac17429a4836ac961898191dbcb533f9220778d4090e038"
