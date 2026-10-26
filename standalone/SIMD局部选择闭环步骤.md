@@ -51,3 +51,9 @@ python3 -u -B standalone/fused_simd_select.py --output results/fused_simd_close1
 若失败，只贴`FAILED`首错及相应日志末尾；不要跳过正确性继续测速。编译错误查看该结果目录`resource_build.log`，选择器错误查看`selector_device.log`。已存在的失败结果保留作依据，不删除后假装首次运行。
 
 本地已完成的是源码及非设备模型/流程检查。CANN编译成功、设备正确、完整Search稳定改善和超过CPU，是后续不同的验收结论。
+
+## 首次编译的名称修复
+
+`results/fused_simd_close1`在设备内核编译阶段失败，未进入安装、设备验收或测速。实际CANN头文件`kernel_common.h:90`声明的是全局`GetTPipePtr()`，返回`AscendC::TPipe*`。已将两处`AscendC::GetTPipePtr()`修正为`::GetTPipePtr()`；事件类型、SetFlag/WaitFlag顺序及算法参数均不变。
+
+保留该失败目录。提交并拉取修复后，使用上面的同一命令，将输出目录和tee日志分别改为`results/fused_simd_close2`和`results/fused_simd_close2.log`。继续原定编译、实际接口核对、候选正确性验收及完整Search对照；没有已通过的设备验收需要重跑。此修复尚待实机重新编译确认。

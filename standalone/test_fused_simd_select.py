@@ -21,6 +21,23 @@ from standalone.test_fused_ub_contract import constants
 def key(bits):return (~(0 if bits&0x7fffffff==0 else bits))&0xffffffff
 
 
+def sync_namespace_contract():
+    # Actual yellow 9.2.0 diagnostic: kernel_common.h:90 declares GLOBAL
+    # GetTPipePtr() returning AscendC::TPipe*. The two waits keep their order.
+    header=(ROOT/x.source.HEADER).read_text(encoding='utf-8')
+    assert 'AscendC::GetTPipePtr' not in header and header.count('::GetTPipePtr()')==2
+    for function,event in (('VectorToScalar','V_S'),('ScalarToVector','S_V')):
+        body=re.search(r'void '+function+r'\(\)\s*\{([^}]+)\}',header).group(1)
+        expected=(f'::GetTPipePtr()->FetchEventID(AscendC::HardEvent::{event})',
+                  f'AscendC::SetFlag<AscendC::HardEvent::{event}>(e);',
+                  f'AscendC::WaitFlag<AscendC::HardEvent::{event}>(e);')
+        positions=[body.index(fragment) for fragment in expected]
+        assert positions==sorted(positions)
+    kernel=x.source.candidate_sources(ROOT/'npu_prototype/fused_score_topk')[
+        'op_kernel/bm25_fused_score_top_k.cpp'].decode()
+    assert 'AscendC::GetTPipePtr' not in kernel and kernel.count('::GetTPipePtr()')==2
+
+
 def model(words,k):
     streams=[[(d,words[d]) for d in range(t,len(words),256) if words[d]&0x7fffffff] for t in range(256)]
     compact=[pair for stream in streams for pair in stream]
@@ -165,4 +182,10 @@ def main():
           'actual-header/ABI rejection and first-error stop. No CANN compilation or NPU execution.')
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    sync_namespace_contract()
+    if sys.argv[1:]==['--sync-namespace-only']:
+        print('Global GetTPipePtr and unchanged V_S/S_V signal/wait order verified in source and generated kernel. '
+              'Only the compile-namespace regression checked; no CANN/device or performance conclusion.')
+    elif len(sys.argv)==1:main()
+    else:raise SystemExit('Use no arguments or --sync-namespace-only')

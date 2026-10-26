@@ -108,14 +108,14 @@ __aicore__ inline void HistogramCdf(__ubuf__ uint32_t *input, __ubuf__ uint32_t 
 
 __aicore__ inline void VectorToScalar()
 {
-    const auto e = static_cast<event_t>(AscendC::GetTPipePtr()->FetchEventID(AscendC::HardEvent::V_S));
+    const auto e = static_cast<event_t>(::GetTPipePtr()->FetchEventID(AscendC::HardEvent::V_S));
     AscendC::SetFlag<AscendC::HardEvent::V_S>(e);
     AscendC::WaitFlag<AscendC::HardEvent::V_S>(e);
 }
 
 __aicore__ inline void ScalarToVector()
 {
-    const auto e = static_cast<event_t>(AscendC::GetTPipePtr()->FetchEventID(AscendC::HardEvent::S_V));
+    const auto e = static_cast<event_t>(::GetTPipePtr()->FetchEventID(AscendC::HardEvent::S_V));
     AscendC::SetFlag<AscendC::HardEvent::S_V>(e);
     AscendC::WaitFlag<AscendC::HardEvent::S_V>(e);
 }
