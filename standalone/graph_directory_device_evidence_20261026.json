@@ -1,0 +1,463 @@
+{
+  "date": "2026-10-26",
+  "status": "user_terminal_log_graph_directory_completed_cpu_target_missed",
+  "source": "User supplied A5 terminal summary; not a local device measurement or independent reproduction.",
+  "terminal_attachment_sha256": "49f172d52836254a469e323cd60cc8ef69bcfa21110fcd89a6111cb35f4cf44b",
+  "device": 5,
+  "docs": 262144,
+  "queries_per_batch": 8,
+  "k": 10,
+  "shards": 32,
+  "compiled_and_device_checks": "The closure reached its final performance decision; all preceding mandatory build/ABI/portable/device/checkpoint stages therefore returned success.",
+  "per_role_terminal_summaries": {
+    "baseline": [
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.14347,
+          "p95_batch_ms": 0.147161,
+          "mean_batch_ms": 0.1434075,
+          "search_time_throughput_qps": 55785.08794867772
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.144932,
+          "p95_batch_ms": 0.147692,
+          "mean_batch_ms": 0.14495203333333334,
+          "search_time_throughput_qps": 55190.67112086044
+        }
+      }
+    ],
+    "async": [
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.118943,
+          "p95_batch_ms": 0.121292,
+          "mean_batch_ms": 0.11923046666666666,
+          "search_time_throughput_qps": 67096.94446106337
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.118888,
+          "p95_batch_ms": 0.124276,
+          "mean_batch_ms": 0.11948929999999999,
+          "search_time_throughput_qps": 66951.60152415321
+        }
+      }
+    ],
+    "graph": [
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.11823700000000001,
+          "p95_batch_ms": 0.120871,
+          "mean_batch_ms": 0.11828543333333333,
+          "search_time_throughput_qps": 67633.01088356048
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.1176765,
+          "p95_batch_ms": 0.121342,
+          "mean_batch_ms": 0.11771960000000001,
+          "search_time_throughput_qps": 67958.09703736675
+        }
+      }
+    ],
+    "graph_directory": [
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.1001505,
+          "p95_batch_ms": 0.103195,
+          "mean_batch_ms": 0.10050246666666666,
+          "search_time_throughput_qps": 79600.03635068327
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.09994,
+          "p95_batch_ms": 0.104907,
+          "mean_batch_ms": 0.10066636666666667,
+          "search_time_throughput_qps": 79470.43550792038
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.10033,
+          "p95_batch_ms": 0.101342,
+          "mean_batch_ms": 0.10033513333333333,
+          "search_time_throughput_qps": 79732.7888469775
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.09978999999999999,
+          "p95_batch_ms": 0.100731,
+          "mean_batch_ms": 0.09984783333333333,
+          "search_time_throughput_qps": 80121.91885318827
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.101817,
+          "p95_batch_ms": 0.103164,
+          "mean_batch_ms": 0.1018907,
+          "search_time_throughput_qps": 78515.50730341434
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.101938,
+          "p95_batch_ms": 0.103736,
+          "mean_batch_ms": 0.10215203333333334,
+          "search_time_throughput_qps": 78314.64278244095
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.101998,
+          "p95_batch_ms": 0.103946,
+          "mean_batch_ms": 0.1019733,
+          "search_time_throughput_qps": 78451.90848977133
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.101783,
+          "p95_batch_ms": 0.105108,
+          "mean_batch_ms": 0.1019099,
+          "search_time_throughput_qps": 78500.71484713457
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.10140199999999999,
+          "p95_batch_ms": 0.103585,
+          "mean_batch_ms": 0.1015399,
+          "search_time_throughput_qps": 78786.7626420747
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.101568,
+          "p95_batch_ms": 0.102844,
+          "mean_batch_ms": 0.1015972,
+          "search_time_throughput_qps": 78742.32754445988
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.1016125,
+          "p95_batch_ms": 0.104176,
+          "mean_batch_ms": 0.10181206666666667,
+          "search_time_throughput_qps": 78576.14781744927
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.101167,
+          "p95_batch_ms": 0.102664,
+          "mean_batch_ms": 0.10130493333333333,
+          "search_time_throughput_qps": 78969.50066268572
+        }
+      }
+    ],
+    "cpu": [
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.0997845,
+          "p95_batch_ms": 0.123295,
+          "mean_batch_ms": 0.1042225,
+          "search_time_throughput_qps": 76758.85725251265
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.10017,
+          "p95_batch_ms": 0.118848,
+          "mean_batch_ms": 0.10301603333333333,
+          "search_time_throughput_qps": 77657.81443082809
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.067026,
+          "p95_batch_ms": 0.070346,
+          "mean_batch_ms": 0.06688453333333333,
+          "search_time_throughput_qps": 119609.11740432268
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.06663,
+          "p95_batch_ms": 0.068113,
+          "mean_batch_ms": 0.0666124,
+          "search_time_throughput_qps": 120097.7595762951
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.13361499999999998,
+          "p95_batch_ms": 0.143074,
+          "mean_batch_ms": 0.13475373333333335,
+          "search_time_throughput_qps": 59367.55741090166
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.133575,
+          "p95_batch_ms": 0.139459,
+          "mean_batch_ms": 0.13424060000000002,
+          "search_time_throughput_qps": 59594.48929757465
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.117316,
+          "p95_batch_ms": 0.124817,
+          "mean_batch_ms": 0.11503353333333334,
+          "search_time_throughput_qps": 69544.93849039961
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.121117,
+          "p95_batch_ms": 0.128072,
+          "mean_batch_ms": 0.11581433333333332,
+          "search_time_throughput_qps": 69076.07866614092
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.105323,
+          "p95_batch_ms": 0.119029,
+          "mean_batch_ms": 0.10768563333333334,
+          "search_time_throughput_qps": 74290.3185166452
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.106029,
+          "p95_batch_ms": 0.117747,
+          "mean_batch_ms": 0.108219,
+          "search_time_throughput_qps": 73924.1722802835
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.14063599999999998,
+          "p95_batch_ms": 0.19321,
+          "mean_batch_ms": 0.15083596666666665,
+          "search_time_throughput_qps": 53037.74807025469
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.1350675,
+          "p95_batch_ms": 0.194702,
+          "mean_batch_ms": 0.1456801,
+          "search_time_throughput_qps": 54914.84423747649
+        }
+      }
+    ],
+    "cpu_directory": [
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.161657,
+          "p95_batch_ms": 0.176465,
+          "mean_batch_ms": 0.16249006666666665,
+          "search_time_throughput_qps": 49233.77880329916
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.16004000000000002,
+          "p95_batch_ms": 0.177617,
+          "mean_batch_ms": 0.1622317,
+          "search_time_throughput_qps": 49312.18744548692
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.1464045,
+          "p95_batch_ms": 26.071726,
+          "mean_batch_ms": 2.132215433333333,
+          "search_time_throughput_qps": 3751.9660888550306
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.14689,
+          "p95_batch_ms": 29.682872,
+          "mean_batch_ms": 2.8832326666666668,
+          "search_time_throughput_qps": 2774.6633466278245
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.065884,
+          "p95_batch_ms": 0.074031,
+          "mean_batch_ms": 0.0668233,
+          "search_time_throughput_qps": 119718.7208653269
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.0661545,
+          "p95_batch_ms": 0.070035,
+          "mean_batch_ms": 0.0663741,
+          "search_time_throughput_qps": 120528.94125871385
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.1437355,
+          "p95_batch_ms": 0.150295,
+          "mean_batch_ms": 0.13994923333333334,
+          "search_time_throughput_qps": 57163.58574787953
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.14265899999999998,
+          "p95_batch_ms": 0.151767,
+          "mean_batch_ms": 0.13966513333333333,
+          "search_time_throughput_qps": 57279.86512501092
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.123876,
+          "p95_batch_ms": 0.155283,
+          "mean_batch_ms": 0.12811353333333333,
+          "search_time_throughput_qps": 62444.61292926118
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.122779,
+          "p95_batch_ms": 0.152399,
+          "mean_batch_ms": 0.12683856666666668,
+          "search_time_throughput_qps": 63072.298987926115
+        }
+      },
+      {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 0.06694549999999999,
+          "p95_batch_ms": 0.078237,
+          "mean_batch_ms": 0.06808006666666666,
+          "search_time_throughput_qps": 117508.69809175668
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 0.066039,
+          "p95_batch_ms": 0.071507,
+          "mean_batch_ms": 0.06654686666666666,
+          "search_time_throughput_qps": 120216.02820268023
+        }
+      }
+    ]
+  },
+  "decision": {
+    "performance_target_met": false,
+    "cases": {
+      "A": {
+        "fastest_cpu_medians_ms": [
+          0.0997845,
+          0.067026,
+          0.065884,
+          0.117316,
+          0.105323,
+          0.06694549999999999
+        ],
+        "graph_directory_medians_ms": [
+          0.1001505,
+          0.10033,
+          0.101817,
+          0.101998,
+          0.10140199999999999,
+          0.1016125
+        ],
+        "fastest_cpu_p95_ms": [
+          0.123295,
+          0.070346,
+          0.074031,
+          0.124817,
+          0.119029,
+          0.078237
+        ],
+        "graph_directory_p95_ms": [
+          0.103195,
+          0.101342,
+          0.103164,
+          0.103946,
+          0.103585,
+          0.104176
+        ],
+        "wins": 2,
+        "cpu_over_npu": 0.8216679104201917,
+        "passed": false,
+        "engineering_55us_target_met": false
+      },
+      "B": {
+        "fastest_cpu_medians_ms": [
+          0.10017,
+          0.06663,
+          0.0661545,
+          0.121117,
+          0.106029,
+          0.066039
+        ],
+        "graph_directory_medians_ms": [
+          0.09994,
+          0.09978999999999999,
+          0.101938,
+          0.101783,
+          0.101568,
+          0.101167
+        ],
+        "fastest_cpu_p95_ms": [
+          0.118848,
+          0.068113,
+          0.070035,
+          0.128072,
+          0.117747,
+          0.071507
+        ],
+        "graph_directory_p95_ms": [
+          0.104907,
+          0.100731,
+          0.103736,
+          0.105108,
+          0.102844,
+          0.102664
+        ],
+        "wins": 3,
+        "cpu_over_npu": 0.8227489086738846,
+        "passed": false,
+        "engineering_55us_target_met": false
+      }
+    }
+  },
+  "computed_case_summary": {
+    "A": {
+      "npu_median_of_round_medians_us": 101.50725,
+      "fastest_cpu_median_of_round_medians_us": 83.40525,
+      "fastest_cpu_round_us": 65.884,
+      "npu_wins": 2
+    },
+    "B": {
+      "npu_median_of_round_medians_us": 101.36749999999999,
+      "fastest_cpu_median_of_round_medians_us": 83.4,
+      "fastest_cpu_round_us": 66.039,
+      "npu_wins": 3
+    }
+  },
+  "interpretation": [
+    "Graph alone differs little from fixed async in the single attribution run; not a causal stage-time decomposition.",
+    "CPU fast rounds remain about66us; slow CPU outliers do not satisfy the six-round gate.",
+    "Current score-versus-selection and current device-chain-versus-transfer split remain unknown; historical pre-SIMD counters do not apply."
+  ],
+  "next_action": "One short profile of existing graph_directory executable with existing installed vendor; no rebuild/install/CPU rerun."
+}
