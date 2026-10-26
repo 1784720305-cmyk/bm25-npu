@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "Planning/source review only; no new optimization kernel, build/install/device execution or speedup. Actual user-reported clock diagnostic passed current-workload full-score/ranking/guard/index checks: selection task-cycle work share72.15-72.33%, not Search/critical-path share. Instrumented127regs/72byte stack versus retained125/68; no attribution to atomics or spills. Retain existing256 baseline and reject local32 and private-warp-hist candidates. Re-read pinned local IndexSDK59213c4: its IVFPQ A5 path composes SIMT calculation, on-chip SIMD TopK and hierarchical candidates; CAGRA radix was already a reference and must not be rebranded as a new algorithm. Inspect pinned ops-math a8d06fd B32 RegTensor/Histograms/8bit256-bin code, NVIDIA RAPIDS cuVS3dd62c1/RAFTc6007cd select_k delegation/shape heuristic/filtered distributed stable warp buffers, DeepSelectbfa4507 actual Ascend SIMD filtering/compaction (BF16 only), BM25S03eac5a precomputation/CSC/partition, NVIDIA nv-ingestad82a83 actual BM25S wrapper (not evidence of a native GPU BM25 kernel). Source identities/SHA256/symbol anchors included; public Git commit snapshots read only, never installed/executed. Sole final proposed candidate: same raw resident index/query IDs/FP32 term order, retained256 SIMT scoring and exact positive compaction, own950 SIMD256-bin key selection with up to four passes, strict real-ID ties/final-K sort, existing merge and unchanged complete Search boundary/CPU. Basic CANN hardware APIs only; no high-level TopK/Faiss/IndexSDK runtime. This is a design, actual beta.2 MicroAPI declarations/build resources remain to be checked. Additional VF transitions, masks/fourth pass and scratch/cache cost explicitly included; 64KiB dynamic UB is a budget target, not verified compiled usage. Dense/overflow input uses existing exact device route, never truncation/CPU substitution. Supersedes last speculative warp-atomic-aggregation recommendation. One implementation/affected-correctness/full-Search six-pair closure, CPU phase only after stable retention; no unbounded variant/tuning sweep. Keep historical fast CPU evidence, do not weaken opponent or claim5%NPU improvement equals CPU success. BM25S original/strict adapter/precomputed-work differences separate. Existing binary samples/offline wheels remain immutable; LF/Git raw bytes/ZIP verified.",
+  "scope": "One agreed operator-specific candidate: accepted256 SIMT FP32 scoring and positive compaction, own Ascend950 Reg 8-bit/256-bin accumulated hardware histogram selection (up to4 passes), unchanged exact real-ID tie collector/final-K sort and existing merge. Based on pinned IndexSDK SIMT/SIMD composition and ops-math a8d06fda B32 histogram/register conversion/binary CDF boundary principles, with retained Huawei notices/full CANN license; no high-level TopK, Faiss, IndexSDK or BM25S runtime dependency. Same resident raw-TF index/query IDs, ordered FP32 formula, shards32, public Search timer/CPU32threads32document-shards and accepted baseline source/proofs unchanged. AIV outer task loop with score-pack SIMT VF, SIMD scopes and collect SIMT VF; extra transitions/V_S/S_V synchronization/fourth pass explicitly included. Reuses 50848byte TBuf/64KiB dynamicUB; compact-positive capacity1024, <=K/dense/overflow uses exact existing device selection, never truncation/CPU substitution. Isolated debug2 raw-score mode only for affected selector edge validation; host shapes check postingCount=queries*docs. Main Search remains debug0 and debug1 correctness mode. Source/model/fail-stop/ABI/header/UB checks completed locally; no actual CANN compilation, installation, device correctness or speedup claimed. Yellow closure first reads actual Reg declarations, compiles/installs independent vendor, reads actual generated ABI before calls, saves recognizable resources for both SIMT VFs (missing fields UNKNOWN, no spill inference), checks changed selector FP32/zero/tie/capacity/tails/poison guards and current-workload A/B/A/empty/B, then6 alternating old/new complete Search process pairs with5warmup30repeats and all output checkpoints. Stop first error. Keep only if A and B6/6faster, >=5%median-of-round-medians reduction and nonworse median-of-round-p95; operational workload-specific gate, not universal proof. Only retained improvement triggers6 contemporaneous CPU32/32 pairs. Historical fast CPU evidence remains; no unrelated reruns/new tuning/kernel variants. BM25S original/precomputed CPU comparison remains separate. Original samples/offline wheels unchanged; LF/raw Git blob/manifest/ZIP checked independently.",
   "reference_commits": {
     "IndexSDK": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -42,6 +42,10 @@
     "npu_prototype/fused_search_host/fused_benchmark.cpp": "908f5ce7b221cb5cb322279fd22e4cb24f4931517e68c52e151ec83a4547f8b9",
     "npu_prototype/fused_search_host/fused_search.h": "6622ab4d18b047fa2df3c644e2ed441cb28d02522965f335d01d4056abdfeb5b",
     "npu_prototype/fused_search_host/hardware_query.cpp": "5a763e524b03b341c900372b402a5c39b30935d46e8cf1cf15dd7fd7ddf5656b",
+    "npu_prototype/fused_simd_check_host/CMakeLists.txt": "981f0718f84cf564289d539ce61a1673d61b5a6937b1dfd49d98e802a4ec2b6c",
+    "npu_prototype/fused_simd_check_host/selector_check.cpp": "d5b864f34200877de85db23db8b7d57aa3003d3ca9c213484e876ba1fc9aed90",
+    "npu_prototype/fused_simd_select/LICENSE-CANN": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+    "npu_prototype/fused_simd_select/simd_selection.h": "a0f24bbb07db4bd80d1c442a9a0984eecc3646392ff080fa8761aa3759903eef",
     "npu_prototype/fused_warp_hist/op_host/bm25_fused_score_top_k.cpp": "ed67120baddab0cdfad363dcaa8fd3720faad03f0991a62a1ff22a57a343d62a",
     "npu_prototype/fused_warp_hist/op_kernel/bm25_fused_score_top_k.cpp": "b6884bf97b7e979f06d1dbde5e184fe5131988a85e66e2156da3c6b94c8b682c",
     "npu_prototype/generate_model.py": "1fba23ee23509181b9b16bcaf7edd56f0f39c3c5067641adee831faaf989f32f",
@@ -178,6 +182,7 @@
     "standalone/Radix新旧同期对比步骤.md": "dbbc756fd163bdba84fd823321ef76940fe6bfc8046a8a19919ace7075d83a8c",
     "standalone/Radix设备分段诊断步骤.md": "ab06a6089db0d42253bae03cae136740bfd7e67eaecf158ed7bca38f2b1d5bf2",
     "standalone/Radix零分汇总实验步骤.md": "482c679d15e6c11ba89e2c39c5c0aacf69dc73b59ca53d572d447c0f9cc2857d",
+    "standalone/SIMD局部选择闭环步骤.md": "035904a96e5f28fafebf1137c53482962b1fbb45b3e9461e03236bf77bb64c76",
     "standalone/TopK正分压缩实验步骤.md": "7b5804cf83b1e1d0d24531c8fc161b0601969efcd539faba15a12827252c2cf9",
     "standalone/TopK步骤.md": "072d8ba516f576773e3523df9e6118a475f29b85d889cf8f29e234ae71943101",
     "standalone/WarpTopK优化步骤.md": "0c98e7e04e85da661860c9e4913e3fdee9750d58641c379414601858b957f455",
@@ -211,6 +216,8 @@
     "standalone/fused_resource_report.py": "bd800cfa550608ec731afb65f8057ff5a1880d66c46212276c72644caf8d923d",
     "standalone/fused_score_topk_operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "standalone/fused_search_checks.py": "81f34c7f8299bd6a8992d727207893c41dc2f02d2ae6c7660a207c3e39a7c941",
+    "standalone/fused_simd_select.py": "e6eb7753479f9c583f16db991e987e0f81546f3d838de198056266edb5a4e79c",
+    "standalone/fused_simd_sources.py": "df6eccf91ff7c09ab041898d90ab7f9850fba393d4faf3e3ee10336dc348b735",
     "standalone/fused_threads256.py": "b66c965800ab0849806c1dd1bba5ae58db4c443429df5bd9acb5ec2863b7da1e",
     "standalone/fused_warp_hist.py": "0efce4bafdb48ee4d095525b0b443b3b146d9915a93e4bbbeb16939111642cb8",
     "standalone/inspect_fused_hardware.py": "549f6c73d54f097816e768f4c62637fc79d96750580667ab6bc3a5f6d3b19fd5",
@@ -260,6 +267,7 @@
     "standalone/test_fused_resource_report.py": "6ab5baf8df9f583f2d383bd39697afd29c3d2c850c4a1a6ce5465e457a57e626",
     "standalone/test_fused_score_topk.py": "25801127a9e267c40f2c94edff3ce82b61615ed8871c48e90d1a31d9ab062a27",
     "standalone/test_fused_search_closure.py": "fdce026a5b278cd5c9f4f043251a2a4e8fb35d0948098528dffe17ea3644320d",
+    "standalone/test_fused_simd_select.py": "cf1dfa785602ef261e483d28256da2fc62185ec3d74a874bc0f5a47d27a5ba45",
     "standalone/test_fused_threads256.py": "f86c0b36f500f24ee339b5ad702fb208e99c484b7dfa2fb05ca12681a170d650",
     "standalone/test_fused_ub_contract.py": "84c696f653b58342dbfaecf71b8c0741b35021a37e5302b682e834f7b94ba2ea",
     "standalone/test_fused_warp_hist.py": "27b9d9ab4d55663453a6d7db31dfcb20f11adc8d627ff3557d3af25fd08a821c",
