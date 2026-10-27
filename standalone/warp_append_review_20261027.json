@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-27",
+  "status": "reviewed_and_locally_checked_pending_actual_CANN950_and_A5",
+  "baseline": "accepted_sparse_pack",
+  "vendor": "bm25_fused_score_topk_warp_append_large",
+  "reviewed_files_sha256": {
+    "standalone/warp_append.py": "921e8eadf719e8436d68984ac5063f1048a3ffdf9d37b7ab04a26b8209614684",
+    "standalone/warp_append_sources.py": "421df0f96b8fe90fb87b1503a144c97a0150994076d8eda1e9ef997222cfff94",
+    "standalone/test_warp_append.py": "3a004bfafd6e9057b9163d3357d7f41c298cad291ff0affe686e3902674288f5"
+  },
+  "change": "First-positive score transition ballots form per-warp ID segments; one UB atomic allocation per nonempty warp iteration replaces per-document bitmap atomic OR. Normal Pack gathers scores directly from appended IDs; unordered collector picks true-ID minima for exact equal-score ranks.",
+  "retained": "FP32 arithmetic, query-term order/repeated words, public ABI, score UB/threads/leaf width, register threshold, full dense fallback, global IDs, merge tree, CPU/host binaries and complete Search timing.",
+  "review_repairs": [
+    "Replace entire generated PackForSimd function; old code mistakenly replaced only the PACK_NEW prefix and left a trailing old body outside the function. Reverse substitutions alone did not detect this.",
+    "Replace invalid-document/invalid-input continue branches by guarded score blocks, so every lane including lane0 and inactive tail lanes reaches ballot/shuffle at the same warp loop iteration. Do not load docNorm for invalid document IDs.",
+    "Extend affected normal-score hardware fixtures to K1/K10/K32; raw debug2 checks bypass new score-time append and cannot alone validate it.",
+    "Preserve separate candidate vendor and accepted Sparse source/artifact chains; retain all seven tiers but begin at262144. Never mutate imported Sparse driver globals.",
+    "Normalize only new text files toLF and add all new files to package manifest."
+  ],
+  "local_checks": {
+    "append_range_models": 376,
+    "overlapping_repeated_word_fp32_random_warp_models": 60,
+    "unordered_collect_models": 144,
+    "single_threshold_fill_models": 72,
+    "multiple_threshold_fill_models": 72,
+    "k_capacity_boundary_models": 72,
+    "generated_cpp_balanced_scopes": true,
+    "complete_pack_replacement": true,
+    "no_early_continue_before_warp_collectives": true,
+    "source_reverse_restore_exact": true,
+    "candidate_vendor_isolated": true,
+    "all_scale_loss_continuation_and_candidate_reuse": true
+  },
+  "hardware_checks_required": {
+    "raw_debug_selector_calls": 54,
+    "normal_score_fixture_docs": 8193,
+    "normal_score_ks": [
+      1,
+      10,
+      32
+    ],
+    "normal_score_processes": 6,
+    "formal_docs_in_order": [
+      262144,
+      1024,
+      8192,
+      65536,
+      1048576,
+      4194304,
+      10000000
+    ],
+    "formal_processes": 204,
+    "formal_search_calls": 12240,
+    "build_install_times": 1
+  },
+  "official_api_references": [
+    {
+      "name": "asc_ballot",
+      "url": "https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/API/ascendcopapi/docs/en/api/SIMT-API/Warp_functions/Warp_vote_functions/asc_ballot.md",
+      "used_for": "32-bit per-active-lane vote mask; same return mask across participating lanes; uint32_t asc_ballot(int32_t)."
+    },
+    {
+      "name": "asc_shfl",
+      "url": "https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/API/ascendcopapi/docs/en/api/SIMT-API/Warp_functions/Warp_shfl_functions/asc_shfl.md",
+      "used_for": "Warp lane-to-lane broadcast of allocated segment base. Actual CANN9.2.0 overload/compiler support remains to be tested."
+    }
+  ],
+  "limits": "No CANN compiler or A5 on local Windows. These checks do not prove compile compatibility, hardware exactness, speed, occupancy or utilization. 26万CPU historical fast state about66us is context only, never substituted for fresh paired CPU samples. If the new CPU is slower, a session win alone does not prove beating that historical fast state."
+}
