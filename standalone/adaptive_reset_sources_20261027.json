@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-27",
+  "scope": "Read-only source review; no SDK runtime dependency,private undocumented opcode,actual compilation or performance proof. Sparse clearing is an original adaptation of our retained exact positive-ID lifetime; SIMD bulk initialization follows referenced scheduling/API patterns.",
+  "sources": [
+    {
+      "name": "IndexSDK",
+      "repository_or_directory": "F:/Ascend/IndexSDK",
+      "commit_at_review": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
+      "path": "feature_retrieval/src/ascendfaiss/ops/ascendc/op_kernel/ascendc_ivfpq_search_distance_topk_simt.h",
+      "sha256_at_review": "05482b919d4cf3c575fbef93b04ef8513e5d087fcb47afb1965a4fcdee1bf773",
+      "reviewed_lines": {
+        "DistCompute": [
+          149,
+          401,
+          488
+        ],
+        "AscendC::Duplicate<float>(distResultUb": [
+          485
+        ],
+        "perCoreInnerBlockLoopNum": [
+          447,
+          476,
+          482
+        ]
+      }
+    },
+    {
+      "name": "ops-math 9.2.0",
+      "repository_or_directory": "F:/Ascend/bm25/results/reference_sources/ops-math-9.2.0",
+      "commit_at_review": "a8d06fdaec5a507f9c11b1c8b886b6a0e947aadb",
+      "path": "math/top_k_v2/op_kernel/arch35/radix_sort_topk_b32.h",
+      "sha256_at_review": "bf507ed3b8e887123943412db5d0b514cc710e967f146ecbe67a092b51dcc7b1",
+      "reviewed_lines": {
+        "Reg::Duplicate": [
+          49,
+          50,
+          51,
+          52,
+          53,
+          54
+        ],
+        "Reg::UpdateMask<uint32_t>": [
+          57
+        ],
+        "for (uint16_t i": [
+          56
+        ]
+      }
+    },
+    {
+      "name": "retained950 register threshold",
+      "repository_or_directory": "F:/Ascend/bm25/bm25-a5",
+      "commit_at_review": "0b923649e88324dba93279cddba1a8d2187b6cad",
+      "path": "npu_prototype/fused_reg_select/register_threshold.h",
+      "sha256_at_review": "0ba30d83bc54f1ef6ac12a09507182ee130528280a29daaebb6293e904d9df95",
+      "reviewed_lines": {
+        "V::StoreAlign<uint32_t>": [
+          91,
+          92
+        ],
+        "VectorToScalar": [
+          96,
+          109,
+          114
+        ],
+        "uint16_t tile": [
+          27,
+          39
+        ]
+      }
+    },
+    {
+      "name": "user local SIMT example",
+      "repository_or_directory": "F:/Ascend/bm25/results/research_histogram",
+      "commit_at_review": null,
+      "path": "1_basic_simt.asc",
+      "sha256_at_review": "085cb178102d1adc8f20b1bb8c67827f35bd4cc3f4644e9cc0119f546ba85295",
+      "reviewed_lines": {
+        "asc_syncthreads": [
+          65,
+          85
+        ],
+        "globalTid": [
+          36,
+          72
+        ],
+        "warpHistos": [
+          58,
+          62,
+          82,
+          95
+        ]
+      }
+    }
+  ],
+  "decision": "Adaptive score-buffer reset from accepted Sparse Pack; preserve exact formula/term order/collector/UB/public ABI/CPU and full Search. Do not stack unretained warp candidate.",
+  "hypothesis": "Reduce repeated UB zero stores on normal compact predecessors; use known950 SIMD Duplicate/StoreAlign for first/dense/few/error fallback. Added metadata reads/vector barriers may offset benefit. Actual paired A5 evidence required."
+}
