@@ -16,7 +16,8 @@ import sys
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
-from standalone import resident_index as r,run_search as search
+from standalone import resident_index as r
+search=r
 
 CONTRACT='large_corpus_file_backed_fp32_reference_v1'
 LIMIT=2**31-1

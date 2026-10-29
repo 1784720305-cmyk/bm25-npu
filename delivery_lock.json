@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-29",
+  "before_cleanup_manifest_sha256": "ccd3c03448e2eafe2814da755090bfbf3024b243105083d5c73782597a57d8b0",
+  "frozen_operators": {
+    "operators/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
+    "operators/fused/op_host/bm25_fused_score_top_k.cpp": "0eab930eca4ac6e087c7bbf6a3701b448777c2efdd2905e437d6b649b59e3252",
+    "operators/fused/op_host/bm25_fused_score_top_k_tiling.h": "82b69954a1ff6a79637ba6ed1672d4eecfb2ecff95596a59064008c3e3c871ba",
+    "operators/fused/op_kernel/bm25_fused_score_top_k.cpp": "7d726233509d85b053a1a164b868be81168d159205ad63bf064c9f90c723455a",
+    "operators/merge/operator.json": "5499e016b15f59456e55d4af2e07ffd277f27e813273311f7efd32b0648a66b6",
+    "operators/merge/op_host/bm25_top_k_merge.cpp": "7491067f440f66d239800feacf3a1e72384b4f8e892ab974822ed39990076960",
+    "operators/merge/op_host/bm25_top_k_merge_tiling.h": "1d63163b600933ec27282dbc242b52533c97145a2ad34260e79b7505006b7ef7",
+    "operators/merge/op_kernel/bm25_top_k_merge.cpp": "25e9b7f637abcf89885593e7b0266bf6fd910d7fbdfe6c4472bb0adf1a6346fd"
+  },
+  "generation": "Generated once using the accepted warp_append_sources.candidate_sources and original large_search_sources.merge_sources before deleting experimental generators; no source substitutions after freezing.",
+  "retained_core_source_sha256": {
+    "common/fixed_query_packet.h": "11e9e3285b0baf177394f14bce5d8aaf17cec6906ae1aca07fef57e129cf8f34",
+    "common/large_search_plan.h": "a73f7f4d82313238c2016c1e6d58cce355ed4e8ed7b7c6fdf7deebe88e9108e4",
+    "common/shard_directory.h": "48105770ad0e50d90b3581c9735a50c880a117e85187ba060b9f625f4029d3fa",
+    "cpu_reference/directory_search/cpu_directory_search.h": "8da600dfe30642d85aabee764d00ef4ab85a1866e50046cf7c05c45a76bb5c0c",
+    "cpu_reference/index_search/cpu_index_search.h": "9053727df3a9d86b03b9da694859c62afe2154b6644b7b8b4e912148da50cf75",
+    "cpu_reference/index_search/cpu_index_search_tests.cpp": "2ba1d68802a02bcd6cac820f1fe6adfa3f72552e41061b3c63d5ddfb04121cd2",
+    "cpu_reference/topk_document_shards.h": "a67d3b6fb6d8411a35a0b4e11ad8508eaa3e3103832ee38fad0cc067db081316",
+    "npu_prototype/fused_chain_host/fused_runtime.h": "558b698dc35a92159f104c990932bdf61d90c18dbf1439b783c2bc9e9d14d3bd",
+    "npu_prototype/fused_search_host/fused_api.h": "55f795941d6649c88f47f3c2bee95501ccdc547f7bb7729a3e2e0df080601793",
+    "npu_prototype/fused_simd_check_host/selector_check.cpp": "d5b864f34200877de85db23db8b7d57aa3003d3ca9c213484e876ba1fc9aed90",
+    "npu_prototype/graph_search_host/cpu_directory_benchmark.cpp": "af88982f8f4262cd7335e49f83281ef9c4e82ec58420a80ff4c0439264bee1c7",
+    "npu_prototype/graph_search_host/planned_search.h": "3a1b1e931f223cdc80ade1eb92aa1d9220e9ec9b417ab31f60feeac771511ba1",
+    "npu_prototype/large_search_host/benchmark.cpp": "5b3f57bac766a07f6686920d85d2a8aa5aeb594f1d3b1b5218443d1b846d42e2",
+    "npu_prototype/large_search_host/large_search.h": "96f037ca52429e3042301e9528b98937c674172d39e06073b389fe8909c03590",
+    "npu_prototype/large_search_host/merge_check.h": "2ad1032627e6b497b77a17195c1b2a58502e47652bdb783189bbbae7be0df97c",
+    "npu_prototype/search_benchmark_host/benchmark_common.h": "fbeb1baf15d96d7ef047707a1a455b3d06bf26e2ca0d3157c4791349e501e969",
+    "npu_prototype/search_benchmark_host/cpu_benchmark.cpp": "72722bbe4c657e918e8616d8a7af0b9cdf855ad47f576e805159bc7a706f5c5f",
+    "npu_prototype/search_host/search_inputs.h": "99a40f540692dbd5bc1c8f00b4f1266eb23b8f01c9c05fd419c8fc19ab318d19"
+  }
+}

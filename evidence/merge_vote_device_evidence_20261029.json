@@ -1,0 +1,1259 @@
+{
+  "date": "2026-10-29",
+  "status": "user_A5_merge_unique_vote_correct_but_not_retained_recomputed",
+  "source": "User yellow-zone terminal summary; no local A5 execution or raw sample/report-file reproduction.",
+  "attachment": {
+    "path": "C:\\Users\\kojo-jotaro\\.codex\\attachments\\9d2e7cd9-c193-4ec8-8fe8-666bc1de1e27\\已粘贴的文本.txt",
+    "bytes": 25505,
+    "sha256": "76bb781c9c5200f0f5ac8096d24b6ea3d64c032b4fc069ea6557ffe527464a3c"
+  },
+  "source_commit_at_review": "1d22c8771f3393be54ef95b6a9ca594f5d852d7a",
+  "source_sha256_at_review": {
+    "standalone/merge_vote.py": "18498b2cadcf350ec64ebeb41a72d609aa60beccf24c83f03e92639be8295cf8",
+    "standalone/merge_vote_run.py": "5ab70fa102aebf9a23805e7e75f653b9199a76d462bf1f204d6ca898f418de38",
+    "standalone/merge_vote_sources.py": "5c78f7f38b05998db04449b68ca46fe92ea5a4268103e55fdea1ce54ee60ca42",
+    "standalone/test_merge_vote.py": "a55ff33d2bbe73084d111892c2f7bae46e1a17ec0805e95edf92b1e818e09378"
+  },
+  "correctness_scope": "Driver reached final decision after required build/install/36 merge calls/full-score-tree-guard-index and paired binary checks. Raw 36-call report, source/artifact hashes and individual timings remain in yellow zone; not separately printed in pasted log.",
+  "docs": 262144,
+  "queries_per_batch": 8,
+  "words_per_query": 3,
+  "k": 10,
+  "device": 5,
+  "build_commands": [
+    [
+      "bash",
+      "build.sh"
+    ],
+    [
+      "bash",
+      "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/merge_build/project/build_out/custom_opp_openEuler_x86_64.run",
+      "--install-path=/test/w50066029/bm25-npu/results/custom_opp"
+    ],
+    [
+      "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+      "--merge-check",
+      "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/merge_checks"
+    ]
+  ],
+  "performance_processes": 24,
+  "formal_search_calls": 1440,
+  "command_audit": "All24 command/summary pairs, input paths, device, vendors,32/32CPU,Q8,K10,warmup5/repeats30 and alternating order checked.",
+  "per_round": [
+    {
+      "round": 1,
+      "process_order": [
+        "cpu",
+        "baseline",
+        "candidate",
+        "cpu_directory"
+      ],
+      "cpu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.1065795,
+            "p95_batch_ms": 0.112149,
+            "mean_batch_ms": 0.10674573333333333,
+            "search_time_throughput_qps": 74944.44742834374
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.10706099999999999,
+            "p95_batch_ms": 0.11328,
+            "mean_batch_ms": 0.12834689999999999,
+            "search_time_throughput_qps": 62331.07305279676
+          }
+        }
+      },
+      "baseline": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0689385,
+            "p95_batch_ms": 0.071908,
+            "mean_batch_ms": 0.06912056666666666,
+            "search_time_throughput_qps": 115739.79187091927
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.067526,
+            "p95_batch_ms": 0.070546,
+            "mean_batch_ms": 0.0678118,
+            "search_time_throughput_qps": 117973.56802208464
+          }
+        }
+      },
+      "candidate": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.068322,
+            "p95_batch_ms": 0.071487,
+            "mean_batch_ms": 0.06864163333333334,
+            "search_time_throughput_qps": 116547.34323046896
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.067316,
+            "p95_batch_ms": 0.069684,
+            "mean_batch_ms": 0.06774256666666667,
+            "search_time_throughput_qps": 118094.1377577958
+          }
+        }
+      },
+      "cpu_directory": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.080566,
+            "p95_batch_ms": 0.088743,
+            "mean_batch_ms": 0.08004043333333333,
+            "search_time_throughput_qps": 99949.48386502989
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.08015,
+            "p95_batch_ms": 0.08656,
+            "mean_batch_ms": 0.07983973333333333,
+            "search_time_throughput_qps": 100200.73547339838
+          }
+        }
+      },
+      "commands": {
+        "cpu": [
+          "/test/w50066029/bm25-npu/results/search_benchmark_host_build/bm25_cpu_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round1/cpu/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ],
+        "baseline": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round1/baseline/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/warp_append_scales1/N262144/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "candidate": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round1/candidate/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "cpu_directory": [
+          "/test/w50066029/bm25-npu/results/graph_directory_close1/host_build/bm25_directory_cpu_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round1/cpu_directory/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "process_order": [
+        "cpu_directory",
+        "candidate",
+        "baseline",
+        "cpu"
+      ],
+      "cpu_directory": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.092118,
+            "p95_batch_ms": 0.100871,
+            "mean_batch_ms": 0.09318219999999999,
+            "search_time_throughput_qps": 85853.30674742602
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0922885,
+            "p95_batch_ms": 0.098007,
+            "mean_batch_ms": 0.092724,
+            "search_time_throughput_qps": 86277.5548940943
+          }
+        }
+      },
+      "candidate": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.069304,
+            "p95_batch_ms": 0.071958,
+            "mean_batch_ms": 0.0694292,
+            "search_time_throughput_qps": 115225.29425659521
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.06778100000000001,
+            "p95_batch_ms": 0.069925,
+            "mean_batch_ms": 0.06803136666666666,
+            "search_time_throughput_qps": 117592.816254855
+          }
+        }
+      },
+      "baseline": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0670655,
+            "p95_batch_ms": 0.068282,
+            "mean_batch_ms": 0.06735806666666666,
+            "search_time_throughput_qps": 118768.25443327254
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.066019,
+            "p95_batch_ms": 0.06691,
+            "mean_batch_ms": 0.0659757,
+            "search_time_throughput_qps": 121256.76574860138
+          }
+        }
+      },
+      "cpu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0657285,
+            "p95_batch_ms": 0.07274,
+            "mean_batch_ms": 0.06647876666666666,
+            "search_time_throughput_qps": 120339.17596746431
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.065473,
+            "p95_batch_ms": 0.077787,
+            "mean_batch_ms": 0.06643336666666666,
+            "search_time_throughput_qps": 120421.41474088574
+          }
+        }
+      },
+      "commands": {
+        "cpu_directory": [
+          "/test/w50066029/bm25-npu/results/graph_directory_close1/host_build/bm25_directory_cpu_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round2/cpu_directory/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ],
+        "candidate": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round2/candidate/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "baseline": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round2/baseline/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/warp_append_scales1/N262144/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "cpu": [
+          "/test/w50066029/bm25-npu/results/search_benchmark_host_build/bm25_cpu_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round2/cpu/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ]
+      }
+    },
+    {
+      "round": 3,
+      "process_order": [
+        "cpu",
+        "baseline",
+        "candidate",
+        "cpu_directory"
+      ],
+      "cpu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0678715,
+            "p95_batch_ms": 0.072469,
+            "mean_batch_ms": 0.06933603333333334,
+            "search_time_throughput_qps": 115380.12221639445
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.06815750000000001,
+            "p95_batch_ms": 0.082274,
+            "mean_batch_ms": 0.06949963333333334,
+            "search_time_throughput_qps": 115108.52095622566
+          }
+        }
+      },
+      "baseline": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.06738150000000001,
+            "p95_batch_ms": 0.068543,
+            "mean_batch_ms": 0.06738976666666667,
+            "search_time_throughput_qps": 118712.38610412164
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.066029,
+            "p95_batch_ms": 0.067141,
+            "mean_batch_ms": 0.06607683333333333,
+            "search_time_throughput_qps": 121071.17724063653
+          }
+        }
+      },
+      "candidate": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0669755,
+            "p95_batch_ms": 0.067802,
+            "mean_batch_ms": 0.06691333333333334,
+            "search_time_throughput_qps": 119557.63674404702
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.066129,
+            "p95_batch_ms": 0.06696,
+            "mean_batch_ms": 0.0665498,
+            "search_time_throughput_qps": 120210.72940865335
+          }
+        }
+      },
+      "cpu_directory": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.077987,
+            "p95_batch_ms": 0.0935,
+            "mean_batch_ms": 0.08096906666666667,
+            "search_time_throughput_qps": 98803.1643360098
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0774215,
+            "p95_batch_ms": 0.085859,
+            "mean_batch_ms": 0.07813776666666666,
+            "search_time_throughput_qps": 102383.26920870105
+          }
+        }
+      },
+      "commands": {
+        "cpu": [
+          "/test/w50066029/bm25-npu/results/search_benchmark_host_build/bm25_cpu_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round3/cpu/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ],
+        "baseline": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round3/baseline/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/warp_append_scales1/N262144/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "candidate": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round3/candidate/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "cpu_directory": [
+          "/test/w50066029/bm25-npu/results/graph_directory_close1/host_build/bm25_directory_cpu_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round3/cpu_directory/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ]
+      }
+    },
+    {
+      "round": 4,
+      "process_order": [
+        "cpu_directory",
+        "candidate",
+        "baseline",
+        "cpu"
+      ],
+      "cpu_directory": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.065724,
+            "p95_batch_ms": 0.088723,
+            "mean_batch_ms": 0.06800193333333333,
+            "search_time_throughput_qps": 117643.71405126718
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.065123,
+            "p95_batch_ms": 0.069645,
+            "mean_batch_ms": 0.06609656666666666,
+            "search_time_throughput_qps": 121035.03106817955
+          }
+        }
+      },
+      "candidate": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0696395,
+            "p95_batch_ms": 0.072559,
+            "mean_batch_ms": 0.06997233333333333,
+            "search_time_throughput_qps": 114330.9022137321
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0692185,
+            "p95_batch_ms": 0.077506,
+            "mean_batch_ms": 0.07168356666666667,
+            "search_time_throughput_qps": 111601.5897646462
+          }
+        }
+      },
+      "baseline": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.068583,
+            "p95_batch_ms": 0.069955,
+            "mean_batch_ms": 0.06857013333333334,
+            "search_time_throughput_qps": 116668.87041199666
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.06766649999999999,
+            "p95_batch_ms": 0.070746,
+            "mean_batch_ms": 0.067946,
+            "search_time_throughput_qps": 117740.55867895093
+          }
+        }
+      },
+      "cpu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.065879,
+            "p95_batch_ms": 0.070335,
+            "mean_batch_ms": 0.06570593333333333,
+            "search_time_throughput_qps": 121754.60562161308
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.066094,
+            "p95_batch_ms": 0.076475,
+            "mean_batch_ms": 0.06690736666666666,
+            "search_time_throughput_qps": 119568.29865769639
+          }
+        }
+      },
+      "commands": {
+        "cpu_directory": [
+          "/test/w50066029/bm25-npu/results/graph_directory_close1/host_build/bm25_directory_cpu_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round4/cpu_directory/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ],
+        "candidate": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round4/candidate/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "baseline": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round4/baseline/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/warp_append_scales1/N262144/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "cpu": [
+          "/test/w50066029/bm25-npu/results/search_benchmark_host_build/bm25_cpu_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round4/cpu/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ]
+      }
+    },
+    {
+      "round": 5,
+      "process_order": [
+        "cpu",
+        "baseline",
+        "candidate",
+        "cpu_directory"
+      ],
+      "cpu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.103886,
+            "p95_batch_ms": 0.110356,
+            "mean_batch_ms": 0.10468323333333333,
+            "search_time_throughput_qps": 76421.02507978832
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.1036655,
+            "p95_batch_ms": 0.108492,
+            "mean_batch_ms": 0.1041795,
+            "search_time_throughput_qps": 76790.53940554523
+          }
+        }
+      },
+      "baseline": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.069214,
+            "p95_batch_ms": 0.072328,
+            "mean_batch_ms": 0.08075096666666667,
+            "search_time_throughput_qps": 99070.02145278755
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0683375,
+            "p95_batch_ms": 0.071397,
+            "mean_batch_ms": 0.06865176666666667,
+            "search_time_throughput_qps": 116530.14027801178
+          }
+        }
+      },
+      "candidate": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.06843250000000001,
+            "p95_batch_ms": 0.070275,
+            "mean_batch_ms": 0.0686178,
+            "search_time_throughput_qps": 116587.82415058483
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.06787699999999999,
+            "p95_batch_ms": 0.071297,
+            "mean_batch_ms": 0.06827283333333334,
+            "search_time_throughput_qps": 117176.91517123696
+          }
+        }
+      },
+      "cpu_directory": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.107181,
+            "p95_batch_ms": 0.116014,
+            "mean_batch_ms": 0.1085118,
+            "search_time_throughput_qps": 73724.700908104
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.10673,
+            "p95_batch_ms": 0.111457,
+            "mean_batch_ms": 0.1059939,
+            "search_time_throughput_qps": 75476.04154578707
+          }
+        }
+      },
+      "commands": {
+        "cpu": [
+          "/test/w50066029/bm25-npu/results/search_benchmark_host_build/bm25_cpu_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round5/cpu/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ],
+        "baseline": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round5/baseline/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/warp_append_scales1/N262144/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "candidate": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round5/candidate/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "cpu_directory": [
+          "/test/w50066029/bm25-npu/results/graph_directory_close1/host_build/bm25_directory_cpu_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round5/cpu_directory/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ]
+      }
+    },
+    {
+      "round": 6,
+      "process_order": [
+        "cpu_directory",
+        "candidate",
+        "baseline",
+        "cpu"
+      ],
+      "cpu_directory": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0657835,
+            "p95_batch_ms": 0.068242,
+            "mean_batch_ms": 0.06553426666666666,
+            "search_time_throughput_qps": 122073.54117031905
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.065924,
+            "p95_batch_ms": 0.071097,
+            "mean_batch_ms": 0.06591573333333334,
+            "search_time_throughput_qps": 121367.07877532525
+          }
+        }
+      },
+      "candidate": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.069239,
+            "p95_batch_ms": 0.071597,
+            "mean_batch_ms": 0.06943906666666666,
+            "search_time_throughput_qps": 115208.92177890257
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0678865,
+            "p95_batch_ms": 0.071417,
+            "mean_batch_ms": 0.068182,
+            "search_time_throughput_qps": 117333.0204452788
+          }
+        }
+      },
+      "baseline": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.06951,
+            "p95_batch_ms": 0.072359,
+            "mean_batch_ms": 0.06981973333333333,
+            "search_time_throughput_qps": 114580.78709362015
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0685525,
+            "p95_batch_ms": 0.070696,
+            "mean_batch_ms": 0.06864923333333334,
+            "search_time_throughput_qps": 116534.44054000117
+          }
+        }
+      },
+      "cpu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.07868800000000001,
+            "p95_batch_ms": 0.08676,
+            "mean_batch_ms": 0.0795005,
+            "search_time_throughput_qps": 100628.29793523312
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0803105,
+            "p95_batch_ms": 0.085809,
+            "mean_batch_ms": 0.07936406666666666,
+            "search_time_throughput_qps": 100801.28622441222
+          }
+        }
+      },
+      "commands": {
+        "cpu_directory": [
+          "/test/w50066029/bm25-npu/results/graph_directory_close1/host_build/bm25_directory_cpu_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round6/cpu_directory/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ],
+        "candidate": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round6/candidate/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "baseline": [
+          "/test/w50066029/bm25-npu/results/large_scale_close1/host_build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round6/baseline/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/warp_append_scales1/N262144/runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B/expected_scores.bin"
+        ],
+        "cpu": [
+          "/test/w50066029/bm25-npu/results/search_benchmark_host_build/bm25_cpu_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/262144/B.txt",
+          "/test/w50066029/bm25-npu/results/merge_vote_262k_close1/round6/cpu/actual",
+          "32",
+          "10",
+          "32",
+          "8",
+          "24",
+          "5",
+          "30"
+        ]
+      }
+    }
+  ],
+  "decision": {
+    "retain_candidate": false,
+    "minimum_predeclared_median_reduction": 0.05,
+    "versus_verified_npu": {
+      "A": {
+        "baseline_medians_ms": [
+          0.0689385,
+          0.0670655,
+          0.06738150000000001,
+          0.068583,
+          0.069214,
+          0.06951
+        ],
+        "candidate_medians_ms": [
+          0.068322,
+          0.069304,
+          0.0669755,
+          0.0696395,
+          0.06843250000000001,
+          0.069239
+        ],
+        "baseline_p95_ms": [
+          0.071908,
+          0.068282,
+          0.068543,
+          0.069955,
+          0.072328,
+          0.072359
+        ],
+        "candidate_p95_ms": [
+          0.071487,
+          0.071958,
+          0.067802,
+          0.072559,
+          0.070275,
+          0.071597
+        ],
+        "wins": 4,
+        "median_reduction_fraction": -0.0010907385390646063,
+        "passed": false
+      },
+      "B": {
+        "baseline_medians_ms": [
+          0.067526,
+          0.066019,
+          0.066029,
+          0.06766649999999999,
+          0.0683375,
+          0.0685525
+        ],
+        "candidate_medians_ms": [
+          0.067316,
+          0.06778100000000001,
+          0.066129,
+          0.0692185,
+          0.06787699999999999,
+          0.0678865
+        ],
+        "baseline_p95_ms": [
+          0.070546,
+          0.06691,
+          0.067141,
+          0.070746,
+          0.071397,
+          0.070696
+        ],
+        "candidate_p95_ms": [
+          0.069684,
+          0.069925,
+          0.06696,
+          0.077506,
+          0.071297,
+          0.071417
+        ],
+        "wins": 3,
+        "median_reduction_fraction": -0.0034432383453224524,
+        "passed": false
+      }
+    },
+    "versus_frozen_cpus": {
+      "performance_target_met_at_this_scale": false,
+      "cases": {
+        "A": {
+          "cpu_medians_ms": [
+            0.080566,
+            0.0657285,
+            0.0678715,
+            0.065724,
+            0.103886,
+            0.0657835
+          ],
+          "npu_medians_ms": [
+            0.068322,
+            0.069304,
+            0.0669755,
+            0.0696395,
+            0.06843250000000001,
+            0.069239
+          ],
+          "cpu_p95_ms": [
+            0.088743,
+            0.07274,
+            0.072469,
+            0.070335,
+            0.110356,
+            0.068242
+          ],
+          "npu_p95_ms": [
+            0.071487,
+            0.071958,
+            0.067802,
+            0.072559,
+            0.070275,
+            0.071597
+          ],
+          "wins": 3,
+          "cpu_over_npu": 0.9708254794928507,
+          "passed": false
+        },
+        "B": {
+          "cpu_medians_ms": [
+            0.08015,
+            0.065473,
+            0.06815750000000001,
+            0.065123,
+            0.1036655,
+            0.065924
+          ],
+          "npu_medians_ms": [
+            0.067316,
+            0.06778100000000001,
+            0.066129,
+            0.0692185,
+            0.06787699999999999,
+            0.0678865
+          ],
+          "cpu_p95_ms": [
+            0.08656,
+            0.077787,
+            0.082274,
+            0.069645,
+            0.108492,
+            0.071097
+          ],
+          "npu_p95_ms": [
+            0.069684,
+            0.069925,
+            0.06696,
+            0.077506,
+            0.071297,
+            0.071417
+          ],
+          "wins": 3,
+          "cpu_over_npu": 0.9883788644974865,
+          "passed": false
+        }
+      }
+    },
+    "versus_all_declared_cpu_configs": {
+      "performance_target_met_at_this_scale": false,
+      "cpu_roles": [
+        "cpu",
+        "cpu_directory"
+      ],
+      "cases": {
+        "A": {
+          "cpu_medians_ms": [
+            0.080566,
+            0.0657285,
+            0.0678715,
+            0.065724,
+            0.103886,
+            0.0657835
+          ],
+          "npu_medians_ms": [
+            0.068322,
+            0.069304,
+            0.0669755,
+            0.0696395,
+            0.06843250000000001,
+            0.069239
+          ],
+          "cpu_p95_ms": [
+            0.088743,
+            0.07274,
+            0.072469,
+            0.070335,
+            0.110356,
+            0.068242
+          ],
+          "npu_p95_ms": [
+            0.071487,
+            0.071958,
+            0.067802,
+            0.072559,
+            0.070275,
+            0.071597
+          ],
+          "wins": 3,
+          "cpu_over_npu": 0.9708254794928507,
+          "passed": false
+        },
+        "B": {
+          "cpu_medians_ms": [
+            0.08015,
+            0.065473,
+            0.06815750000000001,
+            0.065123,
+            0.1036655,
+            0.065924
+          ],
+          "npu_medians_ms": [
+            0.067316,
+            0.06778100000000001,
+            0.066129,
+            0.0692185,
+            0.06787699999999999,
+            0.0678865
+          ],
+          "cpu_p95_ms": [
+            0.08656,
+            0.077787,
+            0.082274,
+            0.069645,
+            0.108492,
+            0.071097
+          ],
+          "npu_p95_ms": [
+            0.069684,
+            0.069925,
+            0.06696,
+            0.077506,
+            0.071297,
+            0.071417
+          ],
+          "wins": 3,
+          "cpu_over_npu": 0.9883788644974865,
+          "passed": false
+        }
+      }
+    },
+    "baseline": "accepted_warp_append_leaf_and_original_merge"
+  },
+  "summary": [
+    {
+      "case": "A",
+      "baseline_us": 68.76075000000002,
+      "candidate_us": 68.83575,
+      "best_cpu_us": 66.8275,
+      "baseline_p95_us": 70.93150000000001,
+      "candidate_p95_us": 71.542,
+      "best_cpu_p95_us": 72.6045,
+      "median_reduction_pct": -0.10907385390646063,
+      "wins_over_baseline": 4,
+      "wins_over_cpu": 3,
+      "baseline_wins_over_same_cpu": 3
+    },
+    {
+      "case": "B",
+      "baseline_us": 67.59625,
+      "candidate_us": 67.829,
+      "best_cpu_us": 67.04075000000002,
+      "baseline_p95_us": 70.621,
+      "candidate_p95_us": 70.611,
+      "best_cpu_p95_us": 80.0305,
+      "median_reduction_pct": -0.34432383453224524,
+      "wins_over_baseline": 3,
+      "wins_over_cpu": 3,
+      "baseline_wins_over_same_cpu": 3
+    }
+  ],
+  "same_session_baseline_cpu_gate": {
+    "performance_target_met_at_this_scale": false,
+    "cpu_roles": [
+      "cpu",
+      "cpu_directory"
+    ],
+    "cases": {
+      "A": {
+        "cpu_medians_ms": [
+          0.080566,
+          0.0657285,
+          0.0678715,
+          0.065724,
+          0.103886,
+          0.0657835
+        ],
+        "npu_medians_ms": [
+          0.0689385,
+          0.0670655,
+          0.06738150000000001,
+          0.068583,
+          0.069214,
+          0.06951
+        ],
+        "cpu_p95_ms": [
+          0.088743,
+          0.07274,
+          0.072469,
+          0.070335,
+          0.110356,
+          0.068242
+        ],
+        "npu_p95_ms": [
+          0.071908,
+          0.068282,
+          0.068543,
+          0.069955,
+          0.072328,
+          0.072359
+        ],
+        "wins": 3,
+        "cpu_over_npu": 0.9718843962580395,
+        "passed": false
+      },
+      "B": {
+        "cpu_medians_ms": [
+          0.08015,
+          0.065473,
+          0.06815750000000001,
+          0.065123,
+          0.1036655,
+          0.065924
+        ],
+        "npu_medians_ms": [
+          0.067526,
+          0.066019,
+          0.066029,
+          0.06766649999999999,
+          0.0683375,
+          0.0685525
+        ],
+        "cpu_p95_ms": [
+          0.08656,
+          0.077787,
+          0.082274,
+          0.069645,
+          0.108492,
+          0.071097
+        ],
+        "npu_p95_ms": [
+          0.070546,
+          0.06691,
+          0.067141,
+          0.070746,
+          0.071397,
+          0.070696
+        ],
+        "wins": 3,
+        "cpu_over_npu": 0.9917820885034305,
+        "passed": false
+      }
+    }
+  },
+  "interpretation": "Do not replace accepted Warp Append+tree merge. No stable end-to-end gain; A/B summary slightly slower, neither CPU gate passes. Old NPU has identical3/6 CPU wins. Do not rerun, extend sizes or claim local merge sped up without profiling."
+}
