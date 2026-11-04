@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "IndexSDK-aligned BM25 package. Production C++, operators and CMake policy remain unchanged from A5-validated 9a99bbc; historical tested hashes are preserved. Supplied controlled CPU comparison and environment extracts are archived; causal performance attribution awaits a quiet/reserved-core window. No production flag rollback.",
+  "scope": "IndexSDK-aligned BM25 package. Production C++, operators and CMake policy remain unchanged from A5-validated 9a99bbc. Locally tested benchmark drivers add an original native BM25S primary baseline, historical NPU comparison and optional alternating C++ pairs. New A5 synthetic performance measurement and subsequent real-data validation are pending; historical evidence is retained.",
   "text_line_endings": "LF",
   "reference_commits": {
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -12,12 +12,13 @@
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
     ".pre-commit-config.yaml": "d18cae61fe460685d6b3e1721bf9aa30aa2e4d249388df7c8fdf9a5657f99a57",
     "CMakeLists.txt": "efbb01dc2062aae2a92fc873e4663d300062bb2eca9e9167d8f09b7ad92c84f5",
-    "README.md": "7da5a41b085f8c4542dfcdee2e42b6b192442c21c816605689a3959d8ef5204d",
+    "README.md": "6920637d63e3801f112649cc9735c90b960bd8fe78a9f41bdcf1f6d336e00634",
     "cmake/AscendBm25Config.cmake.in": "ec11d408ef32f39c0dadf697f97c828a12b184975995ed78947e643b687acb39",
     "cmake/Install.cmake": "e6414e4980bf184558dd5bf05d66db54dd5433036e5cc7a76ea0fb30617639e0",
     "docs/A5_ACCEPTANCE.md": "b9c7e21201f26be3d35443b4e026f66ff4d000fe82994ef0748e24a0cc26f13d",
-    "docs/BUILD_AND_TEST.md": "9c4011628ab0d34b1f41a7dadd3bc2396b07a210f18c3aeeecda5fb65218341f",
-    "docs/CPU_REGRESSION.md": "b1babc97bfaaa7c711297f437aae065600bb5d3ee9ed7fc58a7898e30bb78a69",
+    "docs/BM25S_PERFORMANCE.md": "25a66fec4accefc64947d35715983e64d8cbc1a609f1d560a6dbc766e5588c05",
+    "docs/BUILD_AND_TEST.md": "f52176d3d87a3d014e46cdc0cdd7a97f7e76a94ddc9f86cdf5b25c01308621cf",
+    "docs/CPU_REGRESSION.md": "47faff5bb6bef2d5a37d4ac8a2d12700087c1f490f84c7f7795b1a10f06c8e7e",
     "docs/FINAL_DELIVERY.md": "59f5b467e761c99e824dd3a0e686ff0f5001fd0560d01515b24bf962b409c1a0",
     "docs/GIT_SYNC.md": "8631c4e72c21bf0ec8b9f10cf6a39997cc9005127eed20d17851c0f8dc2f3eeb",
     "docs/INDEXSDK_INTEGRATION.md": "2b6b566bbad6a9a1d8cc8c10a4d27e295e821f74dffe80eca300bf051626d706",
@@ -136,9 +137,9 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "dc6248ace079496a39247fc70f18ff4227878dce8c7d5d7d77a9cbaf71df85bc",
-    "source_lock.json": "dc8ddce5211fdff9819331c087bbb3d5310e1d1ef1980e736d207756ce1817d5",
-    "standalone/benchmark_final.py": "6c374d6791f466b21fe9d9bb72f2fae266a8f24e8880626ec3eabb73da421bc2",
-    "standalone/bm25s_benchmark.py": "a321acf72d45af5a93593a6991c9aacbb4f527b84376ee07cbf2c7402a6ea7df",
+    "source_lock.json": "d9a732f3f327bef5ea1219a0fddb0b77cbcb851cd5113972ad8bfbd3d78534f2",
+    "standalone/benchmark_final.py": "05b62ca4e70f8ce7a2c1373ecd9434db33f89bbbe9864c69e885a2186917ebf1",
+    "standalone/bm25s_benchmark.py": "848c4073b9b4d20d2f16877d886e63e78fd3339b8ea284190d4ac96611b2333a",
     "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364",
     "standalone/final_support.py": "9eef9e010e82c0e59d7290509e558e3d1bf146062f4eadde9966d6a9bc5020ba",
     "standalone/large_corpus.py": "1fd68404866440bb59c949dd1f93bcac560f764ee9d332d8ed10123f1eed07e4",
@@ -151,11 +152,12 @@
     "tools/a5_environment.py": "f1d7923e58e2bff6b622e52022295227254b713490f2ec57c90013c9cf49a362",
     "tools/check_installed_package.py": "d0ed2beedb8da1a7910a3e2a54379a31acc06f032af2d047d72d25077e2d3c52",
     "tools/check_structure.py": "b0102a783c8425502f31dc3767824b237a79a755fea2bde76d034d330dc2bb4b",
-    "tools/compare_cpu_builds.py": "d29d39b1e00862df6ae4e46f466ce8f10f002cea955ca7f82a5d3631b6c7a477",
+    "tools/compare_cpu_builds.py": "0d8f449061796d340ea18e27d2c1f8cd3f75986e3f490ff30d97780f09e798fc",
     "tools/run_a5_acceptance.py": "ee95b9a2ccd2832d07c3fb20177c94f87445ee5c8897d65ad1d5714ddb47de72",
     "tools/run_clang_tidy.py": "a05980527b7d37b58ca81536212d1f43f3a2bdf7e5ea2a615d25ca9631b2b3db",
-    "tools/test_a5_diagnostics.py": "d6ad8b1d2dd7fcf57b051ac9ef8f6b8170af28e33c45018129f4877d2f9559dd",
+    "tools/test_a5_diagnostics.py": "5598f3f568c5f24a3f2611d85ddd23695fddd67d6b64b72ea712125b983cfc09",
     "tools/test_acceptance_contract.py": "f14ce5101bb4149d4029e79e6e9417bb9459d0359e587d9648d7ab67c8f4e58f",
+    "tools/test_benchmark_policy.py": "418a9b36c03be670fcfc0a5ae5fa0e82a7d127723a095be6cad9c6ac7a56476d",
     "verify_package.py": "5d377581c823e467a8136d8b400f5bca982113041cacb0cf8e70af6f08aa91de"
   }
 }

@@ -6,7 +6,15 @@ from pathlib import Path
 from unittest.mock import patch
 
 from a5_environment import runtime_preflight
-from compare_cpu_builds import ROOT, checkpoint_hashes, cpu_list, restore_legacy_cpu_flags, timing_summary
+from compare_cpu_builds import (
+    ROOT,
+    checkpoint_hashes,
+    cpu_list,
+    paired_summary,
+    restore_legacy_cpu_flags,
+    timing_summary,
+    trial_order,
+)
 
 
 class RuntimePreflightTests(unittest.TestCase):
@@ -71,6 +79,60 @@ class RuntimePreflightTests(unittest.TestCase):
 
 
 class CpuComparisonTests(unittest.TestCase):
+    def test_paired_schedule_balances_order_and_keeps_three_way_default(self):
+        order = trial_order("paired", 6)
+        self.assertEqual(["old_binary", "new_binary", "new_binary", "old_binary"] * 3, order)
+        self.assertEqual(6, len(trial_order("three-way", 6)))
+        for pairs in (0, 2, 3, 5):
+            with self.subTest(pairs=pairs), self.assertRaises(ValueError):
+                trial_order("paired", pairs)
+
+    def paired_fixture(self):
+        # The old baseline changes across pairs; ratios must be computed within each pair.
+        result = []
+        for index, name in enumerate(trial_order("paired", 6)):
+            baseline = 10.0 + index // 2
+            factor = 1.05 if name == "new_binary" else 1.0
+            result.append(
+                {
+                    "variant": name,
+                    "summary": {
+                        case: {
+                            "median_batch_ms": baseline * factor,
+                            "p95_batch_ms": baseline * 2 * (1.04 if name == "new_binary" else 1.0),
+                        }
+                        for case in ("A", "B")
+                    },
+                }
+            )
+        return result
+
+    def test_paired_changes_are_reported_without_a_business_acceptance_verdict(self):
+        result = paired_summary(self.paired_fixture())
+        self.assertEqual("not_decided", result["business_acceptance"])
+        self.assertEqual(6, len(result["pairs"]))
+        for case in ("A", "B"):
+            summary = result["summary"][case]
+            self.assertAlmostEqual(5, summary["median_batch_ms"]["median_paired_change_percent"])
+            self.assertAlmostEqual(4, summary["p95_batch_ms"]["median_paired_change_percent"])
+            self.assertEqual(6, summary["median_batch_ms"]["pairs_new_slower"])
+
+    def test_incomplete_or_reordered_pairs_rejected(self):
+        rows = self.paired_fixture()
+        with self.assertRaises(ValueError):
+            paired_summary(rows[:-1])
+        rows[0], rows[1] = rows[1], rows[0]
+        with self.assertRaises(ValueError):
+            paired_summary(rows)
+
+    def test_invalid_paired_latencies_rejected(self):
+        for invalid in (0, float("nan"), float("inf")):
+            with self.subTest(invalid=invalid):
+                rows = self.paired_fixture()
+                rows[0]["summary"]["A"]["median_batch_ms"] = invalid
+                with self.assertRaises(ValueError):
+                    paired_summary(rows)
+
     def test_cpu_list_rejects_reversed_and_malformed_ranges(self):
         self.assertEqual([0, 1, 2, 8], cpu_list("0-2,8,1"))
         for text in ("3-1", "-1", "1-2-3", "", "x"):

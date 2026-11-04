@@ -1,8 +1,8 @@
 {
   "date": "2026-11-04",
-  "status": "A5_production_code_validated_CPU_quiet_window_comparison_pending",
+  "status": "A5_production_code_validated_original_BM25S_regression_pending",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Supplied controlled CPU comparison and environment extracts are archived: no multi-fold gap reproduced, but noisy two-trial results do not establish causal flag overhead. Historical acceptance and tested package hashes are retained; a quiet/reserved-core comparison remains pending.",
+  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Benchmark drivers now offer frozen-original-BM25S as the primary CPU baseline, scoped historical NPU comparison, and optional balanced C++ pairs. Driver changes have 24 local unit tests; new A5 measurements remain pending. Prior evidence and tested hashes are retained.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -91,9 +91,12 @@
     "tools/run_clang_tidy.py": "a05980527b7d37b58ca81536212d1f43f3a2bdf7e5ea2a615d25ca9631b2b3db",
     "tools/test_acceptance_contract.py": "f14ce5101bb4149d4029e79e6e9417bb9459d0359e587d9648d7ab67c8f4e58f",
     "tools/a5_environment.py": "f1d7923e58e2bff6b622e52022295227254b713490f2ec57c90013c9cf49a362",
-    "tools/compare_cpu_builds.py": "d29d39b1e00862df6ae4e46f466ce8f10f002cea955ca7f82a5d3631b6c7a477",
-    "tools/test_a5_diagnostics.py": "d6ad8b1d2dd7fcf57b051ac9ef8f6b8170af28e33c45018129f4877d2f9559dd",
-    "standalone/final_support.py": "9eef9e010e82c0e59d7290509e558e3d1bf146062f4eadde9966d6a9bc5020ba"
+    "tools/compare_cpu_builds.py": "0d8f449061796d340ea18e27d2c1f8cd3f75986e3f490ff30d97780f09e798fc",
+    "tools/test_a5_diagnostics.py": "5598f3f568c5f24a3f2611d85ddd23695fddd67d6b64b72ea712125b983cfc09",
+    "standalone/final_support.py": "9eef9e010e82c0e59d7290509e558e3d1bf146062f4eadde9966d6a9bc5020ba",
+    "standalone/benchmark_final.py": "05b62ca4e70f8ce7a2c1373ecd9434db33f89bbbe9864c69e885a2186917ebf1",
+    "standalone/bm25s_benchmark.py": "848c4073b9b4d20d2f16877d886e63e78fd3339b8ea284190d4ac96611b2333a",
+    "tools/test_benchmark_policy.py": "418a9b36c03be670fcfc0a5ae5fa0e82a7d127723a095be6cad9c6ac7a56476d"
   },
   "a5_acceptance": {
     "tested_code_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",
@@ -107,9 +110,22 @@
     "evidence": "evidence/cpu_regression_source_audit_20261104.json",
     "status": "controlled_comparison_completed_quiet_window_followup_pending",
     "production_build_policy_changed_in_this_update": false,
-    "local_validation": "16 unit tests, Python 3.9 syntax checks, isolated CPU compilation and 12/12 bit-identical small-fixture checkpoints; no Linux NUMA timing claim",
+    "local_validation": "24 local unit tests pass. Prior isolated CPU compilation and 12/12 small-fixture checkpoint equivalence remain archived. New paired protocol and native-primary driver have not been executed on A5.",
     "comparison_evidence": "evidence/cpu_regression_a5_comparison_20261104.json",
     "reported_comparison_status": "completed_with_bit_identical_outputs",
-    "interpretation": "New/old aggregate differences 5.11%/4.19%; same new binary varies 13.45%/13.01%. High system-load background and missing per-core contention/quota telemetry prevent causal flag attribution."
+    "interpretation": "New/old aggregate differences 5.11%/4.19%; same new binary varies 13.45%/13.01%. High system-load background and missing per-core contention/quota telemetry prevent causal flag attribution.",
+    "role": "Optional C++ diagnostic; original native BM25S is the primary CPU performance opponent for the next run",
+    "stable_overhead_policy": "A stable 4%-5% slowdown under established low-interference conditions is measured version overhead; do not dismiss it using global system load. Acceptance is separate from measurement."
+  },
+  "performance_regression": {
+    "goal": "Keep NPU performance near the previous level; compare CPU with original native BM25S. Synthetic regression first, real dataset afterwards.",
+    "primary_CPU_baseline": "original_native_BM25S_retrieve",
+    "BM25S_commit": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7",
+    "protocol": "Same-input Q8/3terms/K10, native 1/8/32 workers and NPU, six forward/reverse rounds; independent correctness checks retained",
+    "synthetic_stage": "prepared_locally_A5_measurement_pending",
+    "real_data_stage": "pending_synthetic_review_and_dataset_details",
+    "commands": "docs/BM25S_PERFORMANCE.md",
+    "historical_reference": "evidence/bm25s_current_npu_device_evidence_20261029.json",
+    "historical_scope": "Separate historical session; numerical deltas for review, no invented acceptance threshold"
   }
 }

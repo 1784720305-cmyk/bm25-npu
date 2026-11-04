@@ -78,6 +78,8 @@ benchmark六轮正逆角色顺序、5个A/B预热周期、30个正式周期；�
 
 ## 可选原版BM25S
 
+当前性能回归将原版 BM25S 作为 CPU 主基准，使用 `--cpu-baseline bm25s`；专用命令、历史 NPU 比较及后续真实数据安排见 [本轮回归说明](BM25S_PERFORMANCE.md)。下文 `--bm25s` 仍表示在默认 C++ 对照中追加原生/严格适配测量。
+
 复用 `results/bm25s_numba_py39`。新环境用 `python3 standalone/prepare_bm25s_numba.py install --output results/bm25s_numba_py39` 离线安装，保留官方固定wheel和锁文件，不改系统环境。
 
 benchmark命令追加 `--bm25s`，同输入/同会话测原生和严格适配各1/8/32线程；建库/JIT另报。原生同分语义不能冒充严格合同；严格适配若与项目ID不等价，不认定严格等价胜出。已完成BM25S七档无需因清理重跑。

@@ -235,9 +235,12 @@ def measure(inputs, built, output, dependency, workers, strict, warmup=5, repeat
     print('BM25S complete Search: ' + json.dumps(report, ensure_ascii=False), flush=True)
 
 
-def decide(rows, workers, strict_equivalence):
+def decide(rows, workers, strict_equivalence, variants=('original_native', 'strict_adapter')):
+    r.require(
+        bool(variants) and set(variants).issubset({'original_native', 'strict_adapter'}), 'Invalid BM25S variants'
+    )
     result = {}
-    for variant in ('original_native', 'strict_adapter'):
+    for variant in variants:
         cases = {}
         for case in ('A', 'B'):
             cpu = [min(row[f'{variant}_t{w}']['summary'][case]['median_batch_ms'] for w in workers) for row in rows]

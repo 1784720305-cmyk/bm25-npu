@@ -1,4 +1,4 @@
-"""Compare accepted CPU binaries and an isolated legacy-flags rebuild on one NUMA node."""
+"""Compare accepted CPU binaries in alternating pairs or a three-way compiler-policy diagnostic."""
 
 import argparse
 import hashlib
@@ -184,6 +184,53 @@ def timing_summary(record, queries, repeats):
     return result
 
 
+def trial_order(protocol, pairs):
+    if protocol == "three-way":
+        return ["old_binary", "new_binary", "new_source_old_flags", "new_source_old_flags", "new_binary", "old_binary"]
+    require(protocol == "paired", "Unknown comparison protocol")
+    require(pairs >= 4 and pairs % 2 == 0, "Use an even number of pairs, at least four, to balance process order")
+    return [
+        name
+        for pair in range(pairs)
+        for name in (("old_binary", "new_binary") if pair % 2 == 0 else ("new_binary", "old_binary"))
+    ]
+
+
+def paired_summary(trials):
+    require(len(trials) >= 8 and len(trials) % 4 == 0, "Incomplete order-balanced paired comparison")
+    expected_order = trial_order("paired", len(trials) // 2)
+    pairs = []
+    for offset in range(0, len(trials), 2):
+        members = trials[offset : offset + 2]
+        require([t["variant"] for t in members] == expected_order[offset : offset + 2], "Unexpected pair order")
+        by_name = {row["variant"]: row for row in members}
+        changes = {}
+        for case in ("A", "B"):
+            changes[case] = {}
+            for metric in ("median_batch_ms", "p95_batch_ms"):
+                old, new = (by_name[name]["summary"][case][metric] for name in ("old_binary", "new_binary"))
+                require(
+                    all(type(v) in (int, float) and math.isfinite(v) and v > 0 for v in (old, new)),
+                    "Invalid paired latency",
+                )
+                changes[case][metric] = {"old": old, "new": new, "new_vs_old_percent": 100 * (new / old - 1)}
+        pairs.append({"pair": offset // 2 + 1, "process_order": [t["variant"] for t in members], "changes": changes})
+    summary = {}
+    for case in ("A", "B"):
+        summary[case] = {}
+        for metric in ("median_batch_ms", "p95_batch_ms"):
+            values = [pair["changes"][case][metric]["new_vs_old_percent"] for pair in pairs]
+            summary[case][metric] = {
+                "paired_changes_percent": values,
+                "median_paired_change_percent": statistics.median(values),
+                "min_paired_change_percent": min(values),
+                "max_paired_change_percent": max(values),
+                "pairs_new_slower": sum(value > 0 for value in values),
+                "pairs": len(values),
+            }
+    return {"pairs": pairs, "summary": summary, "business_acceptance": "not_decided"}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--before-build", required=True, type=Path)
@@ -199,6 +246,11 @@ def main():
     parser.add_argument("--repeats", default=30, type=int)
     parser.add_argument("--cmake", default="cmake")
     parser.add_argument("--keep-checkpoints", action="store_true")
+    parser.add_argument("--protocol", choices=("three-way", "paired"), default="three-way")
+    parser.add_argument("--pairs", type=int, default=6, help="Paired protocol: even number of old/new process pairs")
+    parser.add_argument(
+        "--reservation-note", default="", help="Record actual CPU reservation arrangements; does not reserve resources"
+    )
     args = parser.parse_args()
     require(platform.system() == "Linux", "This comparison requires the actual Linux host")
     work = args.output.resolve()
@@ -209,19 +261,24 @@ def main():
         "status": "running",
         "diagnostic_only": True,
         "source_commit": SOURCE_COMMIT,
-        "scope": "Directory CPU only, existing old/new binaries plus isolated new-source/old-flags build; not an A5 acceptance replacement.",
+        "scope": "Directory CPU only; not an A5 or business-service acceptance replacement.",
+        "protocol": args.protocol,
+        "business_acceptance": "not_decided",
         "trials": [],
         "cpus": args.cpus,
         "numa_node": args.numa_node,
     }
     code = 1
     try:
+        order = trial_order(args.protocol, args.pairs)
+        report["planned_process_order"] = order
         cpus = cpu_list(args.cpus)
         require(
             len(cpus) == args.threads and set(cpus).issubset(os.sched_getaffinity(0)),
             "Need one allowed CPU per requested thread",
         )
         cores = set()
+        siblings = set()
         for cpu in cpus:
             base = Path(f"/sys/devices/system/cpu/cpu{cpu}")
             require((base / f"node{args.numa_node}").exists(), "Selected CPUs span a different NUMA node")
@@ -231,14 +288,20 @@ def main():
                     (base / "topology/core_id").read_text().strip(),
                 )
             )
+            siblings.update(cpu_list((base / "topology/thread_siblings_list").read_text().strip()))
         require(len(cores) == args.threads, "Select distinct physical cores rather than SMT siblings")
+        report["resource_reservation"] = {
+            "operator_note": args.reservation_note or None,
+            "selected_physical_cores_all_logical_cpus": sorted(siblings),
+            "exclusive_reservation_verified_by_tool": False,
+        }
         require(
             args.repeats >= 10 and args.queries > 0 and args.max_words >= 0 and 1 <= args.k <= 32,
             "Invalid measurement dimensions",
         )
         before, after, inputs = (p.resolve(strict=True) for p in (args.before_build, args.after_build, args.input))
         docs = (inputs / "index/doc_norm.bin").stat().st_size // 4
-        checkpoint_budget = docs * args.queries * 4 * 4 * (6 if args.keep_checkpoints else 1) + 512 * 1024**2
+        checkpoint_budget = docs * args.queries * 4 * 4 * (len(order) if args.keep_checkpoints else 1) + 512 * 1024**2
         require(shutil.disk_usage(work).free >= checkpoint_budget, "Insufficient space for experiment checkpoints")
         binary = "bm25_directory_cpu_benchmark"
         variants = {"old_binary": before / binary, "new_binary": after / binary}
@@ -247,7 +310,7 @@ def main():
         accepted = json.loads((ROOT / "evidence/indexsdk_a5_acceptance_20261104.json").read_text(encoding="utf-8"))
         require(
             digest(variants["new_binary"]) == accepted["binary_sha256"][binary],
-            "Select the accepted 9a99bbc after-build; the counterfactual source is pinned to that revision",
+            "Select the accepted 9a99bbc after-build for a consistent comparison",
         )
         report["initial_cpu"] = cpu_snapshot()
         report["lscpu"] = command_output(["lscpu"])
@@ -265,11 +328,12 @@ def main():
             "CPU/NUMA binding unavailable; inspect binding_probe instead of running an unbound comparison",
         )
         report["builds"] = {"old_binary": build_metadata(before), "new_binary": build_metadata(after)}
-        legacy_build, legacy_metadata = prepare_legacy_flags(
-            work, args.cmake, report["builds"]["old_binary"], environment
-        )
-        variants["new_source_old_flags"] = legacy_build / binary
-        report["builds"]["new_source_old_flags"] = legacy_metadata
+        if args.protocol == "three-way":
+            legacy_build, legacy_metadata = prepare_legacy_flags(
+                work, args.cmake, report["builds"]["old_binary"], environment
+            )
+            variants["new_source_old_flags"] = legacy_build / binary
+            report["builds"]["new_source_old_flags"] = legacy_metadata
         report["binary_sha256"] = {name: digest(path) for name, path in variants.items()}
         report["runtime_dependencies"] = {}
         for name, path in variants.items():
@@ -288,7 +352,6 @@ def main():
             "B_sha256": digest(inputs / "B.txt"),
         }
         baseline = None
-        order = ["old_binary", "new_binary", "new_source_old_flags", "new_source_old_flags", "new_binary", "old_binary"]
         for number, name in enumerate(order, 1):
             target = work / f"trial_{number:02d}_{name}"
             target.mkdir()
@@ -309,9 +372,11 @@ def main():
                 str(args.repeats),
             ]
             row = {"variant": name, "command": command, "before": cpu_snapshot(environment)}
+            if args.protocol == "paired":
+                row["pair"] = (number + 1) // 2
             report["trials"].append(row)
             save(work / "report.json", report)
-            print(f"START {number}/6 {name}", flush=True)
+            print(f"START {number}/{len(order)} {name}", flush=True)
             with (target / "run.log").open("wb") as log:
                 result = subprocess.run(
                     command, env=environment, stdout=log, stderr=subprocess.STDOUT, timeout=300, check=False
@@ -358,8 +423,13 @@ def main():
         }
         report["status"] = "completed_with_bit_identical_outputs"
         report["interpretation"] = (
-            "Two trials per variant are diagnostic observations. Inspect paired timings and CPU snapshots before attributing a regression to flags or scheduling."
+            "Inspect repeated paired differences and actual resource reservation. A stable slowdown under low interference is a measured version cost, not automatically attributable to load or a specific flag. Business acceptance requires workload and latency/throughput limits."
+            if args.protocol == "paired"
+            else "Two trials per variant are diagnostic observations. Inspect paired timings and CPU snapshots before attributing a regression to flags or scheduling."
         )
+        if args.protocol == "paired":
+            report["paired_comparison"] = paired_summary(report["trials"])
+            print("PAIRED changes percent: " + json.dumps(report["paired_comparison"]["summary"]), flush=True)
         print("SUMMARY median batch ms: " + json.dumps(report["summary"]), flush=True)
         code = 0
     except (OSError, ValueError, subprocess.SubprocessError) as error:

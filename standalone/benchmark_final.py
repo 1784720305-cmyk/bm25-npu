@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import shutil
+import statistics
 import sys
 from pathlib import Path
 
@@ -12,6 +13,67 @@ sys.path.insert(0, str(ROOT))
 from standalone import final_support as s
 from standalone import large_corpus as corpus
 from standalone import resident_index as r
+
+
+def measurement_roles(docs, cpu_baseline, include_bm25s):
+    r.require(cpu_baseline in ('cpp', 'bm25s'), 'Unknown primary CPU baseline')
+    if cpu_baseline == 'bm25s':
+        return ['npu'] + [f'original_native_t{workers}' for workers in (1, 8, 32)]
+    roles = ['cpu', 'npu', 'cpu_directory']
+    if docs <= 65536:
+        roles += ['cpu_single', 'cpu_directory_single']
+    if include_bm25s:
+        roles += [
+            f'{variant}_t{workers}' for variant in ('original_native', 'strict_adapter') for workers in (1, 8, 32)
+        ]
+    return roles
+
+
+def historical_npu_reference(rows, description):
+    generation = description.get('generation', {})
+    matching = (
+        description.get('dataset_kind') == 'uniform_synthetic_not_MT_approved'
+        and generation.get('seed') == 20261014
+        and generation.get('vocab') == 1024
+        and generation.get('synthetic_length_range') == [16, 48]
+        and (description.get('queries'), description.get('query_length'), description.get('k')) == (8, 3, 10)
+        and not generation.get('source_jsonl')
+        and all(
+            description.get('cases', {}).get(case, {}).get('terms')
+            == corpus.load_raw(ROOT / 'fixtures' / (case + '.txt'))
+            for case in ('A', 'B')
+        )
+    )
+    if not matching:
+        return {'status': 'not_comparable_to_frozen_synthetic_workload'}
+    evidence = ROOT / 'evidence/bm25s_current_npu_device_evidence_20261029.json'
+    old = json.loads(evidence.read_text(encoding='utf-8'))
+    selected = {
+        item['case']: item
+        for item in old['summary']
+        if item['docs'] == description['docs'] and item['variant'] == 'original_native'
+    }
+    if set(selected) != {'A', 'B'}:
+        return {'status': 'no_historical_reference_for_this_scale'}
+    cases = {}
+    for case in ('A', 'B'):
+        median = statistics.median(row['npu']['summary'][case]['median_batch_ms'] for row in rows)
+        p95 = statistics.median(row['npu']['summary'][case]['p95_batch_ms'] for row in rows)
+        cases[case] = {
+            'historical_median_batch_ms': selected[case]['npu_ms'],
+            'current_median_batch_ms': median,
+            'median_change_percent': 100 * (median / selected[case]['npu_ms'] - 1),
+            'historical_p95_batch_ms': selected[case]['npu_p95_ms'],
+            'current_p95_batch_ms': p95,
+            'p95_change_percent': 100 * (p95 / selected[case]['npu_p95_ms'] - 1),
+        }
+    return {
+        'status': 'historical_reference_for_review',
+        'cases': cases,
+        'evidence': str(evidence),
+        'evidence_sha256': s.digest(evidence),
+        'scope': 'Separate historical A5 session, not a paired control or automatic regression acceptance threshold.',
+    }
 
 
 def main():
@@ -24,8 +86,10 @@ def main():
     p.add_argument('--directory-runner', type=Path)
     p.add_argument('--device', type=int, default=5)
     p.add_argument('--bm25s', action='store_true')
+    p.add_argument('--cpu-baseline', choices=('cpp', 'bm25s'), default='cpp')
     p.add_argument('--dependency-dir', type=Path, default=ROOT / 'results/bm25s_numba_py39')
     a = p.parse_args()
+    a.bm25s = a.bm25s or a.cpu_baseline == 'bm25s'
     for k, v in vars(a).items():
         if isinstance(v, Path):
             setattr(a, k, v.resolve())
@@ -45,16 +109,20 @@ def main():
     description, index = corpus.validate(a.input)
     n, q, k = description['docs'], description['queries'], description['k']
     r.require((q, k, description['query_length']) == (8, 10, 3), 'Declared final benchmark is Q8/3words/K10')
+    roles = measurement_roles(n, a.cpu_baseline, a.bm25s)
     runners = {
         'npu': a.npu_runner or a.host_build / 'bm25_large_search_benchmark',
-        'cpu': a.cpu_runner or a.host_build / 'bm25_cpu_search_benchmark',
-        'cpu_directory': a.directory_runner or a.host_build / 'bm25_directory_cpu_benchmark',
     }
+    if a.cpu_baseline == 'cpp':
+        runners.update(
+            cpu=a.cpu_runner or a.host_build / 'bm25_cpu_search_benchmark',
+            cpu_directory=a.directory_runner or a.host_build / 'bm25_directory_cpu_benchmark',
+        )
     r.require(all(x.is_file() for x in runners.values()), 'Required actual host binary missing')
     plan = s.layout(n, index['vocab_size'], index['posting_count'])
     r.require(plan['cpu_peak_known_bytes'] + 1024**3 < s.host_available_bytes() * 4 // 5, 'Host budget exceeded')
     disk = (
-        6 * (3 + (2 if n <= 65536 else 0)) * 4 * q * n * 4
+        6 * sum(not role.startswith(('original_native', 'strict_adapter')) for role in roles) * 4 * q * n * 4
         + (8 * index['posting_count'] + 8 * q * n if a.bm25s else 0)
         + 1024**3
     )
@@ -67,6 +135,8 @@ def main():
         'per_round': [],
         'runner_sha256': {role: s.digest(path) for role, path in runners.items()},
         'scope': 'Final Warp Append+tree Merge only; complete steady-state Search, no experimental candidate.',
+        'primary_cpu_baseline': 'original_native' if a.cpu_baseline == 'bm25s' else 'cpp',
+        'performance_acceptance': 'pending_review',
     }
 
     def save():
@@ -85,9 +155,6 @@ def main():
             'Device budget exceeded',
         )
         report['memory_probe'] = memory
-        roles = ['cpu', 'npu', 'cpu_directory']
-        if n <= 65536:
-            roles += ['cpu_single', 'cpu_directory_single']
         bm_script = ROOT / 'standalone/bm25s_benchmark.py'
         built = a.output / 'bm25s_index'
         if a.bm25s:
@@ -110,7 +177,6 @@ def main():
                 timeout=14400,
             )
             report['bm25s_construction'] = json.loads((built / 'report.json').read_text(encoding='utf-8'))
-            roles += [f'{v}_t{w}' for v in ('original_native', 'strict_adapter') for w in (1, 8, 32)]
         for ordinal in range(6):
             corpus.validate(a.input)
             order = roles if ordinal % 2 == 0 else list(reversed(roles))
@@ -179,14 +245,24 @@ def main():
             report['per_round'].append(row)
             save()
         cpu_roles = [role for role in roles if role.startswith('cpu')]
-        report['cpu_decision'] = s.cpu_gate(
-            [{**row, 'candidate': row['npu']} for row in report['per_round']], cpu_roles
-        )
+        if cpu_roles:
+            report['cpu_decision'] = s.cpu_gate(
+                [{**row, 'candidate': row['npu']} for row in report['per_round']], cpu_roles
+            )
         if a.bm25s:
             from standalone.bm25s_benchmark import decide
 
             report['bm25s_decision'] = decide(
-                report['per_round'], [1, 8, 32], report['bm25s_construction']['strict_ids_match_project']
+                report['per_round'],
+                [1, 8, 32],
+                report['bm25s_construction']['strict_ids_match_project'],
+                variants=('original_native',) if a.cpu_baseline == 'bm25s' else ('original_native', 'strict_adapter'),
+            )
+        if a.cpu_baseline == 'bm25s':
+            report['historical_npu_comparison'] = historical_npu_reference(report['per_round'], description)
+            print(
+                'Historical NPU comparison: ' + json.dumps(report['historical_npu_comparison'], ensure_ascii=False),
+                flush=True,
             )
         corpus.validate(a.input)
         r.require(
@@ -194,6 +270,7 @@ def main():
         )
         report['status'] = 'actual_final_search_six_rounds_checked'
         save()
+        print('REPORT: ' + str(a.output / 'report.json'), flush=True)
         print(
             'Final Search decision: '
             + json.dumps({k: v for k, v in report.items() if k.endswith('decision')}, ensure_ascii=False),
