@@ -1,0 +1,403 @@
+{
+  "date": "2026-11-04",
+  "status": "controlled_comparison_completed_causal_flag_regression_not_established",
+  "provenance": {
+    "origin": "User-pasted A5 terminal output from tools/compare_cpu_builds.py; local arithmetic revalidation only",
+    "raw_report_received": false,
+    "raw_zip_received": false,
+    "expected_tool_commit": "bff8d673a6694057a31abdae13c91b93a7a12aa3",
+    "source_commit_pinned_by_tool": "9a99bbc6719bb7144db3ebca8303393496db32bb",
+    "report_extract_received": true
+  },
+  "run": {
+    "directory": "/test/w50066029/bm25-npu-indexsdk/results/cpu_regression_01",
+    "before_build": "/test/w50066029/bm25-npu/results/final_host_build",
+    "after_build": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/build",
+    "input": "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+    "requested_cpus": "0-31",
+    "requested_memory_node": 0,
+    "threads": 32,
+    "partitions": 32,
+    "queries": 8,
+    "k": 10,
+    "warmup_cycles": 5,
+    "samples_per_case_per_trial": 30,
+    "scope": "Directory CPU only; six processes, two trials per variant; no NPU measurement"
+  },
+  "checks_reported_by_tool": {
+    "all_six_trials_passed": true,
+    "guards_in_tool": "Allowed distinct physical cores, successful numactl probe, accepted new-binary SHA256, actual_threads/dimensions, resident-index readback, twelve checkpoint file size/SHA256 comparisons across before/after and all variants, unchanged binaries at completion",
+    "verification_limit": "Received terminal timings and a selected report extract, including successful status, source/binary hashes, binding and environment. Raw report/ZIP and individual checkpoint hashes were not independently received."
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "variant": "old_binary",
+      "reported_passed": true,
+      "timings": {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 5.3718525,
+          "p95_batch_ms": 22.924826
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 5.470185,
+          "p95_batch_ms": 36.779597
+        }
+      },
+      "reported_environment": {
+        "before": {
+          "load_average_1_5_15_minutes": [
+            231.82,
+            262.59,
+            277.19
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            4925.163,
+            5085.685
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        },
+        "after": {
+          "load_average_1_5_15_minutes": [
+            225.25,
+            260.19,
+            276.25
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            5011.31,
+            5081.889
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        }
+      }
+    },
+    {
+      "trial": 2,
+      "variant": "new_binary",
+      "reported_passed": true,
+      "timings": {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 6.1153625,
+          "p95_batch_ms": 12.397706
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 6.138117,
+          "p95_batch_ms": 15.049543
+        }
+      },
+      "reported_environment": {
+        "before": {
+          "load_average_1_5_15_minutes": [
+            225.25,
+            260.19,
+            276.25
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            5017.671,
+            5088.882
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        },
+        "after": {
+          "load_average_1_5_15_minutes": [
+            212.91,
+            256.32,
+            274.82
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            5013.183,
+            5086.713
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        }
+      }
+    },
+    {
+      "trial": 3,
+      "variant": "new_source_old_flags",
+      "reported_passed": true,
+      "timings": {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 5.472203,
+          "p95_batch_ms": 5.872358
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 5.5071305,
+          "p95_batch_ms": 5.769284
+        }
+      },
+      "reported_environment": {
+        "before": {
+          "load_average_1_5_15_minutes": [
+            212.91,
+            256.32,
+            274.82
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            3899.831,
+            3932.65
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        },
+        "after": {
+          "load_average_1_5_15_minutes": [
+            218.0,
+            256.03,
+            274.53
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            5011.374,
+            5082.612
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        }
+      }
+    },
+    {
+      "trial": 4,
+      "variant": "new_source_old_flags",
+      "reported_passed": true,
+      "timings": {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 5.3168,
+          "p95_batch_ms": 12.516264
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 5.273204,
+          "p95_batch_ms": 10.575623
+        }
+      },
+      "reported_environment": {
+        "before": {
+          "load_average_1_5_15_minutes": [
+            218.0,
+            256.03,
+            274.53
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            5009.374,
+            5084.395
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        },
+        "after": {
+          "load_average_1_5_15_minutes": [
+            211.76,
+            253.44,
+            273.49
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            5004.906,
+            5077.546
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        }
+      }
+    },
+    {
+      "trial": 5,
+      "variant": "new_binary",
+      "reported_passed": true,
+      "timings": {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 5.3905005,
+          "p95_batch_ms": 6.246579
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 5.431587,
+          "p95_batch_ms": 6.827881
+        }
+      },
+      "reported_environment": {
+        "before": {
+          "load_average_1_5_15_minutes": [
+            211.76,
+            253.44,
+            273.49
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            4989.747,
+            5078.847
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        },
+        "after": {
+          "load_average_1_5_15_minutes": [
+            212.27,
+            252.2,
+            272.87
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            4874.195,
+            5092.015
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        }
+      }
+    },
+    {
+      "trial": 6,
+      "variant": "old_binary",
+      "reported_passed": true,
+      "timings": {
+        "A": {
+          "samples": 30,
+          "median_batch_ms": 5.574772,
+          "p95_batch_ms": 56.581578
+        },
+        "B": {
+          "samples": 30,
+          "median_batch_ms": 5.6341905,
+          "p95_batch_ms": 54.023542
+        }
+      },
+      "reported_environment": {
+        "before": {
+          "load_average_1_5_15_minutes": [
+            212.27,
+            252.2,
+            272.87
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            4998.727,
+            5087.815
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        },
+        "after": {
+          "load_average_1_5_15_minutes": [
+            224.56,
+            253.63,
+            273.12
+          ],
+          "selected_cpu_frequency_min_max_MHz": [
+            4322.304,
+            5095.864
+          ],
+          "cpu_pressure": null,
+          "cgroup_v2_cpu_max": null,
+          "cgroup_v2_cpu_stat": null
+        }
+      }
+    }
+  ],
+  "summary_median_of_two_process_medians_ms": {
+    "old_binary": {
+      "A": 5.47331225,
+      "B": 5.55218775
+    },
+    "new_binary": {
+      "A": 5.7529315,
+      "B": 5.784852000000001
+    },
+    "new_source_old_flags": {
+      "A": 5.3945015000000005,
+      "B": 5.390167249999999
+    }
+  },
+  "derived_relative_times": {
+    "A": {
+      "new_vs_old_percent": 5.108775769188023,
+      "new_vs_restored_flags_percent": 6.644358148755725,
+      "restored_flags_vs_old_percent": -1.439909626935676
+    },
+    "B": {
+      "new_vs_old_percent": 4.19049680011272,
+      "new_vs_restored_flags_percent": 7.322309896784773,
+      "restored_flags_vs_old_percent": -2.9181379898401416
+    }
+  },
+  "within_variant_two_process_median_spread_percent": {
+    "old_binary": {
+      "A": 3.7774585210595513,
+      "B": 2.998170994216842
+    },
+    "new_binary": {
+      "A": 13.4470259301525,
+      "B": 13.007800482621379
+    },
+    "new_source_old_flags": {
+      "A": 2.9228671381282156,
+      "B": 4.436135981084743
+    }
+  },
+  "observations": [
+    "The previous multi-fold old/new time difference is not reproduced under this requested common CPU/memory placement.",
+    "New-binary summary is 5.11%/4.19% slower than old; the same new binary varies by 13.45%/13.01% between its two trials.",
+    "Restoring old flags gives near-old timings, but the second hardened new-binary trial also matches that range.",
+    "The aggregate difference is not a measured causal overhead of security/compiler flags; two trials per variant and fluctuating tails are insufficient for that attribution."
+  ],
+  "next_step": "Keep production flags and structure. Obtain a quiet/reserved-core window (including selected cores' SMT siblings), then repeat the same paired diagnostic into a fresh results directory. Do not kill other jobs, change system policies or conclude a fixed flag overhead from the present run.",
+  "reported_status": "completed_with_bit_identical_outputs",
+  "reported_source_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",
+  "binary_sha256": {
+    "old_binary": "9cdeac1ac31a6dfaef503466773f87bdb680e046b71e877a6367094c1b032d24",
+    "new_binary": "ac36745294db190753873f799bab0ee043ce9eff9d8b6b0d591e0cbad3446073",
+    "new_source_old_flags": "bef4d5c1c1a4310961fc11aa8a1555a4b7cbb97d5d9a791917a3757de974dd87"
+  },
+  "new_binary_matches_archived_A5_acceptance": true,
+  "binding_probe": {
+    "command": [
+      "numactl",
+      "--physcpubind=0-31",
+      "--membind=0",
+      "numactl",
+      "--show"
+    ],
+    "exit_code": 0,
+    "output": "policy: bind\npreferred node: 0\nphyscpubind: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 \ncpubind: 0 \nnodebind: 0 \nmembind: 0 \npreferred: 0"
+  },
+  "shared_openmp_environment": {
+    "OMP_NUM_THREADS": "32",
+    "OMP_THREAD_LIMIT": null,
+    "OMP_DYNAMIC": "FALSE",
+    "OMP_PROC_BIND": "close",
+    "OMP_PLACES": "cores",
+    "OMP_WAIT_POLICY": null,
+    "GOMP_CPU_AFFINITY": null,
+    "GOMP_SPINCOUNT": null,
+    "OPENBLAS_NUM_THREADS": null
+  },
+  "environment_interpretation": {
+    "load": "Observed 1-minute load 211.76-231.82, 5-minute load 252.2-262.59 and 15-minute load 272.87-277.19. Load includes runnable and uninterruptible-I/O tasks; this is a substantial system-load background, not a measured CPU-utilization percentage or proof of contention on selected cores.",
+    "affinity": "The successful binding probe restricts this workload to CPUs 0-31 and memory node 0. It does not reserve these CPUs or their SMT siblings against other workloads.",
+    "frequency": "Before/after frequency samples are mostly near 5 GHz, with some lower snapshots. They are not measurements of average frequency during timed calls and do not establish sustained downclocking as the cause.",
+    "missing_telemetry": "PSI and root cgroup-v2 quota/stat fields are null. This means unavailable/not read at those paths, not proof that throttling or resource limits are absent."
+  },
+  "references": {
+    "load_average_definition": "https://man7.org/linux/man-pages/man5/proc_loadavg.5.html",
+    "affinity_definition": "https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html"
+  }
+}

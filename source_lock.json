@@ -1,8 +1,8 @@
 {
   "date": "2026-11-04",
-  "status": "A5_production_code_validated_CPU_regression_diagnostics_pending",
+  "status": "A5_production_code_validated_CPU_quiet_window_comparison_pending",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. New preflight/environment recording and isolated CPU comparison tooling have local validation only; controlled A5 CPU comparison is pending. Historical acceptance and tested package hashes are retained.",
+  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Supplied controlled CPU comparison and environment extracts are archived: no multi-fold gap reproduced, but noisy two-trial results do not establish causal flag overhead. Historical acceptance and tested package hashes are retained; a quiet/reserved-core comparison remains pending.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -105,8 +105,11 @@
   },
   "cpu_regression_diagnostics": {
     "evidence": "evidence/cpu_regression_source_audit_20261104.json",
-    "status": "controlled_A5_comparison_pending",
+    "status": "controlled_comparison_completed_quiet_window_followup_pending",
     "production_build_policy_changed_in_this_update": false,
-    "local_validation": "16 unit tests, Python 3.9 syntax checks, isolated CPU compilation and 12/12 bit-identical small-fixture checkpoints; no Linux NUMA timing claim"
+    "local_validation": "16 unit tests, Python 3.9 syntax checks, isolated CPU compilation and 12/12 bit-identical small-fixture checkpoints; no Linux NUMA timing claim",
+    "comparison_evidence": "evidence/cpu_regression_a5_comparison_20261104.json",
+    "reported_comparison_status": "completed_with_bit_identical_outputs",
+    "interpretation": "New/old aggregate differences 5.11%/4.19%; same new binary varies 13.45%/13.01%. High system-load background and missing per-core contention/quota telemetry prevent causal flag attribution."
   }
 }
