@@ -39,3 +39,5 @@ python3 verify_package.py
 `results/`、`build/`、虚拟环境和 IDE 缓存已忽略，运行数据不应提交到仓库。pull 更新源码后，C++ 改动仍需重新编译；验收使用新的 RUN，例如 `results/indexsdk_a5_acceptance_02`，不能用旧二进制和旧结果冒充新版本通过。已有历史目录不删除。
 
 回传验收日志时附上 `git rev-parse --short HEAD`，便于对应源码版本。
+
+2026-11-04 已完成的验收对应代码 `9a99bbc`，成功结果位于 `results/indexsdk_a5_acceptance_02/device_03`。后续文档和证据归档提交保留该版本的生产源码、构建与验收脚本指纹；已有成功测量保留即可。复现同一验收版本可使用该提交；新的源码变更仍按上述流程创建新 RUN 验收。详见 [验收记录](A5_ACCEPTANCE.md#5-2026-11-04-a5-验收记录)。

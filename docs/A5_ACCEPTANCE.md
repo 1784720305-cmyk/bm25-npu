@@ -8,10 +8,20 @@
 
 沿用已有 CANN、IndexSDK 运行环境的加载方式。要求 Linux、Python>=3.9、CMake>=3.17、GCC/Clang/OpenMP、实际 CANN 9.2.0，以及可用的 clang-tidy。工具版本与规则不兼容时会停止并保留错误。
 
+本次 A5 验收先在运行终端加载以下环境，再启动 host/device。`LD_LIBRARY_PATH` 之外还需要 CANN 的 OPP、tiling 等配置；SDK 共享资源检查采用 IndexSDK 自带的在线算子模式，因此不依赖另行部署的 SDK 离线 OM 模型目录。
+
+```bash
+source /usr/local/Ascend/cann-9.2.0/set_env.sh
+export LD_LIBRARY_PATH=/usr/local/faiss/faiss1.14.1/lib:/opt/OpenBLAS/lib:/usr/local/Ascend/cann-9.2.0/x86_64-linux/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+export MX_INDEX_USE_ONLINEOP=1
+```
+
+此次加载后 `ASCEND_HOME_PATH=/usr/local/Ascend/cann-9.2.0`，`ASCEND_OPP_PATH=/usr/local/Ascend/cann-9.2.0/opp`。共享检查继续使用实际 SDK 资源代理和 BM25 自定义算子；此模式不代表已经验证 SDK 的离线模型功能。业务应用已有离线模型和资源初始化配置时，应沿用其业务配置。
+
 `SDK_LIBRARY` 必须是实际构建/安装的 IndexSDK 主机库。`SDK_SOURCE` 应与该库对应，并包含 `feature_retrieval/src/ascendfaiss`。`TIDY` 可写绝对路径或 PATH 中的 `clang-tidy`。
 
 ```bash
-cd /test/w50066029/bm25-indexsdk-acceptance-20261104
+cd /test/w50066029/bm25-npu-indexsdk
 
 # 修改这三个值为 A5 上的实际位置：
 SDK_SOURCE="/实际路径/IndexSDK"
@@ -21,7 +31,7 @@ TIDY="/实际工具路径/clang-tidy"
 # 沿用之前的安装和数据，目录有变动时调整：
 VENDORS="/test/w50066029/bm25-npu/results/final_runtime/vendors"
 INPUTS="/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000"
-RUN="results/indexsdk_a5_acceptance_01"
+RUN="results/indexsdk_a5_acceptance_03"
 ```
 
 解压位置不同时调整 cd。host 阶段的 RUN 必须不存在；失败结果也保留，下次 host 使用 `_02` 等新目录。device 阶段使用已通过 host 的同一个 RUN。
@@ -52,7 +62,7 @@ python3 tools/run_a5_acceptance.py \
 
 在严格的 `-Wl,--no-undefined` 链接检查下，上游主机目标缺少 OpenBLAS 显式链接，会出现 `sgemm_`、`sgeqrf_`、`sorgqr_` 未定义。此次在该独立构建目录配置 `-DCMAKE_CXX_STANDARD_LIBRARIES:STRING=/opt/OpenBLAS/lib/libopenblas.so` 后，用户回传的构建及 `ldd -r` 检查通过。验收进程还需在 `LD_LIBRARY_PATH` 保留 Faiss 和 OpenBLAS 的 `lib` 目录。
 
-BM25 `8b7c910` 版本已在该环境完成真实构建和单元测试，首次 host 验收停在 clang-tidy：CANN 间接头文件依赖及独立 clang-tidy 的 GCC `omp.h` 搜索路径。修复后必须使用新的 RUN（例如 `results/indexsdk_a5_acceptance_02`）重新运行 host，不能复用 `_01` 的判定。当前修复仍待该环境重验，设备检查与性能验收尚未完成。
+BM25 `8b7c910` 首次 host 验收停在 clang-tidy：CANN 间接头文件依赖及独立 clang-tidy 的 GCC `omp.h` 搜索路径。修复提交 `9a99bbc` 已在 `results/indexsdk_a5_acceptance_02` 完成 host 和 device 验收。上面的 `_03` 仅作未来复现的新目录示例；已有成功结果保留即可。
 
 ## 3. host 成功后运行 device
 
@@ -92,3 +102,32 @@ results/indexsdk_a5_acceptance_01/acceptance_logs_01.zip
 device 后 ZIP 序号递增。回传最新 ZIP 和顶层 report.json 即可。ZIP 只收集日志和 JSON 报告，不包含索引、全分数 `.bin`、CANN/SDK 二进制或原安装。完整结果仍留在 RUN 内。
 
 首次可以只回传 host 日志，解决真实环境编译/链接问题后再做设备阶段。当前 Windows 本地仅验证流程判定、入口和声明替身下的 C++ 静态检查，没有运行上述真实 CANN/SDK/A5 流程。
+
+## 5. 2026-11-04 A5 验收记录
+
+验收代码为 `9a99bbc6719bb7144db3ebca8303393496db32bb`，IndexSDK 参考为 `59213c4ca5ebb643c031c8b819e90e3a5cc21a8c`。用户回传报告的包清单、源码锁和 SDK 头文件指纹已与本地对应版本核对；选择、合并、共享资源和六轮性能判定也已根据回传数据重新计算，通过。
+
+- host：真实构建、单元测试、生产 clang-tidy、Common/IndexSDK 安装搬迁消费全部通过。
+- device_03：54 次选择、36 次合并、共享 SDK 资源检查、千万篇六轮完整 Search 全部通过，最终状态为 `all_requested_checks_passed`。
+- 共享检查覆盖 Q8/K10、两次 Init/Close、A/B oracle、非法输入恢复、重复查询位一致及 BM25 关闭后的 SDK 流可用性。
+
+下表是六个轮次各自统计量的中位数；CPU 每轮取两种 32 线程实现中的较快者。
+
+| 查询集 | NPU 中位耗时 ms | CPU 中位耗时 ms | NPU P95 ms | CPU P95 ms | 本会话倍率 |
+|---|---:|---:|---:|---:|---:|
+| A | 2.003753 | 12.122969 | 2.009920 | 34.208726 | 6.050 |
+| B | 1.979221 | 13.799904 | 2.010105 | 36.964144 | 6.972 |
+
+A/B 均为 6/6 轮领先。CPU 的逐轮中位耗时范围分别为 6.190～18.799 ms 和 6.107～21.331 ms，波动明显；上述倍率仅描述本次固定合成工作负载及会话，不作为结构整改提升算子性能或所有环境稳定领先的结论。
+
+`device_01` 因未加载完整 CANN 环境出现 tiling 注册初始化错误；`device_02` 因 SDK 默认离线模型目录读取失败返回 100014。加载 CANN `set_env.sh` 并设置 `MX_INDEX_USE_ONLINEOP=1` 后，`device_03` 通过。原 report 顶层仍保留旧尝试的 `failed_stage/error` 字段，历史错误没有从报告中删除；最终状态和最后一次尝试的阶段、子报告均为通过。
+
+报告摘要归档为 [indexsdk_a5_acceptance_20261104.json](../evidence/indexsdk_a5_acceptance_20261104.json)。完整日志包仍位于 A5：
+
+```text
+/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/report.json
+/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/acceptance_logs_04.zip
+/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/device_03/full_search/report.json
+```
+
+本记录及文档更新没有改变 `9a99bbc` 的生产源码、算子或构建/验收脚本，无需为文档更新重复设备测量。新的源码修改或重新验收仍需新 RUN。

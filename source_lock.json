@@ -1,8 +1,8 @@
 {
   "date": "2026-11-04",
-  "status": "A5_host_revalidation_pending",
+  "status": "A5_acceptance_passed_for_tested_code",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Hashes describe current sources, not device acceptance. Original evidence is unchanged.",
+  "note": "Production, operator and build/check sources remain byte-identical to the A5-validated 9a99bbc commit. This update archives supplied evidence and documentation; original evidence and tested package hashes are retained.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -90,5 +90,13 @@
     "tools/run_a5_acceptance.py": "ce602e3c3aa843abbed88498364b62132aa6d7ec9f299e8c5c10f84a189a4dbe",
     "tools/run_clang_tidy.py": "a05980527b7d37b58ca81536212d1f43f3a2bdf7e5ea2a615d25ca9631b2b3db",
     "tools/test_acceptance_contract.py": "f14ce5101bb4149d4029e79e6e9417bb9459d0359e587d9648d7ab67c8f4e58f"
+  },
+  "a5_acceptance": {
+    "tested_code_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",
+    "tested_manifest_sha256": "0950e03c54aabb47483a5d69301750ef3c2130fa67c262accee16b0c981cf115",
+    "tested_source_lock_sha256": "ded6628f8d1cf33f30dc5f56ebcac2e18e5c0ff3e54d2c8d6aab4db3ab072bee",
+    "evidence": "evidence/indexsdk_a5_acceptance_20261104.json",
+    "status": "all_requested_checks_passed",
+    "evidence_origin": "User-supplied A5 reports with local fingerprint and numeric revalidation"
   }
 }

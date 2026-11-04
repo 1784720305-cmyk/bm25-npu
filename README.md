@@ -4,9 +4,9 @@
 
 最终实现：**Warp Append评分/局部Top-K＋原32路分级Merge＋常驻索引/Graph完整Search**。Merge投票、自适应清零、未保留流水、旧算子和历史生成链已移除。
 
-当前源码已开始按 IndexSDK 分层整改。结构说明和剩余接入工作见 [IndexSDK 整改说明](docs/INDEXSDK_REFACTOR.md)。下列历史设备结果仅对应整改前版本；当前版本需要重新进行 A5 验收。
+本轮 IndexSDK 分层整改与约定的 A5 验收已完成。2026-11-04，代码提交 `9a99bbc` 在真实 CANN 9.2.0 / IndexSDK 环境完成构建、单元测试、生产 clang-tidy、安装搬迁消费、共享 SDK 资源检查和千万篇数据六轮完整 Search，最终状态为 `all_requested_checks_passed`。[验收记录](evidence/indexsdk_a5_acceptance_20261104.json)保存回传报告摘要及本地复核结果；本轮之后的文档更新不改变已验收的生产源码。
 
-已提供可选 `bm25_indexsdk` 主机目标、`AscendIndexBm25` 公开接口及借用 SDK 上下文的资源模式；构建、调用和生命周期要求见 [IndexSDK 接入说明](docs/INDEXSDK_INTEGRATION.md)。本机已完成接口/资源所有权 UT、可执行 clang-tidy 本地配置检查和 Common 安装包搬迁消费验证；实际 CANN/SDK 链接与 A5 验收仍待目标环境执行。静态门禁与安装验证见 [检查说明](docs/STATIC_CHECKS.md)。
+已提供可选 `bm25_indexsdk` 主机目标、`AscendIndexBm25` 公开接口及借用 SDK 上下文的资源模式；构建、调用和生命周期要求见 [IndexSDK 接入说明](docs/INDEXSDK_INTEGRATION.md)。真实 A5 检查覆盖 Common/IndexSDK 安装后的调用方、SDK 代理引用与上下文生命周期、A/B 独立 oracle、非法输入恢复和关闭后 SDK 流可用性。规范映射及静态检查范围见 [检查说明](docs/STATIC_CHECKS.md)，整改过程见 [整改说明](docs/INDEXSDK_REFACTOR.md)。
 
 目录前缀为 `feature_retrieval/src/ascendfaiss/`：
 
@@ -21,7 +21,7 @@
 
 根目录 `standalone/` 保留 Python 命令入口；`source_lock.json` 记录当前源码指纹；`evidence/delivery_lock_20261029.json` 保存历史验收版本指纹。
 
-当前整改版的目标环境验证与日志回传使用 [A5 两阶段验收](docs/A5_ACCEPTANCE.md)。以下实测仍为历史版本记录。
+当前整改版的复现命令和必要环境变量见 [A5 两阶段验收](docs/A5_ACCEPTANCE.md)。本轮千万篇六轮中位数汇总：NPU A/B 为 **2.004 / 1.979 ms**，每轮均快于同轮两种 32 线程 C++ CPU 实现中的较快者，P95 也更低。本次 CPU 波动较大，本会话约 6.05 / 6.97 倍的倍率不表示结构整改带来了对应的 NPU 优化，也不替代历史会话结果。后续“已有实测”保留整改前的记录。
 
 ## 已有实测
 

@@ -18,7 +18,7 @@ cmake --build results/indexsdk_npu_build -j \
   --target bm25_indexsdk bm25_large_search_benchmark bm25_fused_simd_selector_check
 ```
 
-`BM25_VENDOR_DIR` 保持原基准入口使用的两个别名 `bm25_fused_score_topk` 和 `bm25_topk_merge`。它们应指向实际安装的算子 vendor，设备进程仍需按 BUILD_AND_TEST.md 设置 `ASCEND_CUSTOM_OPP_PATH`。SDK 调用方通过 CMake 链接 `bm25_indexsdk`，并保留其原有 IndexSDK 链接依赖。已提供安装及 CMake 导出规则；Common 组件通过了本机搬迁消费测试，实际 Host/IndexSDK 二进制交付尚待 CANN 环境验证。
+`BM25_VENDOR_DIR` 保持原基准入口使用的两个别名 `bm25_fused_score_topk` 和 `bm25_topk_merge`。它们应指向实际安装的算子 vendor，设备进程需按 [A5 环境说明](A5_ACCEPTANCE.md) 加载 CANN 环境及设置 `ASCEND_CUSTOM_OPP_PATH`。SDK 调用方通过 CMake 链接 `bm25_indexsdk`，并保留其原有 IndexSDK 链接依赖。已提供安装及 CMake 导出规则；2026-11-04 的 A5 验收已验证真实构建、Common/IndexSDK 安装消费和共享资源运行。
 
 只构建接入库时，可增加 `-DBM25_BUILD_BENCHMARKS=OFF -DBUILD_TESTING=OFF`。该配置不要求额外的 CPU OpenMP 依赖。安装及消费示例：
 
@@ -97,4 +97,4 @@ cmake --build results/indexsdk_cpu_build -j
 ctest --test-dir results/indexsdk_cpu_build --output-on-failure
 ```
 
-尚需在实际 CANN 编译数据库上执行 clang-tidy、链接实际 SDK/算子库，并在 A5 进行共享资源运行、完整 Search 正确性和性能回归。当前 Windows UT 和语法检查不覆盖真实 CANN ABI、设备执行或新性能结果。
+2026-11-04，提交 `9a99bbc` 已在真实 A5 环境完成生产 clang-tidy、实际 CANN/SDK 构建、Common/IndexSDK 安装消费、共享资源检查和千万篇六轮完整 Search。共享检查使用 IndexSDK `59213c4` 的真实资源代理及在线算子模式（`MX_INDEX_USE_ONLINEOP=1`），验证 A/B oracle、非法输入恢复、重复查询位一致、两次 Init/Close，以及关闭 BM25 后 SDK 上下文、设备和默认流仍有效。环境、完整范围和性能边界见 [A5 验收记录](A5_ACCEPTANCE.md#5-2026-11-04-a5-验收记录)。Windows UT 仍属于替身验证，A5 结论来自用户回传报告及摘要复核。

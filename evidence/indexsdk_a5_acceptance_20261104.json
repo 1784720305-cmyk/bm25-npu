@@ -1,0 +1,545 @@
+{
+  "date": "2026-11-04",
+  "status": "all_requested_checks_passed",
+  "evidence_source": "User-supplied A5 terminal output and JSON reports; extracted measurements were independently revalidated locally. Full log ZIP remains on A5.",
+  "tested_code_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",
+  "tested_manifest_sha256": "0950e03c54aabb47483a5d69301750ef3c2130fa67c262accee16b0c981cf115",
+  "tested_source_lock_sha256": "ded6628f8d1cf33f30dc5f56ebcac2e18e5c0ff3e54d2c8d6aab4db3ab072bee",
+  "indexsdk_commit": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
+  "environment": {
+    "os": "openEuler 22.03 LTS-SP4 x86_64",
+    "python": "3.9.9",
+    "gcc": "10.3.1",
+    "cmake": "3.22.0",
+    "CANN": "9.2.0",
+    "clang_tidy": "23.1.4",
+    "device": 5,
+    "ASCEND_HOME_PATH": "/usr/local/Ascend/cann-9.2.0",
+    "ASCEND_OPP_PATH": "/usr/local/Ascend/cann-9.2.0/opp",
+    "MX_INDEX_USE_ONLINEOP": "1",
+    "vendors": [
+      "bm25_fused_score_topk_warp_append_large",
+      "bm25_topk_merge_tree"
+    ]
+  },
+  "input": {
+    "directory": "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+    "documents": 10000000,
+    "queries": 8,
+    "top_k": 10,
+    "rounds": 6,
+    "samples_per_case_per_role_per_round": 30,
+    "cpu_threads": 32,
+    "bm25s_included": false
+  },
+  "host_stage_exit_codes": {
+    "verify_package": 0,
+    "acceptance_contract_tests": 0,
+    "configure": 0,
+    "build": 0,
+    "unit_tests": 0,
+    "production_clang_tidy": 0,
+    "installed_common": 0,
+    "installed_indexsdk": 0
+  },
+  "device_attempt": "device_03",
+  "device_stage_exit_codes": {
+    "prepare_small_sdk_input": 0,
+    "selector": 0,
+    "merge": 0,
+    "shared_sdk_context": 0,
+    "six_round_search": 0
+  },
+  "selector": {
+    "status": "actual_simd_selector_guards_and_strict_bit_rankings_passed",
+    "checked_rows": 1236,
+    "calls": 54,
+    "host_sha256": "72b9cd545f40614fef90c9cbeb70b7114d10f7e08f0f3935384b0758f3b310e1"
+  },
+  "merge": {
+    "status": "actual_global_id_merge_tree_boundaries_guards_and_bits_passed",
+    "calls": 36,
+    "checked_candidates": 9288,
+    "k_values": [
+      1,
+      10,
+      32
+    ],
+    "leaf_counts": [
+      1,
+      31,
+      32,
+      33,
+      1023,
+      1024,
+      1025
+    ]
+  },
+  "shared_sdk_context": {
+    "status": "shared_SDK_context_oracle_retry_lifetime_and_stream_passed",
+    "device": 5,
+    "queries": 8,
+    "k": 10,
+    "init_close_cycles": 2
+  },
+  "search_report_summary": {
+    "status": "actual_final_search_six_rounds_checked",
+    "per_round": [
+      {
+        "round": 1,
+        "process_order": [
+          "cpu",
+          "npu",
+          "cpu_directory"
+        ],
+        "cpu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 18.879964,
+              "p95_batch_ms": 42.436973
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 17.8165585,
+              "p95_batch_ms": 41.397263
+            }
+          }
+        },
+        "cpu_directory": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 18.188331499999997,
+              "p95_batch_ms": 46.301259
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 15.103249,
+              "p95_batch_ms": 40.352056
+            }
+          }
+        },
+        "npu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.009689,
+              "p95_batch_ms": 2.018698
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.986234,
+              "p95_batch_ms": 2.019069
+            }
+          }
+        }
+      },
+      {
+        "round": 2,
+        "process_order": [
+          "cpu_directory",
+          "npu",
+          "cpu"
+        ],
+        "cpu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 18.799353,
+              "p95_batch_ms": 44.792556
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 21.331145499999998,
+              "p95_batch_ms": 49.862561
+            }
+          }
+        },
+        "cpu_directory": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 27.046423,
+              "p95_batch_ms": 44.758565
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 24.334305,
+              "p95_batch_ms": 48.166727
+            }
+          }
+        },
+        "npu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.9942609999999998,
+              "p95_batch_ms": 1.999619
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.9785325,
+              "p95_batch_ms": 2.000851
+            }
+          }
+        }
+      },
+      {
+        "round": 3,
+        "process_order": [
+          "cpu",
+          "npu",
+          "cpu_directory"
+        ],
+        "cpu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 23.5397885,
+              "p95_batch_ms": 55.50182
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 22.14094,
+              "p95_batch_ms": 50.492316
+            }
+          }
+        },
+        "cpu_directory": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 11.653930500000001,
+              "p95_batch_ms": 32.090193
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 13.2317515,
+              "p95_batch_ms": 35.971906
+            }
+          }
+        },
+        "npu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.9999645000000001,
+              "p95_batch_ms": 2.006891
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.972419,
+              "p95_batch_ms": 2.007071
+            }
+          }
+        }
+      },
+      {
+        "round": 4,
+        "process_order": [
+          "cpu_directory",
+          "npu",
+          "cpu"
+        ],
+        "cpu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 7.5293935,
+              "p95_batch_ms": 58.799115
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 7.7724779999999996,
+              "p95_batch_ms": 83.220516
+            }
+          }
+        },
+        "cpu_directory": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 14.113184,
+              "p95_batch_ms": 29.26805
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 7.9939,
+              "p95_batch_ms": 24.459017
+            }
+          }
+        },
+        "npu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.007541,
+              "p95_batch_ms": 2.012949
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.97991,
+              "p95_batch_ms": 2.013139
+            }
+          }
+        }
+      },
+      {
+        "round": 5,
+        "process_order": [
+          "cpu",
+          "npu",
+          "cpu_directory"
+        ],
+        "cpu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 7.505092,
+              "p95_batch_ms": 28.051836
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 7.5710565,
+              "p95_batch_ms": 31.652707
+            }
+          }
+        },
+        "cpu_directory": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 6.1899945,
+              "p95_batch_ms": 15.984325
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 6.1073105000000005,
+              "p95_batch_ms": 14.673239
+            }
+          }
+        },
+        "npu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 2.018763,
+              "p95_batch_ms": 2.024186
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.9806455,
+              "p95_batch_ms": 2.01372
+            }
+          }
+        }
+      },
+      {
+        "round": 6,
+        "process_order": [
+          "cpu_directory",
+          "npu",
+          "cpu"
+        ],
+        "cpu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 12.592006999999999,
+              "p95_batch_ms": 77.178032
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 17.994626,
+              "p95_batch_ms": 81.059023
+            }
+          }
+        },
+        "cpu_directory": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 13.206619,
+              "p95_batch_ms": 36.327259
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 14.3680565,
+              "p95_batch_ms": 37.956382
+            }
+          }
+        },
+        "npu": {
+          "summary": {
+            "A": {
+              "samples": 30,
+              "median_batch_ms": 1.998818,
+              "p95_batch_ms": 2.006009
+            },
+            "B": {
+              "samples": 30,
+              "median_batch_ms": 1.972368,
+              "p95_batch_ms": 2.00632
+            }
+          }
+        }
+      }
+    ],
+    "runner_sha256": {
+      "npu": "752eb07ef2969d3d2f2e8aeb9556a30234a79f00d2c13d3a81a92355f84e5a14",
+      "cpu": "abbfb6038c0fd8bbf7fae519bcce8f6d3b161fabcef012ede5bd14e9318541e9",
+      "cpu_directory": "ac36745294db190753873f799bab0ee043ce9eff9d8b6b0d591e0cbad3446073"
+    },
+    "cpu_decision": {
+      "performance_target_met_at_this_scale": true,
+      "cpu_roles": [
+        "cpu",
+        "cpu_directory"
+      ],
+      "cases": {
+        "A": {
+          "cpu_medians_ms": [
+            18.188331499999997,
+            18.799353,
+            11.653930500000001,
+            7.5293935,
+            6.1899945,
+            12.592006999999999
+          ],
+          "npu_medians_ms": [
+            2.009689,
+            1.9942609999999998,
+            1.9999645000000001,
+            2.007541,
+            2.018763,
+            1.998818
+          ],
+          "cpu_p95_ms": [
+            42.436973,
+            44.758565,
+            32.090193,
+            29.26805,
+            15.984325,
+            36.327259
+          ],
+          "npu_p95_ms": [
+            2.018698,
+            1.999619,
+            2.006891,
+            2.012949,
+            2.024186,
+            2.006009
+          ],
+          "wins": 6,
+          "cpu_over_npu": 6.05013205845881,
+          "passed": true
+        },
+        "B": {
+          "cpu_medians_ms": [
+            15.103249,
+            21.331145499999998,
+            13.2317515,
+            7.7724779999999996,
+            6.1073105000000005,
+            14.3680565
+          ],
+          "npu_medians_ms": [
+            1.986234,
+            1.9785325,
+            1.972419,
+            1.97991,
+            1.9806455,
+            1.972368
+          ],
+          "cpu_p95_ms": [
+            40.352056,
+            48.166727,
+            35.971906,
+            24.459017,
+            14.673239,
+            37.956382
+          ],
+          "npu_p95_ms": [
+            2.019069,
+            2.000851,
+            2.007071,
+            2.013139,
+            2.01372,
+            2.00632
+          ],
+          "wins": 6,
+          "cpu_over_npu": 6.972390782485788,
+          "passed": true
+        }
+      }
+    }
+  },
+  "derived_summary": {
+    "A": {
+      "npu_median_of_round_medians_ms": 2.00375275,
+      "faster_cpu_median_of_round_medians_ms": 12.12296875,
+      "npu_median_of_round_p95_ms": 2.00992,
+      "faster_cpu_median_of_round_p95_ms": 34.208726,
+      "faster_cpu_round_median_range_ms": [
+        6.1899945,
+        18.799353
+      ],
+      "cpu_over_npu_in_this_session": 6.05013205845881,
+      "round_wins": 6
+    },
+    "B": {
+      "npu_median_of_round_medians_ms": 1.9792212500000002,
+      "faster_cpu_median_of_round_medians_ms": 13.799904,
+      "npu_median_of_round_p95_ms": 2.010105,
+      "faster_cpu_median_of_round_p95_ms": 36.964144,
+      "faster_cpu_round_median_range_ms": [
+        6.1073105000000005,
+        21.331145499999998
+      ],
+      "cpu_over_npu_in_this_session": 6.972390782485788,
+      "round_wins": 6
+    }
+  },
+  "binary_sha256": {
+    "bm25_large_search_benchmark": "752eb07ef2969d3d2f2e8aeb9556a30234a79f00d2c13d3a81a92355f84e5a14",
+    "bm25_cpu_search_benchmark": "abbfb6038c0fd8bbf7fae519bcce8f6d3b161fabcef012ede5bd14e9318541e9",
+    "bm25_directory_cpu_benchmark": "ac36745294db190753873f799bab0ee043ce9eff9d8b6b0d591e0cbad3446073",
+    "bm25_fused_simd_selector_check": "57d1566091edd9d9bf25dc7d67a8b218c294e0e38f8fcc27ecbca61a6912f147",
+    "bm25_sdk_shared_check": "c2886273d0f244e9e575ad6049d8db1b84f3576c75b21eec70569a06d88d7870"
+  },
+  "reported_dependency_sha256": {
+    "sdk_library": "c4663f73d4bd9b61b244f6978075ad17e5189e4b5363b999370a88eab13fd6f4",
+    "acl_library": "dc0b5d9848f74c8f88286b025f988ae6858e2a8998a70fd2f49bc5d43e8047d8",
+    "nnop_library": "63b89d53fdbf79432b7ac80b0c86b3d752824ca6a9bc6284a95f3aca2d1e77bd",
+    "fused_api_library": "d14dd6b6268fc263c8248d69e4f4d5c2f8c4a488d572e2a9bcc5bb20c112f541",
+    "merge_api_library": "ffa49ede8b2b8c0a68e0507ebfed809be33f97b63a6f0019f77ceeb752b87fdc"
+  },
+  "local_audit": {
+    "device_report_validator_passed": true,
+    "tested_package_and_source_lock_match_local": true,
+    "selector_source_sha_matches_local": true,
+    "three_SDK_header_hashes_match_reference_git_blobs": true
+  },
+  "archive_locations": {
+    "report": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/report.json",
+    "log_bundle": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/acceptance_logs_04.zip",
+    "full_search": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/device_03/full_search/report.json"
+  },
+  "earlier_attempts": [
+    {
+      "attempt": "device_01",
+      "failed_stage": "selector",
+      "error_code": 361001,
+      "resolution": "Load CANN set_env.sh to supply complete OPP/tiling environment."
+    },
+    {
+      "attempt": "device_02",
+      "failed_stage": "shared_sdk_context",
+      "error_code": 100014,
+      "resolution": "Enable SDK-supported MX_INDEX_USE_ONLINEOP=1 before constructing SDK resources."
+    }
+  ],
+  "report_history_note": "The source report retains failed_stage/error from device_02. Its final status and all device_03 stages passed; historical errors were not removed from the source report.",
+  "performance_scope": "Fixed synthetic 10M-document workload, Q8/K10, same-session faster of two 32-thread C++ CPU variants. CPU timings vary substantially; session ratios are not a stable speedup claim or evidence of NPU optimization from this refactor."
+}

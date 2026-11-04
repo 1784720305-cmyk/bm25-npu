@@ -52,4 +52,4 @@ python tools/check_installed_package.py --build-dir results/indexsdk_cpu_build
 
 该脚本安装 Development 组件，将安装树复制到另一前缀，检查导出文件不包含工作区绝对路径或测试文件，再通过 `find_package(AscendBm25 COMPONENTS Common)` 构建、运行独立调用方。它还检查 CPU-only 安装对 Host 请求的明确拒绝。产物与日志保留在 `results/installed_package_*/`。
 
-此搬迁测试已在本机验证 Common 组件。Host/IndexSDK 二进制的构建、安装、链接和运行仍须由真实 CANN/SDK 环境验证。
+此搬迁测试已在本机验证 Common 组件。2026-11-04，提交 `9a99bbc` 在用户 A5 环境的生产 clang-tidy、Common 和 IndexSDK 安装搬迁消费检查也全部通过，随后完成共享 SDK 资源与设备验收；记录见 [A5 验收说明](A5_ACCEPTANCE.md)。Host 依赖随 IndexSDK 组件参与构建和消费，本轮未单列 Host 组件消费报告。
