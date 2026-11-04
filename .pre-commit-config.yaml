@@ -1,0 +1,25 @@
+# Use the same checked-in rules in editors and hooks.
+exclude: ^(reference_only/|results/|offline_dependencies/|evidence/)
+repos:
+  - repo: local
+    hooks:
+      - id: clang-format
+        name: IndexSDK C++ format
+        entry: clang-format --dry-run --Werror --style=file
+        language: system
+        files: \.(cpp|h)$
+      - id: ruff-format
+        name: IndexSDK Python format
+        entry: ruff format --check --config pre-commit/pyproject.toml
+        language: system
+        types: [python]
+      - id: ruff-check
+        name: IndexSDK Python lint
+        entry: ruff check --config pre-commit/pyproject.toml
+        language: system
+        types: [python]
+      - id: layout
+        name: IndexSDK layout and include boundaries
+        entry: python tools/check_structure.py
+        language: system
+        pass_filenames: false

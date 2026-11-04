@@ -1,0 +1,61 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+include("${CMAKE_CURRENT_LIST_DIR}/AscendBm25CommonTargets.cmake")
+set(AscendBm25_Common_FOUND TRUE)
+set(AscendBm25_Host_FOUND @BM25_HAS_HOST@)
+set(AscendBm25_IndexSDK_FOUND @BM25_HAS_INDEXSDK@)
+
+if(NOT AscendBm25_FIND_COMPONENTS)
+    set(AscendBm25_FIND_COMPONENTS Common)
+    if(AscendBm25_IndexSDK_FOUND)
+        list(APPEND AscendBm25_FIND_COMPONENTS IndexSDK)
+    elseif(AscendBm25_Host_FOUND)
+        list(APPEND AscendBm25_FIND_COMPONENTS Host)
+    endif()
+endif()
+
+if(("Host" IN_LIST AscendBm25_FIND_COMPONENTS OR "IndexSDK" IN_LIST AscendBm25_FIND_COMPONENTS)
+        AND AscendBm25_Host_FOUND)
+    find_path(AscendBm25_CANN_INCLUDE_DIR acl/acl.h
+        HINTS "${AscendBm25_TOOLKIT_HOME}/include" "$ENV{ASCEND_TOOLKIT_HOME}/include")
+    find_library(AscendBm25_ACL_LIBRARY ascendcl
+        HINTS "${AscendBm25_TOOLKIT_HOME}/lib64" "$ENV{ASCEND_TOOLKIT_HOME}/lib64")
+    find_library(AscendBm25_NNOP_LIBRARY nnopbase
+        HINTS "${AscendBm25_TOOLKIT_HOME}/lib64" "$ENV{ASCEND_TOOLKIT_HOME}/lib64")
+    if(NOT EXISTS "${AscendBm25_CANN_INCLUDE_DIR}/acl/acl.h"
+            OR NOT EXISTS "${AscendBm25_ACL_LIBRARY}" OR NOT EXISTS "${AscendBm25_NNOP_LIBRARY}")
+        set(AscendBm25_FOUND FALSE)
+        set(AscendBm25_NOT_FOUND_MESSAGE "CANN headers/libraries required; set AscendBm25_TOOLKIT_HOME")
+        return()
+    endif()
+    if(NOT TARGET AscendBm25::CANN)
+        add_library(AscendBm25::CANN INTERFACE IMPORTED)
+        set_target_properties(AscendBm25::CANN PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES "${AscendBm25_CANN_INCLUDE_DIR}"
+            INTERFACE_LINK_LIBRARIES "${AscendBm25_NNOP_LIBRARY};${AscendBm25_ACL_LIBRARY}")
+    endif()
+    include("${CMAKE_CURRENT_LIST_DIR}/AscendBm25HostTargets.cmake")
+endif()
+
+if("IndexSDK" IN_LIST AscendBm25_FIND_COMPONENTS AND AscendBm25_IndexSDK_FOUND)
+    find_dependency(Threads)
+    find_path(AscendBm25_INDEXSDK_INCLUDE_DIR common/ErrorCode.h
+        HINTS "${AscendBm25_INDEXSDK_SOURCE}/feature_retrieval/src/ascendfaiss")
+    if(NOT EXISTS "${AscendBm25_INDEXSDK_INCLUDE_DIR}/common/ErrorCode.h")
+        set(AscendBm25_FOUND FALSE)
+        set(AscendBm25_NOT_FOUND_MESSAGE "IndexSDK headers required; set AscendBm25_INDEXSDK_INCLUDE_DIR or AscendBm25_INDEXSDK_SOURCE")
+        return()
+    endif()
+    if(NOT TARGET AscendBm25::IndexSDKHeaders)
+        add_library(AscendBm25::IndexSDKHeaders INTERFACE IMPORTED)
+        set_target_properties(AscendBm25::IndexSDKHeaders PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES "${AscendBm25_INDEXSDK_INCLUDE_DIR}")
+    endif()
+    include("${CMAKE_CURRENT_LIST_DIR}/AscendBm25IndexSDKTargets.cmake")
+endif()
+foreach(component IN LISTS AscendBm25_FIND_COMPONENTS)
+    if(NOT AscendBm25_${component}_FOUND)
+        string(APPEND AscendBm25_NOT_FOUND_MESSAGE "Component ${component} is unavailable in this installation. ")
+    endif()
+endforeach()
+check_required_components(AscendBm25)

@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-04",
+  "status": "runner_prepared_local_validation_only_not_A5_evidence",
+  "source_lock_sha256": "eb28940a9909dd392f5be73d7800e92e32866871ff41e27e5a73a57586059c3d",
+  "cpp_ctest_passed": 7,
+  "acceptance_gate_python_tests_passed": 7,
+  "SDK_shared_program_static_profile": "results/sdk_shared_static_profile/bm25_clang_tidy/report.json",
+  "shared_program_profile_uses_declaration_stubs": true,
+  "Common_install_consumer": "passed",
+  "real_CANN_SDK_link_or_device_run": false,
+  "user_execution_mode": "user_runs_A5_commands_and_returns_logs",
+  "Windows_real_acceptance_gate_rejected": true,
+  "failure_report_and_log_bundle_verified": true,
+  "Windows_guard_report": "results\\a5_windows_gate_d0043cf1\\report.json",
+  "Common_only_install_rejected_for_IndexSDK_component": true
+}

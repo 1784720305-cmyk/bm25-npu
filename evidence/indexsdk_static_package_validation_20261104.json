@@ -1,0 +1,154 @@
+{
+  "date": "2026-11-04",
+  "status": "local_static_and_common_install_validation_passed_not_device_evidence",
+  "source_lock_sha256": "a67f313be99d59f651e25ffe95fc8ac2b14f23620180de9a28f263d47a64a402",
+  "clang_tidy_tool": "23.1.4",
+  "clang_tidy_config_sha256": "1ad0fed152d06e536f0babc2ec2e97c61c6dcdcb8ebfcfa2b912b76f730491d3",
+  "upstream_rule_mapping": "pre-commit/clang-tidy-mapping.json",
+  "static_profiles": [
+    {
+      "profile": "indexsdk_cpu_build",
+      "result": "passed",
+      "translation_units": 13,
+      "allow_test_stubs": true,
+      "report": "results/indexsdk_cpu_build/bm25_clang_tidy/report.json",
+      "report_sha256": "e49b6374ef3cac47b39219d363812dbfe93818c8e29565500a984eb9458b41ee",
+      "files": [
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/AscendIndexBm25.cpp",
+          "sha256": "48ae7d6c8c2526b5a7b27df1312797697eb6b0533a454ae424651693f3f29b09",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_runtime.cpp",
+          "sha256": "ea62bdd5106f70b81b16e4bb3701da485b5f43a33aa2078cf29b6c8249ccc622",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/planned_search.cpp",
+          "sha256": "0c4aa2db3df641c344b5f2f474442df7d856c11f791a46d5ebf24b5ad7b2dc2e",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/runtime.cpp",
+          "sha256": "fbe37d5fab01e364399fb70b2fe6e1a2575ef14fb48d10a7584759b91718dbe4",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/cpu_benchmark.cpp",
+          "sha256": "285f88c9bf69f97246654625bb2707afcb4a2dd5a8c0bd2315f090618d146357",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/cpu_directory_benchmark.cpp",
+          "sha256": "cb9db9e6dbe168cf9add032c91bb139b2a291ae7ae072dda54379e3af73d4352",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ut/cases/bm25/cpu_index_search_tests.cpp",
+          "sha256": "ef016ab1680a9c306047d3936fe95d7b896db9c509981473cf0688d8dd7e46b5",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ut/cases/bm25/error_contract_tests.cpp",
+          "sha256": "92aef911ab1902ad60fe5a5793f6829f01af727bb4a6223c5744f3f9acfcb87b",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ut/cases/bm25/index_data_tests.cpp",
+          "sha256": "39071ef711d7c8ca64faa3aab8c8b105726f8837e88c3b47c686bdb580c445f1",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ut/cases/bm25/plan_resources_tests.cpp",
+          "sha256": "ad285147404676ddfc4d9716b5366b9f101c1e6bf650d724fcc6a7879e936db6",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ut/cases/bm25/runtime_tests.cpp",
+          "sha256": "15cb71577ccd90a2312e068972295212e2156b1ae934a5a9cf5c41d18d9ee7a9",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ut/cases/bm25/sdk_error_adapter_tests.cpp",
+          "sha256": "502fae7dd1c4fba885635da6ccc3683cd961ebfab95d4f80a8f1b709f419e039",
+          "uses_test_stubs": false
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ut/cases/bm25/sdk_facade_tests.cpp",
+          "sha256": "9a70309eaf3c79d2496b70497331243ed6b26ce5cf3be84a75f2542273932049",
+          "uses_test_stubs": false
+        }
+      ]
+    },
+    {
+      "profile": "host_static_profile",
+      "result": "passed",
+      "translation_units": 8,
+      "allow_test_stubs": true,
+      "report": "results/host_static_profile/bm25_clang_tidy/report.json",
+      "report_sha256": "13400a312161c0fad5dae88deb253ed16325b2e4c204fea7812539623ac3ef48",
+      "files": [
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/AscendIndexBm25.cpp",
+          "sha256": "48ae7d6c8c2526b5a7b27df1312797697eb6b0533a454ae424651693f3f29b09",
+          "uses_test_stubs": true
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_runtime.cpp",
+          "sha256": "ea62bdd5106f70b81b16e4bb3701da485b5f43a33aa2078cf29b6c8249ccc622",
+          "uses_test_stubs": true
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/large_search.cpp",
+          "sha256": "81514822ddfd22607de5f25d54d36c25ba475e308d971fe54940a834d6fafae4",
+          "uses_test_stubs": true
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/planned_search.cpp",
+          "sha256": "0c4aa2db3df641c344b5f2f474442df7d856c11f791a46d5ebf24b5ad7b2dc2e",
+          "uses_test_stubs": true
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/runtime.cpp",
+          "sha256": "fbe37d5fab01e364399fb70b2fe6e1a2575ef14fb48d10a7584759b91718dbe4",
+          "uses_test_stubs": true
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/benchmark.cpp",
+          "sha256": "2c0422f349034dbb19e1a32fcc6b13e5319bd7e18111947ffe64672c6cf31fc0",
+          "uses_test_stubs": true
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/search_diagnostic.cpp",
+          "sha256": "30d79f0de710188d5b1a32460ba136a578d8d2610ed1447d06a5222bf1e9d822",
+          "uses_test_stubs": true
+        },
+        {
+          "file": "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/selector_check.cpp",
+          "sha256": "97d22d8a11341b8378ad6fd411068a213a18c785022fb2bdcca1e82a9361b8ac",
+          "uses_test_stubs": true
+        }
+      ]
+    }
+  ],
+  "production_gate_rejected_incomplete_CPU_database": true,
+  "ctest": {
+    "passed": 7,
+    "total": 7
+  },
+  "installed_package": {
+    "status": "passed",
+    "component": "Common",
+    "relocated_consumer_built_and_run": true,
+    "workspace_paths_absent_from_exports": true,
+    "missing_host_rejected": true,
+    "host_or_indexsdk_link_validated": false,
+    "report": "results/installed_package_eipas1du/report.json"
+  },
+  "cpp_format_and_structure_files": 52,
+  "python_format_and_lint_files": 16,
+  "actual_CANN_compile_db_validated": false,
+  "actual_Host_IndexSDK_binary_install_link_validated": false,
+  "A5_validation": false
+}

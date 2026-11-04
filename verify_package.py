@@ -1,4 +1,5 @@
 """核对源码快照的文件SHA256，不依赖第三方包。"""
+
 import hashlib
 import json
 from pathlib import Path

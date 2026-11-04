@@ -1,0 +1,26 @@
+{
+  "validated_tool": "clang-tidy 23.1.4",
+  "source": "IndexSDK/.clang-tidy",
+  "normalization": "Remove comments from the YAML Checks scalar and unsupported no-op check options. Keep supported original selectors; map renamed checks where equivalent.",
+  "mapped": {
+    "readability-using-namespace-header": "google-build-using-namespace",
+    "readability-unused-parameter": "misc-unused-parameters",
+    "bugprone-uninitialized-member": "cppcoreguidelines-pro-type-member-init",
+    "bugprone-delete-array": "clang-analyzer-cplusplus.NewDelete",
+    "misc-include-cleanup": "misc-include-cleaner",
+    "bugprone-move-const-arg": "performance-move-const-arg"
+  },
+  "unavailable_in_this_tool": [
+    "google-extern-c",
+    "-google-extern-c-internal-include",
+    "readability-commented-out-code",
+    "readability-redundant-assignment",
+    "clang-analyzer-deadcode.UnreachableCode",
+    "clang-analyzer-deadcode.DeadCode",
+    "modernize-use-constexpr",
+    "cppcoreguidelines-avoid-assert",
+    "cppcoreguidelines-lambda-capture-default"
+  ],
+  "unavailable_note": "No equivalent is claimed for these names. Compiler diagnostics and review are still required.",
+  "header_namespace_rule": "google-build-using-namespace enabled to implement the original header-only ban despite conflicting upstream disable selector."
+}

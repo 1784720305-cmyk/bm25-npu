@@ -1,4 +1,5 @@
 """重建快照清单；文本必须已经是LF，二进制按原始字节计算，不改文件。"""
+
 import hashlib
 import json
 from pathlib import Path

@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-04",
+  "status": "local_validation_passed_not_A5_evidence",
+  "platform": "Windows / MinGW GCC 15.2 / OpenMP",
+  "source_lock_sha256": "44e50e21ee0ced48630e60513c849ca8c4f9ed800ef0427ac799cffe66c54d79",
+  "indexsdk_reference": {
+    "commit": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
+    "clang_format_sha256": "d932934a2fb4c286d35619fe0373fb70c7714097dcaece7ec383afe685886c0c",
+    "error_code_sha256": "842bfcc9b2af640f91a9fd74a1200e6cc8666e9422692373d1060252979ac867"
+  },
+  "ctest": {
+    "passed": 7,
+    "total": 7,
+    "names": [
+      "cpu_contract",
+      "memory_index_contract",
+      "error_contract",
+      "runtime_ownership_contract",
+      "plan_resource_cleanup_contract",
+      "sdk_error_contract",
+      "sdk_facade_contract"
+    ]
+  },
+  "model_and_cli_tests": "passed",
+  "original_bm25s_local_integration": "passed",
+  "cpp_format_and_structure_files": 51,
+  "python_format_and_lint_files": 14,
+  "host_translation_units_syntax_only": 8,
+  "mock_boundaries": [
+    "ACL declarations and implementations in lifecycle UT",
+    "Session backend double in facade UT",
+    "temporary ACL declarations in host syntax check"
+  ],
+  "actual_IndexSDK_ErrorCode_header_used": true,
+  "not_performed": [
+    "actual CANN/IndexSDK link",
+    "clang-tidy with actual CANN compile database",
+    "A5 shared-context execution",
+    "new device correctness and performance regression"
+  ]
+}
