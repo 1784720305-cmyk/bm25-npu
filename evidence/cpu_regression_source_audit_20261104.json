@@ -1,0 +1,101 @@
+{
+  "date": "2026-11-04",
+  "status": "build_policy_difference_confirmed_A5_controlled_comparison_pending",
+  "before_code_commit": "db6559e7e50643203d3c2fb77287d4e649377dc3",
+  "after_code_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",
+  "source_audit": [
+    {
+      "function": "plain_CPU_Search",
+      "before": "cpu_reference/index_search/cpu_index_search.h",
+      "after": "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/reference/cpu_index_search.h",
+      "body_tokens_equal": true,
+      "token_sha256": "58c73af81de39b0bfe1519064318e7be0b65691a56de82104a06f2004ee58c84"
+    },
+    {
+      "function": "directory_CPU_Search",
+      "before": "cpu_reference/directory_search/cpu_directory_search.h",
+      "after": "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/reference/cpu_directory_search.h",
+      "body_tokens_equal": true,
+      "token_sha256": "c2f1deed811a0e9bd2eb11aa3fb8c614ac744a03e7ac3edbc2a092a68e9d83b8"
+    },
+    {
+      "function": "partition_TopK",
+      "before": "cpu_reference/topk_document_shards.h",
+      "after": "feature_retrieval/src/ascendfaiss/common/bm25/topk_document_shards.h",
+      "body_tokens_equal": true,
+      "token_sha256": "a4e6207981e87769294045b85727503a186b3452d609eef92f6ccd3a054c926d"
+    },
+    {
+      "function": "heap_insert",
+      "before": "cpu_reference/topk_document_shards.h",
+      "after": "feature_retrieval/src/ascendfaiss/common/bm25/topk_heap.h",
+      "body_tokens_equal": true,
+      "token_sha256": "5356fddcb2ea2f0c33769bf1b59c85bf4438a54d5ff91aa17614bd35a25fd78e"
+    },
+    {
+      "function": "timing_harness",
+      "before": "npu_prototype/search_benchmark_host/benchmark_common.h",
+      "after": "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/benchmark_common.h",
+      "body_tokens_equal": true,
+      "token_sha256": "f6b0ba699de9609d7fee1f77dc3617cf03045977e21b7f3ff4a22ac761103f50"
+    }
+  ],
+  "source_audit_scope": "Function-body tokens excluding comments/whitespace. This is not a proof that generated machine code or all call-site compilation decisions are identical.",
+  "A5_compile_flags_source": "User-supplied flags.make files from both actual build directories; both /usr/bin/c++ and final -O3.",
+  "unchanged_optimization_options": [
+    "-O3",
+    "-march=native",
+    "-ffp-contract=off",
+    "-fno-fast-math",
+    "-fopenmp",
+    "-std=c++17"
+  ],
+  "new_compile_options": [
+    "-D_FORTIFY_SOURCE=2",
+    "-fstack-protector-all",
+    "-fno-strict-aliasing",
+    "-Wreturn-type",
+    "-fno-common",
+    "-fPIC"
+  ],
+  "new_link_options": [
+    "-Wl,-z,relro",
+    "-Wl,-z,now",
+    "-Wl,-z,noexecstack"
+  ],
+  "A5_topology": {
+    "cpu": "AMD EPYC 9575F",
+    "sockets": 2,
+    "physical_cores_per_socket": 64,
+    "threads_per_core": 2,
+    "logical_cpus": 256,
+    "numa_nodes": 2,
+    "node0_cpus": "0-63,128-191",
+    "node1_cpus": "64-127,192-255",
+    "reported_parent_affinity": "0-255",
+    "numa_distance_local": 10,
+    "numa_distance_remote": 32
+  },
+  "affinity_scope": "No explicit CPU/NUMA binding is applied by the benchmark source; the historical OpenMP environment was not recorded, so per-thread placement in previous runs is unknown.",
+  "pending_experiment": {
+    "tool": "tools/compare_cpu_builds.py",
+    "variants": [
+      "existing_old_binary",
+      "existing_accepted_new_binary",
+      "new_9a99bbc_source_with_legacy_CPU_build_policy_in_isolated_snapshot"
+    ],
+    "order": "old,new,new_old_flags,new_old_flags,new,old",
+    "cpu_binding": "32 distinct physical cores on node 0",
+    "memory_binding": "node 0",
+    "checks": "All 12 output files have matching size and SHA256 across before/after checkpoints and all variants; actual_threads must be 32.",
+    "scope": "Directory CPU only; two trials per variant are diagnostic observations, not a new full A5 acceptance."
+  },
+  "local_tool_validation": {
+    "unit_tests": 16,
+    "experimental_CPU_build": "passed_MinGW_GCC15.2",
+    "fixture_documents": 1024,
+    "output_equivalence": "12_of_12_checkpoint_files_bit_identical",
+    "linux_NUMA_experiment": "not_run"
+  },
+  "conclusion": "The refactor changed CPU compilation policy as well as layout. Current evidence does not yet quantify the contribution of flags versus placement/load. No production hardening flags were removed."
+}

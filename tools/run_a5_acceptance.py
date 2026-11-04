@@ -13,6 +13,8 @@ import time
 import zipfile
 from pathlib import Path
 
+from a5_environment import command_output, cpu_snapshot, runtime_preflight
+
 ROOT = Path(__file__).resolve().parents[1]
 SELECTOR_STATUS = "actual_simd_selector_guards_and_strict_bit_rankings_passed"
 MERGE_STATUS = "actual_global_id_merge_tree_boundaries_guards_and_bits_passed"
@@ -129,6 +131,8 @@ class Run:
         self.report["status"] = "running"
         self.report["current_stage"] = name
         self.save()
+        if name == "six_round_search":
+            write_json(self.work / "cpu_before_full_search.json", cpu_snapshot(self.environment))
         print(f"START {name}: {json.dumps(row['command'], ensure_ascii=False)}", flush=True)
         started = time.monotonic()
         try:
@@ -143,6 +147,8 @@ class Run:
                     check=False,
                 )
             row.update(exit_code=result.returncode, elapsed_seconds=time.monotonic() - started)
+            if name == "six_round_search":
+                write_json(self.work / "cpu_after_full_search.json", cpu_snapshot(self.environment))
             row["status"] = "passed" if result.returncode == 0 else "failed"
             self.save()
             require(result.returncode == 0, f"Stage {name} failed, exit={result.returncode}; see {log}")
@@ -241,7 +247,10 @@ def snapshot(build):
 
 def host_checks(run, args, values):
     build = run.work / "build"
-    run.stage("acceptance_contract_tests", [sys.executable, ROOT / "tools/test_acceptance_contract.py"])
+    run.stage(
+        "acceptance_contract_tests",
+        [sys.executable, "-m", "unittest", "discover", "-s", ROOT / "tools", "-p", "test_*.py"],
+    )
     command = [
         args.cmake,
         "-S",
@@ -447,7 +456,7 @@ def bundle(run):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--phase", choices=("host", "device", "all"), default="host")
+    parser.add_argument("--phase", choices=("preflight", "host", "device", "all"), default="host")
     parser.add_argument("--output", required=True, type=Path)
     for name in ("toolkit-home", "indexsdk-source", "sdk-library", "vendors", "securec-include", "input"):
         parser.add_argument("--" + name, type=Path)
@@ -494,7 +503,32 @@ def main():
         report["parameters"] = values
         run.environment = environment(values)
         report["runtime_paths"] = {key: run.environment[key] for key in ("ASCEND_CUSTOM_OPP_PATH", "LD_LIBRARY_PATH")}
+        report["runtime_preflight"] = runtime_preflight(values, run.environment)
+        tool_checks = []
+        commands = (
+            ()
+            if args.phase == "device"
+            else (
+                [args.cmake, "--version"],
+                [args.ctest, "--version"],
+                [args.clang_tidy, "--version"],
+                [args.clang_tidy, "--verify-config", f"--config-file={ROOT / '.clang-tidy'}"],
+            )
+        )
+        for command in commands:
+            result = command_output(command, run.environment)
+            tool_checks.append(result)
+            if result["exit_code"] != 0 or "unknown check" in result["output"].lower():
+                report["runtime_preflight"]["errors"].append(f"Required tool/configuration unavailable: {command}")
+        if args.phase != "device":
+            report["host_tool_checks"] = tool_checks
+        report["runtime_preflight"]["tools"] = report.get("host_tool_checks", tool_checks)
+        report["runtime_preflight"]["status"] = "failed" if report["runtime_preflight"]["errors"] else "passed"
         run.save()
+        require(report["runtime_preflight"]["status"] == "passed", "; ".join(report["runtime_preflight"]["errors"]))
+        if args.phase == "preflight":
+            report["status"] = "runtime_preflight_passed_no_device_execution"
+            run.save()
         if args.phase in ("host", "all"):
             host_checks(run, args, values)
         code = device_checks(run, args, values) if args.phase in ("device", "all") else 0

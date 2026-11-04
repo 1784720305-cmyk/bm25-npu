@@ -12,6 +12,7 @@ from types import SimpleNamespace
 
 from standalone import large_corpus as corpus
 from standalone import resident_index as r
+from tools.a5_environment import cpu_snapshot
 
 ROOT = Path(__file__).resolve().parents[1]
 digest = corpus.digest
@@ -300,6 +301,7 @@ def host_available_bytes():
 
 def execute(command, log, env=None, cwd=None, timeout=900):
     print('执行：' + json.dumps([str(x) for x in command], ensure_ascii=False), flush=True)
+    state = {'before': cpu_snapshot(env)}
     with log.open('wb') as out:
         child = subprocess.run(
             check=False,
@@ -310,6 +312,8 @@ def execute(command, log, env=None, cwd=None, timeout=900):
             stderr=subprocess.STDOUT,
             timeout=timeout,
         )
+    state.update(after=cpu_snapshot(env), exit_code=child.returncode)
+    r.write_json(log.with_suffix('.environment.json'), state)
     r.require(child.returncode == 0, '阶段失败：' + str(log) + '；退出码=' + str(child.returncode))
 
 

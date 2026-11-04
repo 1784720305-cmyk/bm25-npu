@@ -20,6 +20,10 @@ export MX_INDEX_USE_ONLINEOP=1
 
 `SDK_LIBRARY` 必须是实际构建/安装的 IndexSDK 主机库。`SDK_SOURCE` 应与该库对应，并包含 `feature_retrieval/src/ascendfaiss`。`TIDY` 可写绝对路径或 PATH 中的 `clang-tidy`。
 
+更新后的入口会在构建/设备操作前一次检查 CANN HOME/OPP、SDK 算子模式或离线模型目录、securec、两个 vendor 的配置/tiling 库及动态依赖。host 还会提前验证 CMake/CTest/clang-tidy 和规则配置，报告记录所选环境、CPU 放置、频率和 OpenMP 设置。离线模型目录检查只验证存在性，不代表离线模型已执行。
+
+单独检查环境时可用 `--phase preflight`，配合下文同样的依赖参数及一个新的输出目录。成功状态为 `runtime_preflight_passed_no_device_execution`，不会运行设备查询或编译。该目录不作为 host 已通过的 RUN。
+
 ```bash
 cd /test/w50066029/bm25-npu-indexsdk
 
@@ -130,4 +134,4 @@ A/B 均为 6/6 轮领先。CPU 的逐轮中位耗时范围分别为 6.190～18.7
 /test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/device_03/full_search/report.json
 ```
 
-本记录及文档更新没有改变 `9a99bbc` 的生产源码、算子或构建/验收脚本，无需为文档更新重复设备测量。新的源码修改或重新验收仍需新 RUN。
+归档提交 `367c662` 没有改变 `9a99bbc` 的生产源码、算子或构建/验收脚本。后续 CPU 回归调查增加了前置检查和环境记录，保持生产 C++、算子和编译策略；这些新工具的本地验证不追溯声称为已在 A5 验收。历史成功记录继续绑定 `9a99bbc`，新的完整验收仍需新 RUN。CPU 新旧版本受控对照见 [CPU 回归核查](CPU_REGRESSION.md)。

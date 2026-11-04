@@ -1,8 +1,8 @@
 {
   "date": "2026-11-04",
-  "status": "A5_acceptance_passed_for_tested_code",
+  "status": "A5_production_code_validated_CPU_regression_diagnostics_pending",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Production, operator and build/check sources remain byte-identical to the A5-validated 9a99bbc commit. This update archives supplied evidence and documentation; original evidence and tested package hashes are retained.",
+  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. New preflight/environment recording and isolated CPU comparison tooling have local validation only; controlled A5 CPU comparison is pending. Historical acceptance and tested package hashes are retained.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -87,9 +87,13 @@
     "pre-commit/pyproject.toml": "b4c22e77a37be2af7bddacfeda1ea6e21dccb640671c7bf57225c33ac27f7b98",
     "tools/check_installed_package.py": "d0ed2beedb8da1a7910a3e2a54379a31acc06f032af2d047d72d25077e2d3c52",
     "tools/check_structure.py": "b0102a783c8425502f31dc3767824b237a79a755fea2bde76d034d330dc2bb4b",
-    "tools/run_a5_acceptance.py": "ce602e3c3aa843abbed88498364b62132aa6d7ec9f299e8c5c10f84a189a4dbe",
+    "tools/run_a5_acceptance.py": "ee95b9a2ccd2832d07c3fb20177c94f87445ee5c8897d65ad1d5714ddb47de72",
     "tools/run_clang_tidy.py": "a05980527b7d37b58ca81536212d1f43f3a2bdf7e5ea2a615d25ca9631b2b3db",
-    "tools/test_acceptance_contract.py": "f14ce5101bb4149d4029e79e6e9417bb9459d0359e587d9648d7ab67c8f4e58f"
+    "tools/test_acceptance_contract.py": "f14ce5101bb4149d4029e79e6e9417bb9459d0359e587d9648d7ab67c8f4e58f",
+    "tools/a5_environment.py": "f1d7923e58e2bff6b622e52022295227254b713490f2ec57c90013c9cf49a362",
+    "tools/compare_cpu_builds.py": "d29d39b1e00862df6ae4e46f466ce8f10f002cea955ca7f82a5d3631b6c7a477",
+    "tools/test_a5_diagnostics.py": "d6ad8b1d2dd7fcf57b051ac9ef8f6b8170af28e33c45018129f4877d2f9559dd",
+    "standalone/final_support.py": "9eef9e010e82c0e59d7290509e558e3d1bf146062f4eadde9966d6a9bc5020ba"
   },
   "a5_acceptance": {
     "tested_code_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",
@@ -98,5 +102,11 @@
     "evidence": "evidence/indexsdk_a5_acceptance_20261104.json",
     "status": "all_requested_checks_passed",
     "evidence_origin": "User-supplied A5 reports with local fingerprint and numeric revalidation"
+  },
+  "cpu_regression_diagnostics": {
+    "evidence": "evidence/cpu_regression_source_audit_20261104.json",
+    "status": "controlled_A5_comparison_pending",
+    "production_build_policy_changed_in_this_update": false,
+    "local_validation": "16 unit tests, Python 3.9 syntax checks, isolated CPU compilation and 12/12 bit-identical small-fixture checkpoints; no Linux NUMA timing claim"
   }
 }
