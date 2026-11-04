@@ -1,6 +1,7 @@
 #ifndef BM25_TEST_FUSED_API_H
 #define BM25_TEST_FUSED_API_H
-#include "acl/acl.h"
+#include "acl/acl_base.h"
+#include "aclnn/acl_meta.h"
 aclnnStatus aclnnBm25FusedScoreTopKGetWorkspaceSize(const aclTensor *, const aclTensor *, const aclTensor *,
                                                     const aclTensor *, const aclTensor *, const aclTensor *,
                                                     const aclTensor *, int64_t, int64_t, int64_t, const aclTensor *,

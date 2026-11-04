@@ -1,5 +1,6 @@
 #ifndef BM25_ASCENDHOST_SRC_BM25_LARGE_SEARCH_H
 #define BM25_ASCENDHOST_SRC_BM25_LARGE_SEARCH_H
+#include "aclnn/acl_meta.h"
 #include "ascendhost/src/bm25/planned_search.h"
 #include "common/bm25/large_search_plan.h"
 #include "common/bm25/topk_heap.h" // untimed independent bounded-heap checks only

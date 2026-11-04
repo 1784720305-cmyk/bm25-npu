@@ -1,7 +1,8 @@
 #include "ascendhost/src/bm25/planned_search.h"
 #include <array>
 #include <cstddef>
-#include "acl/acl.h"
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
 #include <algorithm>
 #include <iostream>
 namespace bm25search {

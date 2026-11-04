@@ -1,0 +1,93 @@
+{
+  "date": "2026-11-04",
+  "status": "local_checks_passed_A5_host_revalidation_pending",
+  "reported_A5_baseline": {
+    "bm25_commit": "8b7c9104a27465cde142c56c77d1f307bd5f65cb",
+    "indexsdk_commit": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
+    "environment": "openEuler 22.03 LTS-SP4 x86_64, GCC 10.3.1, CANN 9.2.0, clang-tidy 23.1.4",
+    "evidence_source": "User-supplied terminal output; complete A5 report/log ZIP has not been received.",
+    "sdk_build_and_ldd": "reported_pass_after_explicit_OpenBLAS_link",
+    "BM25_build_and_unit_tests": "reported_pass",
+    "BM25_static_gate": "failed_include_cleaner_CANN_headers_and_missing_GCC_omp_header"
+  },
+  "fixes": [
+    "Direct CANN 9.2 acl_base_rt.h, acl_rt.h and acl_meta.h dependencies in production and diagnostic files.",
+    "UT declarations split by CANN header ownership.",
+    "Discover the actual compiler OpenMP header for -fopenmp entries and append its directory using -idirafter.",
+    "Include actual CANN leaf headers in acceptance dependency fingerprints."
+  ],
+  "local_validation": {
+    "ctest": {
+      "passed": 7,
+      "total": 7,
+      "ACL_device_operations": "test_doubles"
+    },
+    "acceptance_contract_tests": {
+      "passed": 8,
+      "total": 8
+    },
+    "clang_tidy_profiles": {
+      "cpu_ut": {
+        "translation_units": 13,
+        "tool": "LLVM (http://llvm.org/):\n  LLVM version 23.1.4\n  Optimized build.",
+        "allow_test_stubs": true,
+        "production_compile_db_coverage_complete": false,
+        "report_sha256": "1302180d3e1a2ea1912f67b6513953faff843f985ca3a3e47c0a7d5ba7012ec9",
+        "source_sha256": {
+          "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/AscendIndexBm25.cpp": "48ae7d6c8c2526b5a7b27df1312797697eb6b0533a454ae424651693f3f29b09",
+          "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_runtime.cpp": "1156e929843dfd3c9fcfe2de107441f2a5fdf86f32335995f4d4feb66bb99e7b",
+          "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/planned_search.cpp": "133279a91c48c3b745e3504225c0b3f7426b81ba2cfe94c401f9fbc3a36997fe",
+          "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/runtime.cpp": "cc0d7b78236791d3200de71d4ebb5d1c33d2c2a416e549b817d8feb8cbec675a",
+          "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/cpu_benchmark.cpp": "285f88c9bf69f97246654625bb2707afcb4a2dd5a8c0bd2315f090618d146357",
+          "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/cpu_directory_benchmark.cpp": "cb9db9e6dbe168cf9add032c91bb139b2a291ae7ae072dda54379e3af73d4352",
+          "feature_retrieval/src/ascendfaiss/ut/cases/bm25/cpu_index_search_tests.cpp": "ef016ab1680a9c306047d3936fe95d7b896db9c509981473cf0688d8dd7e46b5",
+          "feature_retrieval/src/ascendfaiss/ut/cases/bm25/error_contract_tests.cpp": "92aef911ab1902ad60fe5a5793f6829f01af727bb4a6223c5744f3f9acfcb87b",
+          "feature_retrieval/src/ascendfaiss/ut/cases/bm25/index_data_tests.cpp": "39071ef711d7c8ca64faa3aab8c8b105726f8837e88c3b47c686bdb580c445f1",
+          "feature_retrieval/src/ascendfaiss/ut/cases/bm25/plan_resources_tests.cpp": "4bab89e23ac6892548e2df4bcdfd1a27b2775051105d4b99be9b735ed60cb7d6",
+          "feature_retrieval/src/ascendfaiss/ut/cases/bm25/runtime_tests.cpp": "b77570161d16351a2da1a35a66ab9d43239f6ca29f7db492640c9b714fdbabfc",
+          "feature_retrieval/src/ascendfaiss/ut/cases/bm25/sdk_error_adapter_tests.cpp": "502fae7dd1c4fba885635da6ccc3683cd961ebfab95d4f80a8f1b709f419e039",
+          "feature_retrieval/src/ascendfaiss/ut/cases/bm25/sdk_facade_tests.cpp": "9a70309eaf3c79d2496b70497331243ed6b26ce5cf3be84a75f2542273932049"
+        },
+        "compiler_openmp_headers": [
+          "F:\\develop\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\15.2.0\\include\\omp.h"
+        ]
+      },
+      "host_declarations": {
+        "translation_units": 8,
+        "tool": "LLVM (http://llvm.org/):\n  LLVM version 23.1.4\n  Optimized build.",
+        "allow_test_stubs": true,
+        "production_compile_db_coverage_complete": false,
+        "report_sha256": "18b1ee9b085af3845e755e1adaad7b763ad4d559a448929ade62585bdf932165",
+        "source_sha256": {
+          "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/AscendIndexBm25.cpp": "48ae7d6c8c2526b5a7b27df1312797697eb6b0533a454ae424651693f3f29b09",
+          "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_runtime.cpp": "1156e929843dfd3c9fcfe2de107441f2a5fdf86f32335995f4d4feb66bb99e7b",
+          "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/large_search.cpp": "9cfbf46e806e98d60110d5eed5d2e99e5922a8b701ea45e2fb1f9d35429bdc24",
+          "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/planned_search.cpp": "133279a91c48c3b745e3504225c0b3f7426b81ba2cfe94c401f9fbc3a36997fe",
+          "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/runtime.cpp": "cc0d7b78236791d3200de71d4ebb5d1c33d2c2a416e549b817d8feb8cbec675a",
+          "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/benchmark.cpp": "b872f9d69d9b10cdd67babc974683b3a80d813ab21d9b457701e67a6f3796f32",
+          "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/search_diagnostic.cpp": "82ee291404d40427ad432534e03141e2cdef073973a449f68eeabcef27ce7978",
+          "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/selector_check.cpp": "72b9cd545f40614fef90c9cbeb70b7114d10f7e08f0f3935384b0758f3b310e1"
+        }
+      },
+      "sdk_shared_declarations": {
+        "translation_units": 1,
+        "tool": "LLVM (http://llvm.org/):\n  LLVM version 23.1.4\n  Optimized build.",
+        "allow_test_stubs": true,
+        "production_compile_db_coverage_complete": false,
+        "report_sha256": "c8214368ebd15f0ecf394bbda005c82597c9d592c63854974d70acd733718345",
+        "source_sha256": {
+          "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/sdk_shared_check.cpp": "41e28d826dc93abd87219e6712600c918dd2c068fd91fa7a35ab18ff986a8c84"
+        }
+      }
+    },
+    "structure": {
+      "status": "passed",
+      "cpp_files": 57
+    },
+    "ruff_changed_tools": "passed"
+  },
+  "real_A5_host_after_fix": "not_run",
+  "installed_IndexSDK_consumer_after_fix": "not_run",
+  "device_or_performance_acceptance_after_fix": "not_run",
+  "note": "Local declaration/UT checks do not validate real CANN ABI or device execution. Rerun host in a fresh output on A5."
+}

@@ -1,5 +1,7 @@
 #include "ascendhost/src/bm25/large_search.h"
-#include "acl/acl.h"
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
+#include "aclnn/acl_meta.h"
 #include <cstdint>
 #include <cstddef>
 #include <vector>

@@ -6,7 +6,8 @@
 #include "ascenddaemon/AscendResourcesProxy.h"
 #include "common/utils/SocUtils.h"
 #include "common/ErrorCode.h"
-#include "acl/acl.h"
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>

@@ -1,4 +1,5 @@
-#include "acl/acl.h"
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
 #include "ascendhost/src/bm25/runtime.h"
 #include "common/bm25/error.h"
 #include "common/bm25/validation.h"

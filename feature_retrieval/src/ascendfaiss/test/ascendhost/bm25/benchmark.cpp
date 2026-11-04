@@ -2,7 +2,7 @@
 #include "common/bm25/validation.h"
 #include "ascendhost/src/bm25/fused_runtime.h"
 #include "common/bm25/index_data.h"
-#include "acl/acl.h"
+#include "acl/acl_rt.h"
 #include "test/ascendhost/bm25/search_diagnostic.h"
 #include "test/ascendhost/bm25/input_io.h"
 #include "ascendhost/src/bm25/large_search.h"

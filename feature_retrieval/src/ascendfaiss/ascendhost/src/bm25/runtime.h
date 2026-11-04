@@ -1,5 +1,6 @@
 #ifndef BM25_RUNTIME_H
 #define BM25_RUNTIME_H
+#include "acl/acl_base_rt.h"
 #include "ascendhost/include/impl/Bm25RuntimeBinding.h"
 #include "common/bm25/error.h"
 

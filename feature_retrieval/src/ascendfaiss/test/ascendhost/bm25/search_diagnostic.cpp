@@ -1,4 +1,5 @@
-#include "acl/acl.h"
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
 #include "ascendhost/src/bm25/large_search.h"
 #include "common/bm25/large_search_plan.h"
 #include "test/ascendhost/bm25/input_io.h"

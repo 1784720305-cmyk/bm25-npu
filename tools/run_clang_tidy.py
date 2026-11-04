@@ -3,7 +3,9 @@
 import argparse
 import hashlib
 import json
+import os
 import re
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -18,6 +20,40 @@ def digest(path):
 def uses_stubs(entry):
     command = entry.get("command", " ".join(entry.get("arguments", []))).replace("\\", "/").lower()
     return any(marker in command for marker in ("/mock", "_stubs", "/stubs"))
+
+
+def compiler_openmp_header(entry, cache):
+    arguments = entry.get("arguments") or shlex.split(entry["command"], posix=os.name != "nt")
+    if not any(value == "-fopenmp" or value.startswith("-fopenmp=") for value in arguments):
+        return None
+    # CMake can prepend a compiler launcher to its compilation database entries.
+    while arguments and Path(arguments[0].strip('"')).stem in ("ccache", "sccache", "distcc"):
+        arguments = arguments[1:]
+    if not arguments:
+        return None
+    compiler = arguments[0].strip('"')
+    key = (compiler, entry["directory"])
+    if key not in cache:
+        header = None
+        try:
+            result = subprocess.run(
+                [compiler, "-print-file-name=include/omp.h"],
+                cwd=entry["directory"],
+                capture_output=True,
+                text=True,
+                timeout=15,
+                check=False,
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                candidate = Path(result.stdout.strip())
+                if not candidate.is_absolute():
+                    candidate = Path(entry["directory"]) / candidate
+                if candidate.is_file():
+                    header = str(candidate.resolve())
+        except (OSError, subprocess.TimeoutExpired):
+            pass  # Preserve clang-tidy's actual missing-header diagnostic.
+        cache[key] = header
+    return cache[key]
 
 
 def main():
@@ -70,13 +106,20 @@ def main():
         raise RuntimeError(f"clang-tidy configuration rejected; see {output / 'config.log'}")
     version = subprocess.run([args.clang_tidy, "--version"], capture_output=True, text=True, check=True).stdout.strip()
     checks = []
+    compiler_headers = {}
     header_filter = (
         "^" + re.escape(SOURCE.as_posix()).replace("/", r"[\\/]") + r"[\\/](common[\\/]bm25|ascendhost)[\\/]"
     )
     for number, (file, entry) in enumerate(sorted(selected.items())):
         command = [args.clang_tidy, file, f"-p={output}", f"--config-file={config}", "--quiet"]
         command.append(f"--header-filter={header_filter}")
-        command += [f"--extra-arg={value}" for value in args.extra_arg]
+        extra_arguments = list(args.extra_arg)
+        omp_header = compiler_openmp_header(entry, compiler_headers)
+        if omp_header:
+            # Search after Clang's builtin and standard headers; GCC's stddef.h
+            # must not replace Clang's own resource headers.
+            extra_arguments.append(f"-idirafter{Path(omp_header).parent}")
+        command += [f"--extra-arg={value}" for value in extra_arguments]
         command += [f"--extra-arg-before={value}" for value in args.extra_arg_before]
         if args.fix:
             command.append("--fix")
@@ -90,6 +133,8 @@ def main():
                 "file": file,
                 "sha256": digest(Path(file)),
                 "uses_test_stubs": uses_stubs(entry),
+                "compiler_openmp_header": omp_header,
+                "extra_arguments": extra_arguments,
                 "exit_code": result.returncode,
                 "log": str(log),
             }

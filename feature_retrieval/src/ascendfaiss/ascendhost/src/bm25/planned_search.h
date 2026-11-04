@@ -1,5 +1,6 @@
 #ifndef BM25_ASCENDHOST_SRC_BM25_PLANNED_SEARCH_H
 #define BM25_ASCENDHOST_SRC_BM25_PLANNED_SEARCH_H
+#include "acl/acl_rt.h"
 #include "ascendhost/src/bm25/fused_runtime.h"
 #include "ascendhost/src/bm25/fused_api.h"
 #include "common/bm25/fixed_query_packet.h"

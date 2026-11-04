@@ -1,6 +1,8 @@
 #include "ascendhost/src/bm25/runtime.h"
 #include "common/bm25/validation.h"
-#include "acl/acl.h"
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
+#include "aclnn/acl_meta.h"
 #include "test/ascendhost/bm25/input_io.h"
 // Changed selector only. Actual generated ABI; independent CPU full-sort oracle.
 // debug2 consumes score bits, never used by public Search or its performance path.

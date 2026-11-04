@@ -46,6 +46,14 @@ python3 tools/run_a5_acceptance.py \
 
 如果报缺少 `securec.h`，在新 RUN 的 host 命令增加 `--securec-include /实际包含securec.h的目录`。不要创建假的头文件或库绕过检查。缺工具、规则不兼容、编译或链接失败时，直接回传生成的日志包，先保留现场。
 
+### 本次 openEuler A5 环境的依赖准备
+
+参考源码固定为 IndexSDK `59213c4ca5ebb643c031c8b819e90e3a5cc21a8c`，位于 `/test/w50066029/IndexSDK-reference`。主机库单独从 `feature_retrieval/src/ascendfaiss/ascendhost` 构建，关闭 `BUILD_ASCEND_SEARCH` 和 `BUILD_OCK`，使用已有 `/usr/local/faiss/faiss1.14.1`、`/opt/OpenBLAS` 及 `/usr/local/Ascend/cann-9.2.0/x86_64-linux`。
+
+在严格的 `-Wl,--no-undefined` 链接检查下，上游主机目标缺少 OpenBLAS 显式链接，会出现 `sgemm_`、`sgeqrf_`、`sorgqr_` 未定义。此次在该独立构建目录配置 `-DCMAKE_CXX_STANDARD_LIBRARIES:STRING=/opt/OpenBLAS/lib/libopenblas.so` 后，用户回传的构建及 `ldd -r` 检查通过。验收进程还需在 `LD_LIBRARY_PATH` 保留 Faiss 和 OpenBLAS 的 `lib` 目录。
+
+BM25 `8b7c910` 版本已在该环境完成真实构建和单元测试，首次 host 验收停在 clang-tidy：CANN 间接头文件依赖及独立 clang-tidy 的 GCC `omp.h` 搜索路径。修复后必须使用新的 RUN（例如 `results/indexsdk_a5_acceptance_02`）重新运行 host，不能复用 `_01` 的判定。当前修复仍待该环境重验，设备检查与性能验收尚未完成。
+
 ## 3. host 成功后运行 device
 
 INPUTS 必须是既有 large_corpus 目录，包含 `preparation_report.json`。脚本验证并重用该目录，不复制/改写数据。千万篇六轮完整分数诊断会新增二十多 GB 结果；基准入口会检查内存和磁盘预算。

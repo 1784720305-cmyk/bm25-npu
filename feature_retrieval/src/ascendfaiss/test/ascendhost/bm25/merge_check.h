@@ -1,5 +1,8 @@
 #ifndef BM25_TEST_ASCENDHOST_BM25_MERGE_CHECK_H
 #define BM25_TEST_ASCENDHOST_BM25_MERGE_CHECK_H
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
+#include "aclnn/acl_meta.h"
 // Affected operator checks only; generated finite FP32 bits, strict global IDs and guards.
 #include "ascendhost/src/bm25/large_search.h"
 #include "test/ascendhost/bm25/input_io.h"

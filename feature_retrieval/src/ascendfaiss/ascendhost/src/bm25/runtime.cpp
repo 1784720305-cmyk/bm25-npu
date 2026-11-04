@@ -1,5 +1,6 @@
 #include "ascendhost/src/bm25/runtime.h"
-#include "acl/acl.h"
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
 #include "ascendhost/include/impl/Bm25RuntimeBinding.h"
 #include "common/bm25/error.h"
 #include <cstdint>

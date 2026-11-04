@@ -1,4 +1,6 @@
-#include "acl/acl.h"
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
+#include "aclnn/acl_meta.h"
 #include "ascendhost/src/bm25/planned_search.h"
 #include "common/bm25/validation.h"
 #include <cstdint>

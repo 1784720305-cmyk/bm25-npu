@@ -1,9 +1,18 @@
 """Check that incomplete or stale device reports cannot be accepted by the orchestration gate."""
 
 import copy
+import tempfile
 import unittest
+from pathlib import Path
 
-from run_a5_acceptance import MERGE_STATUS, SEARCH_STATUS, SELECTOR_STATUS, SHARED_STATUS, validate_device_reports
+from run_a5_acceptance import (
+    MERGE_STATUS,
+    SEARCH_STATUS,
+    SELECTOR_STATUS,
+    SHARED_STATUS,
+    dependency_snapshot,
+    validate_device_reports,
+)
 
 
 class AcceptanceContractTests(unittest.TestCase):
@@ -97,6 +106,54 @@ class AcceptanceContractTests(unittest.TestCase):
                 self.check(search={**self.search, "cpu_decision": decision})
         with self.assertRaises(ValueError):
             self.check(search={**self.search, "cpu_decision": None})
+
+
+class DependencySnapshotTests(unittest.TestCase):
+    def test_cann_leaf_header_changes_and_removal_invalidate_snapshot(self):
+        # This fixture tests fingerprint invalidation, not ELF or CANN acceptance.
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            files = (
+                "sdk/library.so",
+                "sdk/feature_retrieval/src/ascendfaiss/common/ErrorCode.h",
+                "sdk/feature_retrieval/src/ascendfaiss/ascenddaemon/AscendResourcesProxy.h",
+                "sdk/feature_retrieval/src/ascendfaiss/ascenddaemon/StandardAscendResources.h",
+                "toolkit/lib64/libascendcl.so",
+                "toolkit/lib64/libnnopbase.so",
+                "toolkit/include/acl/acl.h",
+                "toolkit/include/acl/acl_base_rt.h",
+                "toolkit/include/acl/acl_rt.h",
+                "toolkit/include/aclnn/acl_meta.h",
+                "vendors/bm25_fused_score_topk/op_api/include/aclnn_bm25_fused_score_top_k.h",
+                "vendors/bm25_fused_score_topk/op_api/lib/libcust_opapi.so",
+                "vendors/bm25_topk_merge/op_api/include/aclnn_bm25_top_k_merge.h",
+                "vendors/bm25_topk_merge/op_api/lib/libcust_opapi.so",
+            )
+            for name in files:
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"fingerprint fixture")
+            values = {
+                "toolkit_home": str(root / "toolkit"),
+                "indexsdk_source": str(root / "sdk"),
+                "sdk_library": str(root / "sdk/library.so"),
+                "vendors": str(root / "vendors"),
+            }
+            baseline = dependency_snapshot(values)
+            for name in ("acl/acl_base_rt.h", "acl/acl_rt.h", "aclnn/acl_meta.h"):
+                with self.subTest(header=name):
+                    header = root / "toolkit/include" / name
+                    header.write_bytes(b"changed header")
+                    self.assertNotEqual(baseline, dependency_snapshot(values))
+                    header.unlink()
+                    with self.assertRaises(FileNotFoundError):
+                        dependency_snapshot(values)
+                    header.write_bytes(b"fingerprint fixture")
+            meta = root / "toolkit/include/aclnn/acl_meta.h"
+            alternate = root / "toolkit/include/aclnnop/aclnn/acl_meta.h"
+            alternate.parent.mkdir(parents=True)
+            meta.rename(alternate)
+            self.assertEqual(str(alternate.resolve()), dependency_snapshot(values)["acl_meta_header"]["path"])
 
 
 if __name__ == "__main__":

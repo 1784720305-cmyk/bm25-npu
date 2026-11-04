@@ -1,7 +1,9 @@
 #ifndef BM25_ASCENDHOST_SRC_BM25_FUSED_RUNTIME_H
 #define BM25_ASCENDHOST_SRC_BM25_FUSED_RUNTIME_H
 #include "ascendhost/src/bm25/runtime.h"
-#include "acl/acl.h"
+#include "acl/acl_base_rt.h"
+#include "acl/acl_rt.h"
+#include "aclnn/acl_meta.h"
 #include "aclnn_bm25_fused_score_top_k.h"
 #include "aclnn_bm25_top_k_merge.h"
 #include <dlfcn.h>

@@ -22,22 +22,25 @@ python tools/run_clang_tidy.py \
 
 日志和 `report.json` 位于构建目录的 `bm25_clang_tidy/`。每项记录源文件 SHA256、返回码和是否使用替身。任何静态检查结果都不代表设备执行验收。
 
+对带 `-fopenmp` 的编译条目，脚本使用条目中的实际编译器执行 `-print-file-name=include/omp.h`。找到该编译器的真实 OpenMP 头后，以 `-idirafter` 补入 clang-tidy 的搜索路径，每项报告记录 `compiler_openmp_header` 和实际附加参数。此路径排在 Clang 内建头文件之后，避免 GCC 的 `stddef.h` 覆盖 Clang 的版本；不修改 `_OPENMP` 或屏蔽解析错误。
+
+CANN 9.2 的错误码、Context/Stream、数据类型位于 `acl/acl_base_rt.h`，运行时函数位于 `acl/acl_rt.h`，Tensor/Executor 元接口位于 `aclnn/acl_meta.h`。使用这些声明的文件直接包含所属头文件。UT 替身也按此拆分，避免单个 `acl.h` 替身掩盖间接依赖。验收记录同时核对这些实际 CANN 头文件的指纹。
+
 ## 本机覆盖
 
 Windows 的本地检查使用 `--allow-test-stubs`，报告明确保留该标记。CPU/UT 编译数据库检查 13 个翻译单元；包含完整主机实现的本地声明数据库另检查 8 个翻译单元。后者仅提供 ACL 声明，不能验证 CANN ABI 或设备行为。两个范围有重复文件，不能相加当作 21 个独立源文件。
 
-本机 MinGW 需要给 clang-tidy 指定目标和 GCC OpenMP 头目录。路径按实际工具安装位置调整：
+本机 MinGW 需要给 clang-tidy 指定目标；GCC OpenMP 头目录会从实际编译器自动定位。路径按实际工具安装位置调整：
 
 ```powershell
 python tools/run_clang_tidy.py `
   --build-dir results/indexsdk_cpu_build `
   --clang-tidy C:/tools/clang-tidy.exe `
   --include-tests --allow-test-stubs `
-  --extra-arg-before=--target=x86_64-w64-windows-gnu `
-  --extra-arg=-idirafterC:/tools/mingw/lib/gcc/x86_64-w64-mingw32/15.2.0/include
+  --extra-arg-before=--target=x86_64-w64-windows-gnu
 ```
 
-OpenMP 头路径放在 `-idirafter`，避免用 GCC 的 stddef.h 覆盖 clang 的内建头。这里不使用伪造的 OpenMP 头。
+自定义工具链无法自动定位时，可显式传入 `--extra-arg=-idirafter/实际包含omp.h的目录`。仍需使用实际编译器的 OpenMP 头。
 
 ## 安装及搬迁消费验证
 

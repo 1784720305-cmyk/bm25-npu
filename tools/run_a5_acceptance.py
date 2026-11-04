@@ -193,11 +193,22 @@ def environment(values):
 def dependency_snapshot(values):
     toolkit = Path(values["toolkit_home"])
     sdk = Path(values["indexsdk_source"]) / "feature_retrieval/src/ascendfaiss"
+    meta_header = next(
+        (
+            path
+            for path in (toolkit / "include/aclnn/acl_meta.h", toolkit / "include/aclnnop/aclnn/acl_meta.h")
+            if path.is_file()
+        ),
+        toolkit / "include/aclnn/acl_meta.h",
+    )
     paths = {
         "sdk_library": Path(values["sdk_library"]),
         "acl_library": toolkit / "lib64/libascendcl.so",
         "nnop_library": toolkit / "lib64/libnnopbase.so",
         "acl_header": toolkit / "include/acl/acl.h",
+        "acl_base_rt_header": toolkit / "include/acl/acl_base_rt.h",
+        "acl_rt_header": toolkit / "include/acl/acl_rt.h",
+        "acl_meta_header": meta_header,
         "sdk_error_header": sdk / "common/ErrorCode.h",
         "sdk_proxy_header": sdk / "ascenddaemon/AscendResourcesProxy.h",
         "sdk_resources_header": sdk / "ascenddaemon/StandardAscendResources.h",
