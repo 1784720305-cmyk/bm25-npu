@@ -34,6 +34,8 @@ TREC-COVID 一条查询有较多相关文档，Recall@10 的分母与 SciFact �
 
 首轮 `trec_covid_a5_01` 已完成，无需为归档重复运行；以下用于复现，已有目录保留，重测时换用新目录。
 
+当前额外复测使用已完成 A5 验收的大页分配版本 `results/indexsdk_alloc_host_01/build`；本页历史成绩保持原样，不预设新会话速度。已准备好的输入可继续复用。
+
 在相同资源条件下继续使用已验收二进制、vendor 和私有 Numba。数据、结果使用新目录：
 
 ```bash
@@ -44,7 +46,7 @@ source /usr/local/Ascend/cann-9.2.0/set_env.sh
 export LD_LIBRARY_PATH=/usr/local/faiss/faiss1.14.1/lib:/opt/OpenBLAS/lib:/usr/local/Ascend/cann-9.2.0/x86_64-linux/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export NUMBA_NUM_THREADS=32 OMP_NUM_THREADS=32 OMP_DYNAMIC=FALSE OMP_PROC_BIND=close OMP_PLACES=cores
 python3 standalone/beir_real.py --dataset trec-covid prepare --output results/trec_covid_data_01
-numactl --physcpubind=0-31 --membind=0 python3 -u standalone/beir_real.py --dataset trec-covid run --data results/trec_covid_data_01 --output results/trec_covid_a5_01 --vendors /test/w50066029/bm25-npu/results/final_runtime/vendors --host-build results/indexsdk_a5_acceptance_02/build --dependency-dir /test/w50066029/bm25-npu/results/bm25s_numba_py39 --device 5
+numactl --physcpubind=0-31 --membind=0 python3 -u standalone/beir_real.py --dataset trec-covid run --data results/trec_covid_data_01 --output results/trec_covid_a5_02 --vendors /test/w50066029/bm25-npu/results/final_runtime/vendors --host-build results/indexsdk_alloc_host_01/build --dependency-dir /test/w50066029/bm25-npu/results/bm25s_numba_py39 --device 5
 ```
 
 准备阶段需要下载并多次遍历原始文本和构建独立 oracle，该耗时与检索耗时分开。若采用已下载的官方 ZIP，准备命令可追加 `--archive /实际路径/trec-covid.zip`；大小和 SHA256 必须一致。压缩包及生成文件保存在 `results`，不提交到代码仓库。

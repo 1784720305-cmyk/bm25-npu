@@ -1,6 +1,6 @@
 {
   "date": "2026-11-05",
-  "status": "A5_allocation_failure_observed_local_host_fix_checked_target_revalidation_pending",
+  "status": "A5_policy_comparison_and_fresh_host_device_MSMARCO_revalidation_passed",
   "parent_commit": "266e938",
   "observed_A5": {
     "input": "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01",
@@ -28,14 +28,14 @@
     "reference_code": "feature_retrieval/src/ascendfaiss/ascenddaemon/utils/MemorySpace.cpp: MemorySpace::DEVICE_HUGEPAGE",
     "policy_reference": "https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1alpha002/API/appdevgapi/aclpythondevg_01_0962.html",
     "allocation_reference": "https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/API/runtimeapi/aclcppdevg_03_0095.html",
-    "causal_status": "Policy is a supported explanation to test; the A5 same-size policy comparison has not yet been supplied. Aggregate HBM free space does not guarantee a specific allocation."
+    "causal_status": "A5 same-byte probe reproduces NORMAL_ONLY207001 and HUGE_FIRST0 with release to the prior free-memory count. Fresh host, device regression and full MS MARCO workload checks then passed; no precise pool-size or universal allocation-success claim."
   },
   "production_change": {
     "parent_commit": "266e938",
     "before_sha256": "0f35073df250b0397eb151caad41ad2c7a2a9a7770232fb6969c83f0ba7b019a",
     "after_sha256": "f878ccb905e0c0b2d490f5e8b01ba5bb1434c548d0e7d8f3f27aad6aca3d5f9d",
     "change": "HUGE_FIRST allocation and requested-byte/policy error context; no operator/query/scoring/guard changes",
-    "target_A5_status": "pending_allocation_probe_host_and_device_revalidation"
+    "target_A5_status": "host_device_and_MSMARCO_revalidation_passed_on_d685cf4"
   },
   "unchanged": {
     "operators": true,
@@ -79,14 +79,73 @@
     "probe_Python_3_9_syntax": true,
     "scope": "No CANN/Ascend device available on this Windows host. None of these checks proves target allocation success or performance."
   },
-  "next_target_checks": [
+  "target_allocation_probe_completed": true,
+  "target_new_host_checks_completed": true,
+  "target_device_regression_completed": true,
+  "target_MSMARCO_quality_and_performance_completed": true,
+  "allocation_probe": {
+    "source": "User-pasted A5 policy-trial JSON from d685cf4; full report cleanup fields not supplied",
+    "date": "2026-11-05",
+    "trials": [
+      {
+        "policy": "ACL_MEM_MALLOC_NORMAL_ONLY",
+        "policy_value": 2,
+        "requested_bytes": 14051296472,
+        "before": {
+          "free": 131730817024,
+          "total": 132338679808
+        },
+        "allocation_code": 207001,
+        "allocation_error": "[PID: 3670603] 2026-11-05-23:07:42.166.898 Memory_Allocation_Failure(EL0004): Failed to allocate memory requested by APP module.\n        Possible Cause: Available memory is insufficient.\n        Solution: Close applications not in use.\n",
+        "allocated": false,
+        "after": {
+          "free": 131719905280,
+          "total": 132338679808
+        }
+      },
+      {
+        "policy": "ACL_MEM_MALLOC_HUGE_FIRST",
+        "policy_value": 0,
+        "requested_bytes": 14051296472,
+        "before": {
+          "free": 131719905280,
+          "total": 132338679808
+        },
+        "allocation_code": 0,
+        "allocation_error": "",
+        "allocated": true,
+        "allocated_memory": {
+          "free": 117666889728,
+          "total": 132338679808
+        },
+        "freed": true,
+        "after": {
+          "free": 131719905280,
+          "total": 132338679808
+        }
+      }
+    ],
+    "observed_huge_allocation_bytes": 14053015552,
+    "same_request_policy_difference_reproduced": true,
+    "full_host_build_and_Search_validation": "pending"
+  },
+  "completed_target_checks": [
     "same-size NORMAL_ONLY/HUGE_FIRST allocation probe with release and fresh memory snapshots",
     "fresh real CANN host build, production clang-tidy and installed consumption",
     "selector/merge/shared SDK and synthetic10M device regression",
     "MS MARCO test43 quality and native-BM25S Q8 six-round performance in a new output"
   ],
-  "target_allocation_probe_completed": false,
-  "target_new_host_checks_completed": false,
-  "target_device_regression_completed": false,
-  "target_MSMARCO_quality_and_performance_completed": false
+  "A5_execution_source_binding": {
+    "status": "all_requested_checks_passed",
+    "source_lock_sha256": "50cd9c3de55f1ca8e02abe3be1a293d47e9bc38439b78c851196aced5336f497",
+    "manifest_sha256": "daa7fc5d03c21dc1ecb28b3f9fb1364d2d770ec64f39602d7952383cc93fcfaa",
+    "binary_sha256": {
+      "bm25_large_search_benchmark": "434ef7568ed03d6e632a1e6406e22565aefb12809f829c32cd9d4f3fdb2417da",
+      "bm25_cpu_search_benchmark": "59d8112a2d50690c3aa9645d3c129d4c3536ae033db5443dac3ff48e3435fc26",
+      "bm25_directory_cpu_benchmark": "d302b8bfede8d05ee6d97586ee5fb3a4f851ca07c14bc9991ac4d58b9f86b63f",
+      "bm25_fused_simd_selector_check": "ac79eb42e5305bd4bbe468f43b091cb30513977d49846afb1f64917778da1621",
+      "bm25_sdk_shared_check": "8232049bb957ca15902d78882c13e4dc04abc51d5b8d17b6d4168536d687c53f"
+    }
+  },
+  "completed_run_evidence": "evidence/msmarco_a5_20261105.json"
 }

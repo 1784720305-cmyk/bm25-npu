@@ -46,6 +46,8 @@ P95 的六轮汇总为 A：CPU 0.0896895 ms、NPU 0.0879325 ms，NPU 4/6 轮较�
 
 上述首轮已完成；以下为复现方法，已有结果保留，重测时另用新目录。
 
+当前主机的大页分配修复已在 `results/indexsdk_alloc_host_01/build` 完成 A5 验收，下面的额外复测示例使用该构建；本页历史成绩保持原样，不预设新会话的速度。已准备好的输入可继续复用。
+
 继续使用已验收主机二进制、vendor 和原私有 Numba 依赖。准备数据可重复使用已核验本地 ZIP；没有指定 `--archive` 时，从上述官方 URL 下载约 2.8 MB。沿用 CANN 环境，并在实际预留核的窗口执行：
 
 ```bash
@@ -56,7 +58,7 @@ source /usr/local/Ascend/cann-9.2.0/set_env.sh
 export LD_LIBRARY_PATH=/usr/local/faiss/faiss1.14.1/lib:/opt/OpenBLAS/lib:/usr/local/Ascend/cann-9.2.0/x86_64-linux/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export NUMBA_NUM_THREADS=32 OMP_NUM_THREADS=32 OMP_DYNAMIC=FALSE OMP_PROC_BIND=close OMP_PLACES=cores
 python3 standalone/scifact.py prepare --output results/scifact_data_01
-numactl --physcpubind=0-31 --membind=0 python3 -u standalone/scifact.py run --data results/scifact_data_01 --output results/scifact_a5_01 --vendors /test/w50066029/bm25-npu/results/final_runtime/vendors --host-build results/indexsdk_a5_acceptance_02/build --dependency-dir /test/w50066029/bm25-npu/results/bm25s_numba_py39 --device 5
+numactl --physcpubind=0-31 --membind=0 python3 -u standalone/scifact.py run --data results/scifact_data_01 --output results/scifact_a5_02 --vendors /test/w50066029/bm25-npu/results/final_runtime/vendors --host-build results/indexsdk_alloc_host_01/build --dependency-dir /test/w50066029/bm25-npu/results/bm25s_numba_py39 --device 5
 ```
 
 若 A5 无法下载，可把已核验的 `scifact.zip` 复制到 A5，准备命令追加 `--archive /实际路径/scifact.zip`；该参数只读原 ZIP。已有数据/结果目录不覆盖，失败后保留日志并为重试使用新目录。

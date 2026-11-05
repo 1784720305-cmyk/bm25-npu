@@ -27,6 +27,14 @@ NPU Search 时间吞吐约 4045/4046 QPS，A/B 均六轮领先，P95 也逐轮�
 
 按用户“与此前性能接近”的目标，本轮合成数据回归满足要求，可以进入真实数据阶段。该判断限于已回传的千万篇/Q8/K10 工作负载，不是统计等价性证明，也不解决独立的 C++ 参数开销问题。
 
+## 大页分配修复后的 NPU 回归
+
+`d685cf4` 修复大块设备内存分配后，`results/indexsdk_alloc_host_01` 在 A5 完成全套 host/device 验收。原千万篇、Q8/3 词/K10 输入的 NPU 六轮中位汇总为 **A 1.7590635 ms、B 1.74224325 ms**；六轮 P95 的中位数为 **1.7642815/1.767821 ms**。相对此前本页的 1.99286625/1.97868525 ms 分别低 **11.73%/11.95%**，当前未见回退。
+
+该回归包含验收用 C++ CPU 门槛，不能据此生成新的合成库原版 BM25S 倍率。只比较相同 NPU 输入和计时边界；不同会话的 CPU 角色及进程顺序不同，也不能据此独立量化大页策略的收益。[本轮证据](../evidence/msmarco_a5_20261105.json)保存全部六轮 NPU 摘要、执行指纹及对比计算。
+
+真实 [MS MARCO 884 万篇](MSMARCO_REAL_DATA.md#2026-11-05-a5-实测结果)也已完成：原版 BM25S Q8 A/B 为 24.856/24.032 ms，NPU 为 3.124/3.119 ms，延迟比 7.957/7.704；两组中位与 P95 均六轮领先。真实语料的查询、词表与词频分布不同，不能把该绝对时间直接当作合成库回退。
+
 ## A5 复现
 
 上述结果已完成，无需为归档重复测量；如复现，使用新的输出目录。
@@ -41,12 +49,12 @@ source /usr/local/Ascend/cann-9.2.0/set_env.sh
 export LD_LIBRARY_PATH=/usr/local/faiss/faiss1.14.1/lib:/opt/OpenBLAS/lib:/usr/local/Ascend/cann-9.2.0/x86_64-linux/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export NUMBA_NUM_THREADS=32 OMP_NUM_THREADS=32 OMP_DYNAMIC=FALSE OMP_PROC_BIND=close OMP_PLACES=cores
 python3 -c 'from pathlib import Path;from standalone.prepare_bm25s_numba import installed_record;installed_record(Path("/test/w50066029/bm25-npu/results/bm25s_numba_py39"));print("BM25S private dependencies verified")'
-numactl --physcpubind=0-31 --membind=0 python3 -u standalone/benchmark_final.py --cpu-baseline bm25s --input /test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000 --output results/bm25s_regression_10m_01 --vendors /test/w50066029/bm25-npu/results/final_runtime/vendors --host-build results/indexsdk_a5_acceptance_02/build --dependency-dir /test/w50066029/bm25-npu/results/bm25s_numba_py39 --device 5
+numactl --physcpubind=0-31 --membind=0 python3 -u standalone/benchmark_final.py --cpu-baseline bm25s --input /test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000 --output results/bm25s_regression_10m_02 --vendors /test/w50066029/bm25-npu/results/final_runtime/vendors --host-build results/indexsdk_alloc_host_01/build --dependency-dir /test/w50066029/bm25-npu/results/bm25s_numba_py39 --device 5
 ```
 
 私有依赖目录若不存在，在本项目新目录离线安装：`python3 standalone/prepare_bm25s_numba.py install --output results/bm25s_numba_py39`，并将上面校验及运行命令中的依赖目录改为该绝对路径。已有目录不可覆盖，失败时保留日志。
 
-输出目录必须是新的。原版 BM25S 本轮会单独建库并记录构建耗时；该时间不计入 Search。最后回传 `Historical NPU comparison`、`Final Search decision`，以及 `results/bm25s_regression_10m_01/report.json`。程序完成表示正确性及测量检查完成，不自动批准性能差异。
+输出目录必须是新的；示例使用当前已经验收的主机程序，已有测试无需为归档重复测量。原版 BM25S 会单独建库并记录构建耗时；该时间不计入 Search。复现时回传 `Historical NPU comparison`、`Final Search decision`，以及新结果目录的 `report.json`。程序完成表示正确性及测量检查完成，不自动批准性能差异。
 
 ## 下一步真实数据集
 

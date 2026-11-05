@@ -6,7 +6,7 @@
 
 IndexSDK 分层整改与当时约定的 A5 验收已完成。2026-11-04，代码提交 `9a99bbc` 在真实 CANN 9.2.0 / IndexSDK 环境完成构建、单元测试、生产 clang-tidy、安装搬迁消费、共享 SDK 资源检查和千万篇数据六轮完整 Search，最终状态为 `all_requested_checks_passed`。[验收记录](evidence/indexsdk_a5_acceptance_20261104.json)保存该历史版本的回传报告摘要及本地复核结果。
 
-2026-11-05，MS MARCO 全量输入准备和原版 BM25S 建库通过，NPU 质量阶段遇到 `aclrtMalloc` 207001。当前主机分配器改用 `ACL_MEM_MALLOC_HUGE_FIRST`，补充申请字节数及策略诊断；算子、CMake 安全参数与检索算法保留。此项生产主机改动已通过本地测试，**真实 A5 分配、回归及 MS MARCO 性能仍待验证**，不能沿用历史通过状态。[分配失败与复测步骤](docs/MSMARCO_REAL_DATA.md#分配失败后的复测)。
+2026-11-05，主机分配器的 `ACL_MEM_MALLOC_HUGE_FIRST` 修复已在 **`d685cf4` 完成真实 A5 复验**：同尺寸普通页失败/大页优先成功的探测、主机编译、生产 clang-tidy、安装消费、共享 SDK 及千万篇设备回归全部通过。算子、CMake 安全参数与检索算法保留。原千万篇输入本轮 NPU A/B 为 **1.759/1.742 ms**，此前为约 1.993/1.979 ms，本轮未见性能回退；跨会话差值不作为大页策略的独立因果估计。[已验证记录](evidence/msmarco_a5_20261105.json)。
 
 已提供可选 `bm25_indexsdk` 主机目标、`AscendIndexBm25` 公开接口及借用 SDK 上下文的资源模式；构建、调用和生命周期要求见 [IndexSDK 接入说明](docs/INDEXSDK_INTEGRATION.md)。真实 A5 检查覆盖 Common/IndexSDK 安装后的调用方、SDK 代理引用与上下文生命周期、A/B 独立 oracle、非法输入恢复和关闭后 SDK 流可用性。规范映射及静态检查范围见 [检查说明](docs/STATIC_CHECKS.md)，整改过程见 [整改说明](docs/INDEXSDK_REFACTOR.md)。
 
@@ -31,7 +31,7 @@ CPU 相对旧版的速度保持尚未由上述门槛证明。[CPU 回归核查](
 
 [TREC-COVID 171332 篇真实数据](docs/TREC_COVID_REAL_DATA.md)的 A5 首轮也已完成：Q8 A/B 的 NPU 延迟为 **0.2483/0.2151 ms**，原版 BM25S 同轮较快配置为 **0.3493/0.3029 ms**，延迟比约 **1.407/1.408**，耗时降低约 **29%**，中位/P95 均六轮领先。50 条查询的质量结果复现了本地严格 CPU 与原版原生 CPU 的各自指标，同分策略差别单独记录。[实测证据](evidence/trec_covid_a5_20261105.json)已复算；不同语料结论分别保留，不将合成大库倍率推广到真实数据。
 
-下一档 [MS MARCO 8841823 篇真实语料](docs/MSMARCO_REAL_DATA.md)入口已接入：质量覆盖官方 test 的 43 条分级查询，性能仍为固定 Q8/K10、原版 BM25S 六轮对照；6980 条 dev 查询不计作已覆盖。全量数据准备已在 A5 完成，首轮 NPU 分配失败后的主机修复待复测。复用已有数据与 vendor；主机分配器已修改，须在新目录重新编译主机程序。
+[MS MARCO 8841823 篇真实语料](docs/MSMARCO_REAL_DATA.md)测试已完成：质量覆盖官方 test 的 43 条分级查询；固定 Q8/K10 样本的 NPU A/B 为 **3.124/3.119 ms**，原版 BM25S 同轮较快配置为 **24.856/24.032 ms**，延迟比 **7.957/7.704**，中位与 P95 均六轮领先。原生并列排序造成的微小 nDCG 差异及明显较慢的首轮均保留，原因与边界见文档。6980 条 dev 查询及所有查询的性能不计作已覆盖。[结果归档](evidence/msmarco_a5_20261105.json)只更新记录，已完成的测试无需重复运行。
 
 ## 已有实测
 

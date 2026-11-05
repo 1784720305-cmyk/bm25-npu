@@ -1,0 +1,388 @@
+{
+  "date": "2026-11-05",
+  "status": "user_reported_A5_host_device_and_MSMARCO_quality_performance_passed",
+  "validated_code_commit": "d685cf4",
+  "provenance": {
+    "source": "User-pasted A5 terminal log and read-only existing-report excerpts",
+    "terminal_attachment_sha256": "a84530a4b74288019a50c82121a804c3811a3ea436dca7022f753debc11d91c2",
+    "raw_reports_rankings_and_samples_remain_on_A5": true,
+    "execution_source_lock_and_manifest_hashes_match_local_d685cf4": true,
+    "local_hardware_reexecution": false
+  },
+  "acceptance": {
+    "status": "all_requested_checks_passed",
+    "source_lock_sha256": "50cd9c3de55f1ca8e02abe3be1a293d47e9bc38439b78c851196aced5336f497",
+    "manifest_sha256": "daa7fc5d03c21dc1ecb28b3f9fb1364d2d770ec64f39602d7952383cc93fcfaa",
+    "binary_sha256": {
+      "bm25_large_search_benchmark": "434ef7568ed03d6e632a1e6406e22565aefb12809f829c32cd9d4f3fdb2417da",
+      "bm25_cpu_search_benchmark": "59d8112a2d50690c3aa9645d3c129d4c3536ae033db5443dac3ff48e3435fc26",
+      "bm25_directory_cpu_benchmark": "d302b8bfede8d05ee6d97586ee5fb3a4f851ca07c14bc9991ac4d58b9f86b63f",
+      "bm25_fused_simd_selector_check": "ac79eb42e5305bd4bbe468f43b091cb30513977d49846afb1f64917778da1621",
+      "bm25_sdk_shared_check": "8232049bb957ca15902d78882c13e4dc04abc51d5b8d17b6d4168536d687c53f"
+    }
+  },
+  "runs": {
+    "acceptance": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01",
+    "MSMARCO": "/test/w50066029/bm25-npu-indexsdk/results/msmarco_a5_02",
+    "inputs": "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01"
+  },
+  "host_stages_passed": [
+    "verify_package",
+    "acceptance_contract_tests",
+    "configure",
+    "build",
+    "unit_tests",
+    "production_clang_tidy",
+    "installed_common",
+    "installed_indexsdk"
+  ],
+  "device_stages_passed": [
+    "prepare_small_sdk_input",
+    "selector",
+    "merge",
+    "shared_sdk_context",
+    "six_round_search"
+  ],
+  "workload": {
+    "corpus_documents": 8841823,
+    "vocab": 1624803,
+    "posting_records": 264520096,
+    "quality": "All43 test queries, two Q22 packets with one empty padding row excluded from metrics",
+    "performance": "Seed20261105, 16 real test queries in A/B Q8 packets, K10, six alternating rounds, five warmup cycles and30 measured samples per case per round",
+    "dev6980_evaluated": false,
+    "CPU_baseline": {
+      "source_commit": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7",
+      "variant": "unchanged original native retrieve",
+      "workers": [
+        1,
+        8,
+        32
+      ],
+      "comparison": "per-round faster original native configurations"
+    },
+    "timing": "Complete Search from raw grouped word IDs through returned CPU Top-K; excludes corpus tokenization/build, JIT, first index upload and diagnostics"
+  },
+  "allocation_probe": {
+    "source": "User-pasted A5 policy-trial JSON from d685cf4; full report cleanup fields not supplied",
+    "date": "2026-11-05",
+    "trials": [
+      {
+        "policy": "ACL_MEM_MALLOC_NORMAL_ONLY",
+        "policy_value": 2,
+        "requested_bytes": 14051296472,
+        "before": {
+          "free": 131730817024,
+          "total": 132338679808
+        },
+        "allocation_code": 207001,
+        "allocation_error": "[PID: 3670603] 2026-11-05-23:07:42.166.898 Memory_Allocation_Failure(EL0004): Failed to allocate memory requested by APP module.\n        Possible Cause: Available memory is insufficient.\n        Solution: Close applications not in use.\n",
+        "allocated": false,
+        "after": {
+          "free": 131719905280,
+          "total": 132338679808
+        }
+      },
+      {
+        "policy": "ACL_MEM_MALLOC_HUGE_FIRST",
+        "policy_value": 0,
+        "requested_bytes": 14051296472,
+        "before": {
+          "free": 131719905280,
+          "total": 132338679808
+        },
+        "allocation_code": 0,
+        "allocation_error": "",
+        "allocated": true,
+        "allocated_memory": {
+          "free": 117666889728,
+          "total": 132338679808
+        },
+        "freed": true,
+        "after": {
+          "free": 131719905280,
+          "total": 132338679808
+        }
+      }
+    ],
+    "observed_huge_allocation_bytes": 14053015552,
+    "same_request_policy_difference_reproduced": true,
+    "full_host_build_and_Search_validation": "pending"
+  },
+  "quality_metrics": {
+    "npu": {
+      "queries": 43,
+      "ndcg_at_10": 0.43928259378939466,
+      "recall_at_10": 0.1303493715183911,
+      "mrr_at_10": 0.7459948320413436
+    },
+    "original_native_t1": {
+      "queries": 43,
+      "ndcg_at_10": 0.4393684490698969,
+      "recall_at_10": 0.1303493715183911,
+      "mrr_at_10": 0.7459948320413436
+    },
+    "original_native_t8": {
+      "queries": 43,
+      "ndcg_at_10": 0.4393684490698969,
+      "recall_at_10": 0.1303493715183911,
+      "mrr_at_10": 0.7459948320413436
+    },
+    "original_native_t32": {
+      "queries": 43,
+      "ndcg_at_10": 0.4393684490698969,
+      "recall_at_10": 0.1303493715183911,
+      "mrr_at_10": 0.7459948320413436
+    }
+  },
+  "quality_difference_npu_minus_native": {
+    "ndcg_at_10": -8.58552805022561e-05,
+    "recall_at_10": 0.0,
+    "mrr_at_10": 0.0
+  },
+  "quality_audit": {
+    "strict_ids_match_project": {
+      "A": true,
+      "B": true
+    },
+    "maximum_score_error": {
+      "A": 3.814697265625e-06,
+      "B": 7.62939453125e-06
+    }
+  },
+  "native_ID_difference_counts_including_padding": {
+    "A": 5,
+    "B": 14
+  },
+  "real_query_ranking_differences_by_query": {
+    "1106007": 1,
+    "1117099": 2,
+    "130510": 2,
+    "168216": 2,
+    "183378": 2
+  },
+  "quality_assessment": {
+    "real_queries_with_native_ranking_differences": 5,
+    "real_ID_positions_different": 9,
+    "extra_ID_positions_in_empty_padding_row_derived_from_counts": 10,
+    "explanation": "Upstream full-score strict IDs match project in both packets. Native selected-score multiset is checked against that full-score reference by the unchanged worker; differing native IDs therefore reflect its tied-score selection. Nine real-query positions differ; raw A/B counts also include the ten padding positions. No bit-identical full-score or improved-quality claim.",
+    "ranking_comparison_scope": "NPU versus original_native_t1 report/rankings excerpt; t8/t32 aggregate metrics equal, individual rankings not separately supplied"
+  },
+  "reported_performance": {
+    "A": {
+      "cpu_medians_ms": [
+        22.188387,
+        22.001721500000002,
+        25.240724999999998,
+        24.471716,
+        26.3235885,
+        26.045060499999998
+      ],
+      "npu_medians_ms": [
+        5.4765745,
+        3.120926,
+        3.1250375,
+        3.122894,
+        3.1274509999999998,
+        3.116229
+      ],
+      "cpu_p95_ms": [
+        35.109662,
+        45.789692,
+        36.742912,
+        30.359407,
+        31.418686,
+        35.783533
+      ],
+      "npu_p95_ms": [
+        5.485638,
+        3.131857,
+        3.13352,
+        3.127511,
+        3.139048,
+        3.124437
+      ],
+      "cpu_over_npu": 7.956623884240728,
+      "npu_wins": 6,
+      "timing_gate_passed": true,
+      "strict_equivalent_win": false
+    },
+    "B": {
+      "cpu_medians_ms": [
+        20.976293,
+        21.403033,
+        24.789773500000003,
+        23.274956000000003,
+        25.0248655,
+        25.103018
+      ],
+      "npu_medians_ms": [
+        6.034110500000001,
+        3.145333,
+        3.1130195,
+        3.1253725,
+        3.113505,
+        3.1039754999999998
+      ],
+      "cpu_p95_ms": [
+        33.942592,
+        42.358134,
+        32.984645,
+        34.018736,
+        29.036763,
+        29.110605
+      ],
+      "npu_p95_ms": [
+        6.097056,
+        3.154592,
+        3.145388,
+        3.152198,
+        3.156815,
+        3.146299
+      ],
+      "cpu_over_npu": 7.704066877415048,
+      "npu_wins": 6,
+      "timing_gate_passed": true,
+      "strict_equivalent_win": false
+    }
+  },
+  "locally_recomputed_performance": {
+    "A": {
+      "cpu_median_batch_ms": 24.8562205,
+      "npu_median_batch_ms": 3.12396575,
+      "cpu_over_npu": 7.956623884240728,
+      "latency_reduction_percent": 87.43185533778154,
+      "cpu_median_p95_batch_ms": 35.446597499999996,
+      "npu_median_p95_batch_ms": 3.1326885,
+      "median_wins": 6,
+      "p95_wins": 6,
+      "round1_npu_median_ms": 5.4765745,
+      "remaining_five_npu_median_range_ms": [
+        3.116229,
+        3.1274509999999998
+      ],
+      "round1_relative_to_remaining_five_median": 1.7536856838560642
+    },
+    "B": {
+      "cpu_median_batch_ms": 24.032364750000003,
+      "npu_median_batch_ms": 3.11943875,
+      "cpu_over_npu": 7.704066877415048,
+      "latency_reduction_percent": 87.01984268942988,
+      "cpu_median_p95_batch_ms": 33.463618499999995,
+      "npu_median_p95_batch_ms": 3.1533949999999997,
+      "median_wins": 6,
+      "p95_wins": 6,
+      "round1_npu_median_ms": 6.034110500000001,
+      "remaining_five_npu_median_range_ms": [
+        3.1039754999999998,
+        3.145333
+      ],
+      "round1_relative_to_remaining_five_median": 1.9380442620133902
+    }
+  },
+  "first_round_note": "A/B NPU medians5.4765745/6.0341105ms are slower than the other five rounds. Cause is unestablished. All six rounds remain in the summaries and gates; initialization/JIT are outside the timing boundary.",
+  "synthetic10M_NPU_per_round": [
+    {
+      "A": {
+        "samples": 30,
+        "median_batch_ms": 1.7590035,
+        "p95_batch_ms": 1.763756,
+        "mean_batch_ms": 1.7364633
+      },
+      "B": {
+        "samples": 30,
+        "median_batch_ms": 1.7415075,
+        "p95_batch_ms": 1.764086,
+        "mean_batch_ms": 1.7409469666666666
+      }
+    },
+    {
+      "A": {
+        "samples": 30,
+        "median_batch_ms": 1.7591235,
+        "p95_batch_ms": 1.764877,
+        "mean_batch_ms": 1.7382746333333334
+      },
+      "B": {
+        "samples": 30,
+        "median_batch_ms": 1.73998,
+        "p95_batch_ms": 1.767901,
+        "mean_batch_ms": 1.7411599666666666
+      }
+    },
+    {
+      "A": {
+        "samples": 30,
+        "median_batch_ms": 1.758828,
+        "p95_batch_ms": 1.764567,
+        "mean_batch_ms": 1.7374126666666667
+      },
+      "B": {
+        "samples": 30,
+        "median_batch_ms": 1.7434500000000002,
+        "p95_batch_ms": 1.769514,
+        "mean_batch_ms": 1.7434153000000001
+      }
+    },
+    {
+      "A": {
+        "samples": 30,
+        "median_batch_ms": 1.7614969999999999,
+        "p95_batch_ms": 1.765869,
+        "mean_batch_ms": 1.7389672666666667
+      },
+      "B": {
+        "samples": 30,
+        "median_batch_ms": 1.7425285000000001,
+        "p95_batch_ms": 1.768893,
+        "mean_batch_ms": 1.7423795
+      }
+    },
+    {
+      "A": {
+        "samples": 30,
+        "median_batch_ms": 1.758222,
+        "p95_batch_ms": 1.763996,
+        "mean_batch_ms": 1.7373584333333334
+      },
+      "B": {
+        "samples": 30,
+        "median_batch_ms": 1.741958,
+        "p95_batch_ms": 1.767741,
+        "mean_batch_ms": 1.742253
+      }
+    },
+    {
+      "A": {
+        "samples": 30,
+        "median_batch_ms": 1.7595290000000001,
+        "p95_batch_ms": 1.763205,
+        "mean_batch_ms": 1.7369833
+      },
+      "B": {
+        "samples": 30,
+        "median_batch_ms": 1.743125,
+        "p95_batch_ms": 1.766931,
+        "mean_batch_ms": 1.7413877
+      }
+    }
+  ],
+  "synthetic10M_NPU_comparison": {
+    "A": {
+      "current_median_batch_ms": 1.7590635,
+      "current_p95_batch_ms": 1.7642815,
+      "previous_NPU_median_batch_ms": 1.99286625,
+      "median_change_percent": -11.73198402050314,
+      "current_search_time_qps_from_reported_means": 4604.113568288155,
+      "scope": "Same synthetic input/Q8/three terms/K10 and Search boundary, separate sessions and CPU opponent/order protocols. Not a paired estimate of allocation-policy effect."
+    },
+    "B": {
+      "current_median_batch_ms": 1.74224325,
+      "current_p95_batch_ms": 1.767821,
+      "previous_NPU_median_batch_ms": 1.9786852499999998,
+      "median_change_percent": -11.949449767212839,
+      "current_search_time_qps_from_reported_means": 4592.623558309686,
+      "scope": "Same synthetic input/Q8/three terms/K10 and Search boundary, separate sessions and CPU opponent/order protocols. Not a paired estimate of allocation-policy effect."
+    }
+  },
+  "scope": "All declared checks completed on the supplied A5 run. Performance covers the fixed16-query Q8 sample and quality covers43 graded test queries; no dev6980, all-workload, service-QPS or paired allocation-policy performance-effect claim."
+}

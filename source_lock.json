@@ -1,8 +1,8 @@
 {
   "date": "2026-11-05",
-  "status": "MSMARCO_A5_allocation_failed_host_policy_fix_ready_target_revalidation_pending",
+  "status": "A5_host_allocator_fix_device_regression_and_MSMARCO_checks_passed",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Historical production baseline 9a99bbc is retained in archived evidence. Current host Buffers allocation changes NORMAL_ONLY to HUGE_FIRST with allocation-size diagnostics and needs fresh A5 validation. Operators, other production C++ and CMake security policy remain unchanged. Supplied original-native BM25S synthetic, SciFact and TREC-COVID A5 results are archived. TREC-COVID all50 quality checks completed; both fixed Q8 packets win six median/P95 rounds, latency ratios 1.40685/1.40808. SciFact mixed timing and native tie-policy differences remain explicit; no universal workload claim. MS MARCO full 8841823-document source was scanned; reduced 9139-document actual original BM25S/C++ protocol checks passed. The new entry evaluates all 43 graded test queries and fixed Q8 performance; 6980 dev queries are excluded. Full-corpus A5 NPU results remain pending. Full MS MARCO inputs were prepared on A5 and the original BM25S build stage succeeded; the first NPU quality invocation failed at aclrtMalloc with 207001. Allocation-policy causality, full quality, performance and device regression remain pending.",
+  "note": "Current host huge-first allocator was validated on A5 at d685cf4 after the same-size policy probe reproduced NORMAL_ONLY207001 versus HUGE_FIRST success. Fresh real CANN host build, tests, production clang-tidy, installed consumption, selector/merge/shared SDK and synthetic10M checks passed. Synthetic NPU A/B 1.7590635/1.74224325ms show no observed slowdown versus earlier session references; not a paired causal estimate. MS MARCO all 43 test-query quality and native-BM25S fixed Q8 six-round performance passed, with latency ratios 7.95662/7.70407. Native tie-policy metric differences and the unexplained slower first round are retained. Operators, other production C++ and CMake security flags are unchanged; source groups track the current accepted code. Historical and small-corpus mixed results remain archived; no universal workload claim.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -180,13 +180,28 @@
       "quality": "A5 aggregates exactly reproduce independent strict CPU and original-native CPU results; native tie differences remain separate"
     }
   },
-  "pending_production_changes": {
+  "validated_production_changes": {
     "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_runtime.h": {
       "parent_commit": "266e938",
       "before_sha256": "0f35073df250b0397eb151caad41ad2c7a2a9a7770232fb6969c83f0ba7b019a",
       "after_sha256": "f878ccb905e0c0b2d490f5e8b01ba5bb1434c548d0e7d8f3f27aad6aca3d5f9d",
       "change": "HUGE_FIRST allocation and requested-byte/policy error context; no operator/query/scoring/guard changes",
-      "target_A5_status": "pending_allocation_probe_host_and_device_revalidation"
+      "target_A5_status": "host_device_and_MSMARCO_revalidation_passed",
+      "validated_commit": "d685cf4",
+      "evidence": "evidence/msmarco_a5_20261105.json"
+    }
+  },
+  "latest_A5_validation": {
+    "code_commit": "d685cf4",
+    "execution_source_lock_sha256": "50cd9c3de55f1ca8e02abe3be1a293d47e9bc38439b78c851196aced5336f497",
+    "execution_manifest_sha256": "daa7fc5d03c21dc1ecb28b3f9fb1364d2d770ec64f39602d7952383cc93fcfaa",
+    "evidence": "evidence/msmarco_a5_20261105.json",
+    "binary_sha256": {
+      "bm25_large_search_benchmark": "434ef7568ed03d6e632a1e6406e22565aefb12809f829c32cd9d4f3fdb2417da",
+      "bm25_cpu_search_benchmark": "59d8112a2d50690c3aa9645d3c129d4c3536ae033db5443dac3ff48e3435fc26",
+      "bm25_directory_cpu_benchmark": "d302b8bfede8d05ee6d97586ee5fb3a4f851ca07c14bc9991ac4d58b9f86b63f",
+      "bm25_fused_simd_selector_check": "ac79eb42e5305bd4bbe468f43b091cb30513977d49846afb1f64917778da1621",
+      "bm25_sdk_shared_check": "8232049bb957ca15902d78882c13e4dc04abc51d5b8d17b6d4168536d687c53f"
     }
   }
 }
