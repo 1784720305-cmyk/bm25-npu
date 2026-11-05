@@ -1,8 +1,8 @@
 {
   "date": "2026-11-05",
-  "status": "A5_prior_results_preserved_TREC_COVID_locally_validated_device_pending",
+  "status": "A5_existing_acceptance_and_real_data_checks_completed_TREC_COVID_timing_passed",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Prior synthetic and SciFact A5 results are preserved. A shared pinned-BEIR driver adds streaming TREC-COVID, 215004-word support and graded trec_eval-style qrels. Complete local C++/original CPU checks passed; TREC-COVID A5 correctness/quality/performance remain pending.",
+  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Supplied original-native BM25S synthetic, SciFact and TREC-COVID A5 results are archived. TREC-COVID all50 quality checks completed; both fixed Q8 packets win six median/P95 rounds, latency ratios 1.40685/1.40808. SciFact mixed timing and native tie-policy differences remain explicit; no universal workload claim.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -115,7 +115,7 @@
     "evidence": "evidence/cpu_regression_source_audit_20261104.json",
     "status": "controlled_comparison_completed_quiet_window_followup_pending",
     "production_build_policy_changed_in_this_update": false,
-    "local_validation": "33 tool unit tests; original C++/original native CPU integration on the complete TREC-COVID corpus; exact legacy SciFact data/oracle parity. No TREC-COVID A5 measurement yet.",
+    "local_validation": "33 tool unit tests and complete local C++/original native CPU integration passed. Supplied A5 synthetic, SciFact and TREC-COVID measurements are archived; optional balanced C++ pairs remain unexecuted on A5.",
     "comparison_evidence": "evidence/cpu_regression_a5_comparison_20261104.json",
     "reported_comparison_status": "completed_with_bit_identical_outputs",
     "interpretation": "New/old aggregate differences 5.11%/4.19%; same new binary varies 13.45%/13.01%. High system-load background and missing per-core contention/quota telemetry prevent causal flag attribution.",
@@ -158,12 +158,24 @@
       "vocabulary": 215004,
       "source_archive_bytes": 73876720,
       "source_archive_sha256": "120f42a7864d2214234537733c0d2c6684e42fdfafff2c5eacf98afca6656aa0",
-      "stage": "prepared_and_locally_validated_A5_pending",
+      "stage": "user_A5_quality_checked_both_timing_gates_passed",
       "local_evidence": "evidence/trec_covid_local_validation_20261105.json",
       "commands": "docs/TREC_COVID_REAL_DATA.md",
       "protocol": "Full50 quality separately; seeded16 natural queries in Q8 A/B packets; six rounds; frozen original-native BM25S 1/8/32 workers",
       "metric_policy": "Linear nDCG relevance gains, relevance > 0 for recall/MRR; 0/-1 do not count as relevant",
-      "comparison_scope": "Different real dataset, about33x SciFact documents; no document duplication or isolated scale-only causal claim"
+      "comparison_scope": "Different real dataset, about33x SciFact documents; no document duplication or isolated scale-only causal claim",
+      "A5_evidence": "evidence/trec_covid_a5_20261105.json",
+      "A5_report": "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_a5_01/report.json",
+      "timing_gate": {
+        "A": true,
+        "B": true,
+        "both_cases": true
+      },
+      "latency_ratio_CPU_over_NPU": {
+        "A": 1.4068472003053312,
+        "B": 1.4080822283941292
+      },
+      "quality": "A5 aggregates exactly reproduce independent strict CPU and original-native CPU results; native tie differences remain separate"
     }
   }
 }

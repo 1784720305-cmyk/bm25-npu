@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "IndexSDK-aligned BM25 package. Production C++, operators and CMake policy remain unchanged from A5-validated 9a99bbc. Prior A5 synthetic and SciFact results are preserved. Shared pinned-BEIR drivers add streaming 171332-document TREC-COVID, larger external vocabulary and graded qrels; local complete C++/original CPU checks passed, new A5 measurements pending. Raw corpora and private dependencies are not committed.",
+  "scope": "IndexSDK-aligned BM25 package. Production C++, operators and CMake policy remain unchanged from A5-validated 9a99bbc. Supplied A5 original-native BM25S synthetic, SciFact and TREC-COVID results are archived and recomputed. TREC-COVID fixed Q8 cases pass six-round median/P95 gates with about1.41 latency ratios; SciFact mixed timing and native tie differences are preserved. No universal scale or service-throughput claim.",
   "text_line_endings": "LF",
   "reference_commits": {
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -12,7 +12,7 @@
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
     ".pre-commit-config.yaml": "d18cae61fe460685d6b3e1721bf9aa30aa2e4d249388df7c8fdf9a5657f99a57",
     "CMakeLists.txt": "efbb01dc2062aae2a92fc873e4663d300062bb2eca9e9167d8f09b7ad92c84f5",
-    "README.md": "6d19cbcb395a4ad8d3bdf9418ed7aaa9171e019c6d848a165a0705aac6c65702",
+    "README.md": "86192066f046643d61b7e06d77ad574f2221620f45e0aae1cbd8562b7080a8ee",
     "cmake/AscendBm25Config.cmake.in": "ec11d408ef32f39c0dadf697f97c828a12b184975995ed78947e643b687acb39",
     "cmake/Install.cmake": "e6414e4980bf184558dd5bf05d66db54dd5433036e5cc7a76ea0fb30617639e0",
     "docs/A5_ACCEPTANCE.md": "b9c7e21201f26be3d35443b4e026f66ff4d000fe82994ef0748e24a0cc26f13d",
@@ -25,7 +25,7 @@
     "docs/INDEXSDK_REFACTOR.md": "57cdcd947373ca19b59109fe231d06dda81740b130325c8f5d39eef110d0efef",
     "docs/SCIFACT_REAL_DATA.md": "351ee09a3f6a748ddc7a7aeb9fb35f139758a683c3b38d283d97c8e6e2c2ec6e",
     "docs/STATIC_CHECKS.md": "78fcaae11840361e0274094b6c5c70ac4e4832d05fd77355eb6c5a257e91b286",
-    "docs/TREC_COVID_REAL_DATA.md": "536449ead6a7a040ddc21e92eadfb6ffe404b990c8f06b2e0c4785b0df7e7a0c",
+    "docs/TREC_COVID_REAL_DATA.md": "0cbf54c38d4c997b6264f3d0338f3d01e146ec7b5f91f8b8ce496abfc59298fe",
     "docs/indexsdk_path_mapping.json": "564b9eaedc16a763313625b22d6e0b922b5a9d55ec8db3f746d2eaa4001de9b4",
     "evidence/a5_acceptance_runner_local_validation_20261104.json": "e7ebcd4682d416c1c0f1f1ee360f43cd4c3d7f2cb7f6e47f5b5ec3ea5e93645e",
     "evidence/a5_host_static_fix_local_validation_20261104.json": "058af5063e99c95f642c3277ab5bbdb9d6a9d7ddb33b4ad2535229192d1bc5cd",
@@ -41,6 +41,7 @@
     "evidence/merge_vote_device_evidence_20261029.json": "a5e12868fa7d6bdc253f71f0cde04e2a16cc555cd21022cbb7a4bf96da5a09f0",
     "evidence/scifact_a5_20261105.json": "274fc3fe8c3635fe8b5244867d78d1097252d98db6fdde93a8d6bb3b802e4c19",
     "evidence/scifact_local_validation_20261105.json": "164c09f0e9769d123d897c044c1c0345d9dda8499cd000dee63b80ad8fa8ee5f",
+    "evidence/trec_covid_a5_20261105.json": "bac5a634c85c8cb0b906fa530084b7f0ab3de8fd2d0a10f81467e1a9b6bd7d08",
     "evidence/trec_covid_local_validation_20261105.json": "cd6d60a457cb25769f75f86a9a1524ca38499c659b0226a019e9aa47d69c8c92",
     "evidence/warp_append_device_evidence_20261027.json": "3005fe2db8e1f86445e1d7824685af31cc2dc676825c41b8c0433994b551398e",
     "feature_retrieval/src/ascendfaiss/CMakeLists.txt": "705fec134db4b7f551ef4c982e02ddb7ac41bc37d6819691ba7f297a2afd322d",
@@ -143,7 +144,7 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "dc6248ace079496a39247fc70f18ff4227878dce8c7d5d7d77a9cbaf71df85bc",
-    "source_lock.json": "2d16339420d156278f08ec1ef3b6ad219d5ce9fe1632a27bc70189bc66d82b08",
+    "source_lock.json": "6f28d38d71da01311727495db758a3a40bde926a358c80a62e9ecb7b9b7498e1",
     "standalone/beir_real.py": "27b343591f11b3cf2925a731887604edd357263057710b8664114793316ef7a1",
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",

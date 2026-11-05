@@ -1,0 +1,180 @@
+{
+  "date": "2026-11-05",
+  "status": "user_A5_TREC_COVID_quality_checked_both_timing_gates_passed_recomputed",
+  "provenance": {
+    "origin": "User-pasted A5 terminal output; local independent arithmetic and comparison with prior local CPU quality results",
+    "raw_report_received": false,
+    "raw_rankings_or_samples_received": false,
+    "individual_worker_timing_reports_received": false,
+    "runtime_source_or_binary_hashes_received": false,
+    "expected_driver_commit": "3dafac7f3f80f8512b211d03e47782b6f70ee04b"
+  },
+  "dataset": {
+    "name": "BEIR TREC-COVID",
+    "documents_reported": 171332,
+    "test_queries": 50,
+    "expected_vocabulary_from_pinned_preparation": 215004,
+    "posting_count_reported": 13691405,
+    "index_bytes_reported": 112796624,
+    "archive_sha256": "120f42a7864d2214234537733c0d2c6684e42fdfafff2c5eacf98afca6656aa0"
+  },
+  "execution": {
+    "device": 5,
+    "output": "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_a5_01",
+    "data": "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01",
+    "cpu_placement_command": "numactl --physcpubind=0-31 --membind=0",
+    "exclusive_resources_verified": false,
+    "quality": "All50 natural queries in two Q25 packets; one checked round",
+    "performance": "Seeded16 natural queries, two Q8 packets, six forward/reverse rounds, five warmup cycles and thirty samples/case/process; original native 1/8/32 worker comparison",
+    "timer": "Complete steady-state raw-ID Search to CPU Top-K; excludes construction, JIT/first upload/warmup and diagnostics"
+  },
+  "reported_quality": {
+    "npu": {
+      "queries": 50,
+      "ndcg_at_10": 0.5769513068939649,
+      "recall_at_10": 0.015566685596385304,
+      "mrr_at_10": 0.7898333333333335
+    },
+    "original_native_t1": {
+      "queries": 50,
+      "ndcg_at_10": 0.5745521464553993,
+      "recall_at_10": 0.015476669973839244,
+      "mrr_at_10": 0.7898333333333335
+    },
+    "original_native_t8": {
+      "queries": 50,
+      "ndcg_at_10": 0.5745521464553993,
+      "recall_at_10": 0.015476669973839244,
+      "mrr_at_10": 0.7898333333333335
+    },
+    "original_native_t32": {
+      "queries": 50,
+      "ndcg_at_10": 0.5745521464553993,
+      "recall_at_10": 0.015476669973839244,
+      "mrr_at_10": 0.7898333333333335
+    }
+  },
+  "reported_performance": {
+    "A": {
+      "cpu_medians_ms": [
+        0.345283,
+        0.3680925,
+        0.3390085,
+        0.34970999999999997,
+        0.348803,
+        0.3545465
+      ],
+      "npu_medians_ms": [
+        0.248538,
+        0.24850250000000002,
+        0.247992,
+        0.248007,
+        0.2472255,
+        0.2501055
+      ],
+      "cpu_p95_ms": [
+        0.442754,
+        0.389764,
+        0.354733,
+        0.372088,
+        0.355634,
+        0.554392
+      ],
+      "npu_p95_ms": [
+        0.252078,
+        0.249795,
+        0.250696,
+        0.250085,
+        0.250916,
+        0.251898
+      ],
+      "cpu_over_npu": 1.4068472003053312,
+      "npu_wins": 6,
+      "timing_gate_passed": true,
+      "strict_equivalent_win": false
+    },
+    "B": {
+      "cpu_medians_ms": [
+        0.31035599999999997,
+        0.305538,
+        0.2985175,
+        0.30031050000000004,
+        0.362404,
+        0.295168
+      ],
+      "npu_medians_ms": [
+        0.21393600000000002,
+        0.2143465,
+        0.215368,
+        0.214897,
+        0.215879,
+        0.21659499999999998
+      ],
+      "cpu_p95_ms": [
+        0.326029,
+        0.431197,
+        0.315694,
+        0.32704,
+        0.390696,
+        0.426309
+      ],
+      "npu_p95_ms": [
+        0.215924,
+        0.218878,
+        0.217566,
+        0.217997,
+        0.217156,
+        0.220761
+      ],
+      "cpu_over_npu": 1.4080822283941292,
+      "npu_wins": 6,
+      "timing_gate_passed": true,
+      "strict_equivalent_win": false
+    }
+  },
+  "locally_recomputed_aggregate": {
+    "A": {
+      "CPU_median_of_round_fastest_native_ms": 0.34925649999999997,
+      "NPU_median_of_round_medians_ms": 0.24825475000000002,
+      "CPU_over_NPU_latency_ratio": 1.4068472003053312,
+      "NPU_latency_reduction_percent": 28.919075235536052,
+      "CPU_median_of_round_best_P95_ms": 0.380926,
+      "NPU_median_of_round_P95_ms": 0.250806,
+      "median_wins": 6,
+      "P95_wins": 6,
+      "rounds": 6
+    },
+    "B": {
+      "CPU_median_of_round_fastest_native_ms": 0.30292425,
+      "NPU_median_of_round_medians_ms": 0.2151325,
+      "CPU_over_NPU_latency_ratio": 1.4080822283941292,
+      "NPU_latency_reduction_percent": 28.981420272559888,
+      "CPU_median_of_round_best_P95_ms": 0.35886799999999996,
+      "NPU_median_of_round_P95_ms": 0.21778150000000002,
+      "median_wins": 6,
+      "P95_wins": 6,
+      "rounds": 6
+    }
+  },
+  "quality_interpretation": {
+    "matches_prior_independent_CPP_quality": true,
+    "native_matches_prior_original_CPU_quality": true,
+    "native_tie_differences_previously_observed_locally": {
+      "A": 46,
+      "B": 37
+    },
+    "scope": "A5 aggregate metrics exactly reproduce prior C++ strict and original-native CPU results. Prior local full-score strict IDs matched the project and native selected-score multisets matched the same oracle, with native tie ID differences. This supports the known tie-policy explanation, not a new GPU ranking-quality improvement; A5 per-query rankings were not independently received."
+  },
+  "validation": {
+    "ratios_and_gates_recomputed": true,
+    "both_cases_six_median_wins_and_six_P95_wins": true,
+    "correctness": "Final quality/performance output follows the independent score/strict-ID/tree/guard/repeat checks in the expected driver. Raw device outputs were not downloaded separately.",
+    "timing_limit": "Fastest-worker choices are supplied by the driver; individual-worker timing reports were not received for independent re-selection. Means/raw samples are absent, so no actual aggregate QPS is inferred from medians."
+  },
+  "assessment": {
+    "quality": "Device/host checks completed and quality matches the independent strict CPU reference; native tie policy retained",
+    "performance": "Both A/B timing gates passed; latency ratios 1.40685/1.40808, reductions 28.92%/28.98%",
+    "scope": "Full quality covers50 queries; Q8 performance covers the fixed16-query sample. This real 171332-document dataset differs from SciFact and the 10M synthetic corpus, so the cross-dataset ratios are not a controlled scale-only experiment or universal business speed guarantee.",
+    "production_policy": "Keep the current production structure, operators and hardening; no performance-driven policy removal is required by these measurements."
+  }
+}
