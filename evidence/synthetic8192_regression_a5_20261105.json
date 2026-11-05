@@ -1,0 +1,1224 @@
+{
+  "date": "2026-11-05",
+  "status": "user_A5_synthetic8192_all_six_round_checks_passed_no_observed_historical_slowdown",
+  "provenance": {
+    "source": "Full user-pasted 24-process summaries and end decisions; not a local device run",
+    "attachment_sha256": "333ddd64c820e1335d27f768128379cd7da6cb7d61f88bfb42a5296250375285",
+    "raw_report_rankings_samples_or_fresh_binary_hashes_received": false
+  },
+  "run": "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01",
+  "host_build": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build",
+  "validated_implementation_commit": "d685cf4",
+  "input": "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+  "workload": {
+    "docs": 8192,
+    "Q": 8,
+    "words_per_query": 3,
+    "words_per_packet": 24,
+    "K": 10,
+    "seed": 20261014,
+    "vocab": 1024,
+    "synthetic_document_length": [
+      16,
+      48
+    ],
+    "historical_index_id": "b4c461ae5787266db37b9652cf77bb5135a6215517394664e48be7a48c3724f5",
+    "current_index_id_explicitly_returned": false,
+    "declared_recipe_and_query_ids_match_historical_profile": true
+  },
+  "comparison_scope": "Original retained input directory and matched declared recipe/query IDs; separate historical sessions and different process/opponent schedules and accepted vendor paths. Not a paired causal estimate or universal no-overhead proof.",
+  "CPU_baseline": {
+    "variant": "unchanged original native BM25S retrieve",
+    "commit": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7",
+    "workers": [
+      1,
+      8,
+      32
+    ]
+  },
+  "per_round": [
+    {
+      "round": 1,
+      "process_order": [
+        "npu",
+        "original_native_t1",
+        "original_native_t8",
+        "original_native_t32"
+      ],
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.029023,
+            "p95_batch_ms": 0.029885,
+            "mean_batch_ms": 0.029071266666666668,
+            "search_time_throughput_qps": 275185.80775060825
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.029614,
+            "p95_batch_ms": 0.031527,
+            "mean_batch_ms": 0.029713166666666666,
+            "search_time_throughput_qps": 269240.908912435
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round1/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.09651,
+            "p95_batch_ms": 0.105578,
+            "mean_batch_ms": 0.0976068,
+            "search_time_throughput_qps": 81961.50268219018
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.09670999999999999,
+            "p95_batch_ms": 0.100711,
+            "mean_batch_ms": 0.09714606666666667,
+            "search_time_throughput_qps": 82350.22038977731
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round1/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.07358999999999999,
+            "p95_batch_ms": 0.078477,
+            "mean_batch_ms": 0.07358563333333333,
+            "search_time_throughput_qps": 108716.87362886505
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0733045,
+            "p95_batch_ms": 0.094222,
+            "mean_batch_ms": 0.07427756666666667,
+            "search_time_throughput_qps": 107704.12062502495
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round1/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.087171,
+            "p95_batch_ms": 0.097997,
+            "mean_batch_ms": 0.0897232,
+            "search_time_throughput_qps": 89163.11500258572
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.086204,
+            "p95_batch_ms": 0.103776,
+            "mean_batch_ms": 0.08887646666666667,
+            "search_time_throughput_qps": 90012.57925795129
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round1/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "process_order": [
+        "original_native_t32",
+        "original_native_t8",
+        "original_native_t1",
+        "npu"
+      ],
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.09028,
+            "p95_batch_ms": 0.134522,
+            "mean_batch_ms": 0.0984877,
+            "search_time_throughput_qps": 81228.4173556698
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0889335,
+            "p95_batch_ms": 0.136935,
+            "mean_batch_ms": 0.09821453333333334,
+            "search_time_throughput_qps": 81454.34009087589
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round2/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.06926399999999999,
+            "p95_batch_ms": 0.076404,
+            "mean_batch_ms": 0.06971583333333334,
+            "search_time_throughput_qps": 114751.55093893065
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0692585,
+            "p95_batch_ms": 0.07377,
+            "mean_batch_ms": 0.0693997,
+            "search_time_throughput_qps": 115274.27351991436
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round2/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.094867,
+            "p95_batch_ms": 0.099009,
+            "mean_batch_ms": 0.09525716666666667,
+            "search_time_throughput_qps": 83983.18236773086
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0949425,
+            "p95_batch_ms": 0.103115,
+            "mean_batch_ms": 0.09567313333333333,
+            "search_time_throughput_qps": 83618.04114983168
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round2/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.030891500000000002,
+            "p95_batch_ms": 0.03322,
+            "mean_batch_ms": 0.031111066666666666,
+            "search_time_throughput_qps": 257143.22449032072
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.031771999999999995,
+            "p95_batch_ms": 0.035353,
+            "mean_batch_ms": 0.032121133333333336,
+            "search_time_throughput_qps": 249057.21466863973
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round2/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+        ]
+      }
+    },
+    {
+      "round": 3,
+      "process_order": [
+        "npu",
+        "original_native_t1",
+        "original_native_t8",
+        "original_native_t32"
+      ],
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0304105,
+            "p95_batch_ms": 0.03284,
+            "mean_batch_ms": 0.0307515,
+            "search_time_throughput_qps": 260149.91138643643
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.031227,
+            "p95_batch_ms": 0.033119,
+            "mean_batch_ms": 0.031512566666666665,
+            "search_time_throughput_qps": 253866.97582022834
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round3/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.091672,
+            "p95_batch_ms": 0.097516,
+            "mean_batch_ms": 0.092541,
+            "search_time_throughput_qps": 86448.16891972207
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.091893,
+            "p95_batch_ms": 0.097356,
+            "mean_batch_ms": 0.09211183333333334,
+            "search_time_throughput_qps": 86850.94748955527
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round3/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.06745100000000001,
+            "p95_batch_ms": 0.080991,
+            "mean_batch_ms": 0.06915866666666666,
+            "search_time_throughput_qps": 115676.02999865045
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0672055,
+            "p95_batch_ms": 0.071317,
+            "mean_batch_ms": 0.067717,
+            "search_time_throughput_qps": 118138.72439712333
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round3/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.08678,
+            "p95_batch_ms": 0.092118,
+            "mean_batch_ms": 0.08784723333333333,
+            "search_time_throughput_qps": 91067.18215751056
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0871655,
+            "p95_batch_ms": 0.091908,
+            "mean_batch_ms": 0.08736276666666666,
+            "search_time_throughput_qps": 91572.19150950272
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round3/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      }
+    },
+    {
+      "round": 4,
+      "process_order": [
+        "original_native_t32",
+        "original_native_t8",
+        "original_native_t1",
+        "npu"
+      ],
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.08816199999999999,
+            "p95_batch_ms": 0.100441,
+            "mean_batch_ms": 0.08937296666666666,
+            "search_time_throughput_qps": 89512.52597261887
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0881525,
+            "p95_batch_ms": 0.100781,
+            "mean_batch_ms": 0.08945623333333333,
+            "search_time_throughput_qps": 89429.20690825718
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round4/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.066565,
+            "p95_batch_ms": 0.081372,
+            "mean_batch_ms": 0.06830346666666666,
+            "search_time_throughput_qps": 117124.36264825994
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.066675,
+            "p95_batch_ms": 0.072489,
+            "mean_batch_ms": 0.06740686666666666,
+            "search_time_throughput_qps": 118682.27074788623
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round4/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.095543,
+            "p95_batch_ms": 0.100331,
+            "mean_batch_ms": 0.0963528,
+            "search_time_throughput_qps": 83028.20468113018
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.095633,
+            "p95_batch_ms": 0.10001,
+            "mean_batch_ms": 0.09613316666666666,
+            "search_time_throughput_qps": 83217.89739579993
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round4/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.029064,
+            "p95_batch_ms": 0.030086,
+            "mean_batch_ms": 0.0291351,
+            "search_time_throughput_qps": 274582.8914264924
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.02991,
+            "p95_batch_ms": 0.030836,
+            "mean_batch_ms": 0.030043766666666666,
+            "search_time_throughput_qps": 266278.19636463694
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round4/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+        ]
+      }
+    },
+    {
+      "round": 5,
+      "process_order": [
+        "npu",
+        "original_native_t1",
+        "original_native_t8",
+        "original_native_t32"
+      ],
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0289985,
+            "p95_batch_ms": 0.030515,
+            "mean_batch_ms": 0.0291794,
+            "search_time_throughput_qps": 274166.0212341583
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0294445,
+            "p95_batch_ms": 0.031247,
+            "mean_batch_ms": 0.029628466666666665,
+            "search_time_throughput_qps": 270010.5979159682
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round5/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.095303,
+            "p95_batch_ms": 0.098508,
+            "mean_batch_ms": 0.09554126666666667,
+            "search_time_throughput_qps": 83733.4513044625
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0952225,
+            "p95_batch_ms": 0.100691,
+            "mean_batch_ms": 0.09579736666666666,
+            "search_time_throughput_qps": 83509.60238642608
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round5/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.06732099999999999,
+            "p95_batch_ms": 0.07326,
+            "mean_batch_ms": 0.0678645,
+            "search_time_throughput_qps": 117881.95595635421
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0667855,
+            "p95_batch_ms": 0.069504,
+            "mean_batch_ms": 0.06710533333333334,
+            "search_time_throughput_qps": 119215.56160464145
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round5/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.08755650000000001,
+            "p95_batch_ms": 0.091307,
+            "mean_batch_ms": 0.0881552,
+            "search_time_throughput_qps": 90749.0425976006
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.08685,
+            "p95_batch_ms": 0.092369,
+            "mean_batch_ms": 0.0874625,
+            "search_time_throughput_qps": 91467.77190224383
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round5/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      }
+    },
+    {
+      "round": 6,
+      "process_order": [
+        "original_native_t32",
+        "original_native_t8",
+        "original_native_t1",
+        "npu"
+      ],
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.08711550000000001,
+            "p95_batch_ms": 0.092699,
+            "mean_batch_ms": 0.08780203333333333,
+            "search_time_throughput_qps": 91114.0630380238
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0866195,
+            "p95_batch_ms": 0.091948,
+            "mean_batch_ms": 0.08726816666666667,
+            "search_time_throughput_qps": 91671.4571369094
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round6/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.06785150000000001,
+            "p95_batch_ms": 0.074682,
+            "mean_batch_ms": 0.06851573333333333,
+            "search_time_throughput_qps": 116761.50295406603
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0679015,
+            "p95_batch_ms": 0.079078,
+            "mean_batch_ms": 0.069083,
+            "search_time_throughput_qps": 115802.73004936091
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round6/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0926035,
+            "p95_batch_ms": 0.101753,
+            "mean_batch_ms": 0.0947247,
+            "search_time_throughput_qps": 84455.26879472831
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0924185,
+            "p95_batch_ms": 0.101843,
+            "mean_batch_ms": 0.09392436666666666,
+            "search_time_throughput_qps": 85174.91556149257
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round6/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native",
+          "--warmup",
+          "5",
+          "--repeats",
+          "30"
+        ]
+      },
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.030135000000000002,
+            "p95_batch_ms": 0.031868,
+            "mean_batch_ms": 0.030376266666666665,
+            "search_time_throughput_qps": 263363.5030857424
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.0312365,
+            "p95_batch_ms": 0.036605,
+            "mean_batch_ms": 0.0318915,
+            "search_time_throughput_qps": 250850.54011256914
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/synthetic8192_regression_01/round6/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+        ]
+      }
+    }
+  ],
+  "reported_historical_comparison": {
+    "status": "historical_reference_for_review",
+    "cases": {
+      "A": {
+        "historical_median_batch_ms": 0.035676,
+        "current_median_batch_ms": 0.0295995,
+        "median_change_percent": -17.03245879582912,
+        "historical_p95_batch_ms": 0.039955000000000004,
+        "current_p95_batch_ms": 0.0311915,
+        "p95_change_percent": -21.933425103241156
+      },
+      "B": {
+        "historical_median_batch_ms": 0.0357135,
+        "current_median_batch_ms": 0.0305685,
+        "median_change_percent": -14.406316938972664,
+        "historical_p95_batch_ms": 0.038247,
+        "current_p95_batch_ms": 0.032323000000000005,
+        "p95_change_percent": -15.48879650691557
+      }
+    },
+    "evidence": "/test/w50066029/bm25-npu-indexsdk/evidence/bm25s_current_npu_device_evidence_20261029.json",
+    "evidence_sha256": "9de770f0b1c3b9d7f6b348d6976925775ce82c05747f04168086980b05ccaec0",
+    "scope": "Separate historical A5 session, not a paired control or automatic regression acceptance threshold."
+  },
+  "reported_decision": {
+    "bm25s_decision": {
+      "original_native": {
+        "A": {
+          "cpu_medians_ms": [
+            0.07358999999999999,
+            0.06926399999999999,
+            0.06745100000000001,
+            0.066565,
+            0.06732099999999999,
+            0.06785150000000001
+          ],
+          "npu_medians_ms": [
+            0.029023,
+            0.030891500000000002,
+            0.0304105,
+            0.029064,
+            0.0289985,
+            0.030135000000000002
+          ],
+          "cpu_p95_ms": [
+            0.078477,
+            0.076404,
+            0.080991,
+            0.081372,
+            0.07326,
+            0.074682
+          ],
+          "npu_p95_ms": [
+            0.029885,
+            0.03322,
+            0.03284,
+            0.030086,
+            0.030515,
+            0.031868
+          ],
+          "cpu_over_npu": 2.2855538100305752,
+          "npu_wins": 6,
+          "timing_gate_passed": true,
+          "strict_equivalent_win": false
+        },
+        "B": {
+          "cpu_medians_ms": [
+            0.0733045,
+            0.0692585,
+            0.0672055,
+            0.066675,
+            0.0667855,
+            0.0679015
+          ],
+          "npu_medians_ms": [
+            0.029614,
+            0.031771999999999995,
+            0.031227,
+            0.02991,
+            0.0294445,
+            0.0312365
+          ],
+          "cpu_p95_ms": [
+            0.094222,
+            0.07377,
+            0.071317,
+            0.072489,
+            0.069504,
+            0.079078
+          ],
+          "npu_p95_ms": [
+            0.031527,
+            0.035353,
+            0.033119,
+            0.030836,
+            0.031247,
+            0.036605
+          ],
+          "cpu_over_npu": 2.2099056218002193,
+          "npu_wins": 6,
+          "timing_gate_passed": true,
+          "strict_equivalent_win": false
+        }
+      }
+    }
+  },
+  "computed": {
+    "A": {
+      "historical_NPU_median_ms": 0.035676,
+      "current_NPU_median_ms": 0.0295995,
+      "NPU_median_change_percent": -17.03245879582912,
+      "historical_NPU_P95_ms": 0.039955000000000004,
+      "current_NPU_median_round_P95_ms": 0.0311915,
+      "NPU_P95_change_percent": -21.933425103241156,
+      "current_CPU_median_ms": 0.06765125000000001,
+      "CPU_over_NPU": 2.2855538100305752,
+      "median_wins": 6,
+      "P95_wins": 6,
+      "current_NPU_search_time_qps": 267223.9771167201
+    },
+    "B": {
+      "historical_NPU_median_ms": 0.0357135,
+      "current_NPU_median_ms": 0.0305685,
+      "NPU_median_change_percent": -14.406316938972664,
+      "historical_NPU_P95_ms": 0.038247,
+      "current_NPU_median_round_P95_ms": 0.032323000000000005,
+      "NPU_P95_change_percent": -15.48879650691557,
+      "current_CPU_median_ms": 0.0675535,
+      "CPU_over_NPU": 2.2099056218002193,
+      "median_wins": 6,
+      "P95_wins": 6,
+      "current_NPU_search_time_qps": 259584.90210945182
+    }
+  },
+  "local_input_routing_evidence": {
+    "synthetic8192": {
+      "A": {
+        "simd_eligible": 8,
+        "dense_fallback": 0,
+        "few_or_zero_fallback": 0
+      },
+      "B": {
+        "simd_eligible": 8,
+        "dense_fallback": 0,
+        "few_or_zero_fallback": 0
+      }
+    },
+    "scope": "Input-derived eligibility from preparation records, not new per-operator hardware timing.",
+    "scifact_local_same_source": {
+      "A": {
+        "words_per_packet": 88,
+        "selection_paths": {
+          "simd_eligible": 0,
+          "dense_fallback": 8,
+          "few_or_zero_fallback": 0
+        }
+      },
+      "B": {
+        "words_per_packet": 67,
+        "selection_paths": {
+          "simd_eligible": 3,
+          "dense_fallback": 5,
+          "few_or_zero_fallback": 0
+        }
+      }
+    },
+    "trec_covid_local_same_source": {
+      "A": {
+        "words_per_packet": 70,
+        "selection_paths": {
+          "simd_eligible": 0,
+          "dense_fallback": 168,
+          "few_or_zero_fallback": 0
+        }
+      },
+      "B": {
+        "words_per_packet": 62,
+        "selection_paths": {
+          "simd_eligible": 4,
+          "dense_fallback": 164,
+          "few_or_zero_fallback": 0
+        }
+      }
+    },
+    "sources": {
+      "scifact": {
+        "local_preparation_report": "results/scifact_prepared_local_01/performance/preparation_report.json",
+        "sha256": "cf57040dc45f51982bd85089feb481f26adeb5e859bbb4f60439a36b239960ca",
+        "index_id": "d8969249cabe570802a80ed442b88cf4724a7a0f3999b40a2cdb0a69f1d166a2"
+      },
+      "trec-covid": {
+        "local_preparation_report": "results/trec_covid_prepared_local_01/performance/preparation_report.json",
+        "sha256": "a44deef562201082fce9daed379473bb02ae789170d244930ba2fc08a910df53",
+        "index_id": "4f5bf3c1cc98205ee6cb3ac2d0a6ef87844c510d8b13b402cc504ef291e6c7e4"
+      }
+    }
+  },
+  "assessment": "No slowdown observed for this 8192-document synthetic profile; all median/P95 gates versus native CPU pass. Real-input latency differences relative to synthetic workloads still need their own stage profiling; not proof that every real workload is optimized.",
+  "aggregation": "Medians of six per-round batch medians and per-round P95 values; CPU uses the fastest of native 1/8/32 workers independently per round/metric. Search QPS pools the equal-count samples using per-round mean search times, not end-to-end service throughput.",
+  "placement": {
+    "cpus": "0-31",
+    "numa_node": 0,
+    "device": 5,
+    "exclusive_CPU_reservation_verified": false
+  }
+}

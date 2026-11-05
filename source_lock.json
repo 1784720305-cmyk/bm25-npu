@@ -2,7 +2,7 @@
   "date": "2026-11-05",
   "status": "A5_host_device_and_three_real_corpora_checked_SciFact_CPU_timing_mixed",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Current host huge-first allocator was validated on A5 at d685cf4 after the same-size policy probe reproduced NORMAL_ONLY207001 versus HUGE_FIRST success. Fresh real CANN host build, tests, production clang-tidy, installed consumption, selector/merge/shared SDK and synthetic10M checks passed. Synthetic NPU A/B 1.7590635/1.74224325ms show no observed slowdown versus earlier session references; not a paired causal estimate. MS MARCO all 43 test-query quality and native-BM25S fixed Q8 six-round performance passed, with latency ratios 7.95662/7.70407. Native tie-policy metric differences and the unexplained slower first round are retained. Operators, other production C++ and CMake security flags are unchanged; source groups track the current accepted code. Historical and small-corpus mixed results remain archived; no universal workload claim. Subsequent SciFact/TREC-COVID repeats on the accepted host build reproduced every role-specific quality metric. NPU median changes versus prior sessions range from -0.48749% to +0.78248%; median-of-round-P95 changes range from -0.39994% to +1.40114%. SciFact A still fails the native-CPU median win gate while B passes; both TREC-COVID gates pass. These are cross-session observations, not a zero-overhead or equivalence proof.",
+  "note": "Current host huge-first allocator was validated on A5 at d685cf4 after the same-size policy probe reproduced NORMAL_ONLY207001 versus HUGE_FIRST success. Fresh real CANN host build, tests, production clang-tidy, installed consumption, selector/merge/shared SDK and synthetic10M checks passed. Synthetic NPU A/B 1.7590635/1.74224325ms show no observed slowdown versus earlier session references; not a paired causal estimate. MS MARCO all 43 test-query quality and native-BM25S fixed Q8 six-round performance passed, with latency ratios 7.95662/7.70407. Native tie-policy metric differences and the unexplained slower first round are retained. Operators, other production C++ and CMake security flags are unchanged; source groups track the current accepted code. Historical and small-corpus mixed results remain archived; no universal workload claim. Subsequent SciFact/TREC-COVID repeats on the accepted host build reproduced every role-specific quality metric. NPU median changes versus prior sessions range from -0.48749% to +0.78248%; median-of-round-P95 changes range from -0.39994% to +1.40114%. SciFact A still fails the native-CPU median win gate while B passes; both TREC-COVID gates pass. These are cross-session observations, not a zero-overhead or equivalence proof. A retained 8192-document synthetic input was subsequently measured with the accepted host build: A/B NPU medians 0.0295995/0.0305685 ms, 17.03%/14.41% lower than the historical session; median and P95 gates versus original native BM25S pass in all six rounds. This addresses the matched small synthetic case only. Real-input query work and selection eligibility differ; their time contributions remain unprofiled.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -230,5 +230,24 @@
       }
     },
     "assessment": "Observed NPU latency remains close to the prior small/medium workload results; retain the mixed small-corpus CPU result and all nonzero deltas."
+  },
+  "supplemental_small_synthetic_regression": {
+    "evidence": "evidence/synthetic8192_regression_a5_20261105.json",
+    "host_build": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build",
+    "input": "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+    "fresh_repeat_binary_and_source_hashes_received": false,
+    "NPU_median_ms": {
+      "A": 0.0295995,
+      "B": 0.0305685
+    },
+    "NPU_median_change_percent": {
+      "A": -17.03245879582912,
+      "B": -14.406316938972664
+    },
+    "median_and_P95_wins_vs_original_native_CPU": {
+      "A": 6,
+      "B": 6
+    },
+    "scope": "Retained input directory, matching recipe/query IDs; historical separate session, not a paired causal estimate. Current full index_id was not pasted. Real small-corpus mixed CPU gates remain unchanged."
   }
 }

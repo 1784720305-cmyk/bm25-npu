@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "IndexSDK-aligned BM25 package. Huge-first allocation fix passed real A5 host/device and MS MARCO checks. Subsequent SciFact/TREC-COVID repeats reproduce prior role-specific quality; observed NPU median changes are -0.49% to +0.78%, median-of-round-P95 changes -0.40% to +1.40%. SciFact A still fails the native-CPU median win gate; other real cases retain their reported gates. Original-native BM25S, mixed small-corpus timing, cross-session limits and the MS MARCO slower first round remain explicit. Archive-only update; implementation unchanged.",
+  "scope": "IndexSDK-aligned BM25 package. Huge-first allocation fix passed real A5 host/device and MS MARCO checks. Subsequent SciFact/TREC-COVID repeats reproduce prior role-specific quality; observed NPU median changes are -0.49% to +0.78%, median-of-round-P95 changes -0.40% to +1.40%. SciFact A still fails the native-CPU median win gate; other real cases retain their reported gates. Original-native BM25S, mixed small-corpus timing, cross-session limits and the MS MARCO slower first round remain explicit. Archive-only update; implementation unchanged. Retained 8192-document synthetic input also checked: NPU medians are 17.03%/14.41% below historical session, with six median/P95 wins against original native BM25S; real-input stage attribution remains unprofiled.",
   "text_line_endings": "LF",
   "reference_commits": {
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -12,11 +12,11 @@
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
     ".pre-commit-config.yaml": "d18cae61fe460685d6b3e1721bf9aa30aa2e4d249388df7c8fdf9a5657f99a57",
     "CMakeLists.txt": "efbb01dc2062aae2a92fc873e4663d300062bb2eca9e9167d8f09b7ad92c84f5",
-    "README.md": "585e243444444dc561ea8fd6f1b1f88ba5f1ba0862bcdb8b25cf5931f53d1bbb",
+    "README.md": "cf4f6e6859a8f96b2d2da045e8d374e2f16af934097a41609b84dcd842c5a4b9",
     "cmake/AscendBm25Config.cmake.in": "ec11d408ef32f39c0dadf697f97c828a12b184975995ed78947e643b687acb39",
     "cmake/Install.cmake": "e6414e4980bf184558dd5bf05d66db54dd5433036e5cc7a76ea0fb30617639e0",
     "docs/A5_ACCEPTANCE.md": "b9c7e21201f26be3d35443b4e026f66ff4d000fe82994ef0748e24a0cc26f13d",
-    "docs/BM25S_PERFORMANCE.md": "dd6552337a43308e8a56d53e3cddd1a4543ef1c55b63f4ac47c4cc749fa2ad97",
+    "docs/BM25S_PERFORMANCE.md": "7c0dfbbe1b209dc8dd7afc74510b3012a71f062d3950564cde6db84b317cb77e",
     "docs/BUILD_AND_TEST.md": "f52176d3d87a3d014e46cdc0cdd7a97f7e76a94ddc9f86cdf5b25c01308621cf",
     "docs/CPU_REGRESSION.md": "47faff5bb6bef2d5a37d4ac8a2d12700087c1f490f84c7f7795b1a10f06c8e7e",
     "docs/FINAL_DELIVERY.md": "59f5b467e761c99e824dd3a0e686ff0f5001fd0560d01515b24bf962b409c1a0",
@@ -148,7 +148,7 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "dc6248ace079496a39247fc70f18ff4227878dce8c7d5d7d77a9cbaf71df85bc",
-    "source_lock.json": "7bb5e58dd7e9b037ffcc26ceabfa678b188cfb01247187be96e3a81dddec46ce",
+    "source_lock.json": "6eb071eb7531f227c0943d1f60e3764893ac365b8a3c7b161df19ae7f0177348",
     "standalone/beir_real.py": "ca0103064fc4b8a12842b7d32744685bf0cd502b878c9b26888ce3603018db0d",
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
@@ -176,6 +176,7 @@
     "tools/test_device_allocation.py": "4565d9d5b75e6d10a35d6d31d14b1095936f68540b0bacf68585df12a67efbce",
     "tools/test_scifact.py": "66d62a16e35e2858aa0b6feee00792e111faaae1218175c72772f7d116cf6592",
     "verify_package.py": "5d377581c823e467a8136d8b400f5bca982113041cacb0cf8e70af6f08aa91de",
-    "evidence/small_medium_regression_a5_20261105.json": "b4c2ab1649a06731cbead976b91ab039437a706ee56015a681d1857d43586a31"
+    "evidence/small_medium_regression_a5_20261105.json": "b4c2ab1649a06731cbead976b91ab039437a706ee56015a681d1857d43586a31",
+    "evidence/synthetic8192_regression_a5_20261105.json": "695914510aa349db595a765ca05c61ad4d547e6487c99633f38606770a6ef46e"
   }
 }
