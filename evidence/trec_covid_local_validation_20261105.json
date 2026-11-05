@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-05",
+  "status": "local_TREC_COVID_full_corpus_CPP_and_original_native_CPU_validated_A5_pending",
+  "source": {
+    "url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/trec-covid.zip",
+    "archive_sha256": "120f42a7864d2214234537733c0d2c6684e42fdfafff2c5eacf98afca6656aa0",
+    "archive_bytes": 73876720,
+    "dataset_card": "https://huggingface.co/datasets/BeIR/trec-covid",
+    "qrels": "https://huggingface.co/datasets/BeIR/trec-covid-qrels"
+  },
+  "documents": 171332,
+  "test_queries": 50,
+  "raw_judgment_rows": 66336,
+  "judgment_grade_counts": {
+    "-1": 2,
+    "0": 41661,
+    "1": 10456,
+    "2": 14217
+  },
+  "vocabulary": 215004,
+  "query_lengths": {
+    "count": 50,
+    "min": 4,
+    "median": 8.0,
+    "p95": 12,
+    "max": 20,
+    "mean": 8.08
+  },
+  "preparation": "Streaming archive vocabulary/document passes; no document replication to inflate corpus size, word hashing, or query truncation. 112796624 index bytes, 13691405 postings.",
+  "local_checks": {
+    "unit_tests": 33,
+    "actual_CPP_CPU": "Full 50-query quality and Q8 packets: complete score and strict ID bits, stable output, actual words above 65535, 2 threads",
+    "actual_original_native_CPU": "Full quality and Q8 inputs: actual frozen BM25S build/formula, native Numba retrieval and stable outputs, 2 workers",
+    "actual_tokenizer_parity": "171382 full document/query texts match the actual frozen basic tokenizer in bounded 1000-text chunks",
+    "legacy_SciFact_parity": "Shared implementation reproduces previous exact index identity, A/B query bytes, full oracle scores and strict Top-K bytes",
+    "maximum_score_error_vs_independent_FP32": {
+      "A": 7.62939453125e-06,
+      "B": 5.7220458984375e-06
+    },
+    "original_strict_ids_match_project": {
+      "A": true,
+      "B": true
+    },
+    "native_tie_ID_differences": {
+      "A": 46,
+      "B": 37
+    }
+  },
+  "local_CPU_only_metrics": {
+    "CXX_CPU": {
+      "queries": 50,
+      "ndcg_at_10": 0.5769513068939649,
+      "recall_at_10": 0.015566685596385304,
+      "mrr_at_10": 0.7898333333333335
+    },
+    "original_native_CPU_t2": {
+      "queries": 50,
+      "ndcg_at_10": 0.5745521464553993,
+      "recall_at_10": 0.015476669973839244,
+      "mrr_at_10": 0.7898333333333335
+    }
+  },
+  "metric_policy": "trec_eval linear relevance gain for nDCG; relevance > 0 for recall/MRR; 0/-1 have no gain",
+  "metric_primary_source": "https://raw.githubusercontent.com/usnistgov/trec_eval/master/m_ndcg_cut.c",
+  "quality_interpretation": "Original full-score strict IDs match the project, but native retrieval differs on ties (46/37 positions). Native selected score multisets match its strict full-score oracle; small aggregate quality differences are preserved, not hidden by an adapter.",
+  "scope": "Windows CPU validation only; no A5/NPU timing or real-data speedup is asserted.",
+  "local_work": {
+    "prepared": "F:\\Ascend\\bm25\\bm25-a5\\results\\trec_covid_prepared_local_01",
+    "CPP": "F:\\Ascend\\bm25\\bm25-a5\\results\\trec_covid_CPP_LOCAL_jbyshuaq",
+    "original_native": "F:\\Ascend\\bm25\\bm25-a5\\results\\trec_covid_NATIVE_LOCAL_asixjnbk"
+  }
+}

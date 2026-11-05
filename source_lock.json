@@ -1,8 +1,8 @@
 {
   "date": "2026-11-05",
-  "status": "A5_correctness_and_synthetic_performance_passed_SciFact_performance_mixed",
+  "status": "A5_prior_results_preserved_TREC_COVID_locally_validated_device_pending",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Original-native BM25S synthetic regression meets the near-previous-speed goal. Supplied A5 SciFact results have matching all300 quality metrics; fixed Q8 A is 3.37% slower than native CPU, B 5.37% faster. Real timing is mixed, not an all-gates pass. Historical hashes and evidence are retained.",
+  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Prior synthetic and SciFact A5 results are preserved. A shared pinned-BEIR driver adds streaming TREC-COVID, 215004-word support and graded trec_eval-style qrels. Complete local C++/original CPU checks passed; TREC-COVID A5 correctness/quality/performance remain pending.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -97,9 +97,11 @@
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
     "tools/test_benchmark_policy.py": "418a9b36c03be670fcfc0a5ae5fa0e82a7d127723a095be6cad9c6ac7a56476d",
-    "standalone/large_corpus.py": "133d25d0f83a64e49ca7bdeba14dd98e3a05a53eb81142049fc8efc2fe1dfe88",
-    "standalone/scifact.py": "690a31a348eb8d239eb1f40b6b6d833987324f5b40460f4b2aabfe0ad1581134",
-    "tools/test_scifact.py": "66d62a16e35e2858aa0b6feee00792e111faaae1218175c72772f7d116cf6592"
+    "standalone/large_corpus.py": "fd0c8d13b8f883fe8f1abd325f1df91b50d246d29d99dd63c707c02d06968350",
+    "standalone/scifact.py": "c9e487817329b08298e70b172280713eb4b795fae9528ad177d1d1c5efc98272",
+    "tools/test_scifact.py": "66d62a16e35e2858aa0b6feee00792e111faaae1218175c72772f7d116cf6592",
+    "standalone/beir_real.py": "27b343591f11b3cf2925a731887604edd357263057710b8664114793316ef7a1",
+    "tools/test_beir_real.py": "fa39a77e09dd220121d2daf291f704bf67d3beec191dcf110008b59e3b74d7fb"
   },
   "a5_acceptance": {
     "tested_code_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",
@@ -113,7 +115,7 @@
     "evidence": "evidence/cpu_regression_source_audit_20261104.json",
     "status": "controlled_comparison_completed_quiet_window_followup_pending",
     "production_build_policy_changed_in_this_update": false,
-    "local_validation": "28 tool unit tests and actual local C++/original CPU integration passed. Supplied A5 synthetic and SciFact driver results are archived; optional balanced C++ pairs remain unexecuted on A5.",
+    "local_validation": "33 tool unit tests; original C++/original native CPU integration on the complete TREC-COVID corpus; exact legacy SciFact data/oracle parity. No TREC-COVID A5 measurement yet.",
     "comparison_evidence": "evidence/cpu_regression_a5_comparison_20261104.json",
     "reported_comparison_status": "completed_with_bit_identical_outputs",
     "interpretation": "New/old aggregate differences 5.11%/4.19%; same new binary varies 13.45%/13.01%. High system-load background and missing per-core contention/quota telemetry prevent causal flag attribution.",
@@ -147,6 +149,21 @@
         "B": true,
         "both_cases": false
       }
+    },
+    "next_real_dataset": {
+      "name": "BEIR TREC-COVID",
+      "documents": 171332,
+      "test_queries": 50,
+      "judgment_rows": 66336,
+      "vocabulary": 215004,
+      "source_archive_bytes": 73876720,
+      "source_archive_sha256": "120f42a7864d2214234537733c0d2c6684e42fdfafff2c5eacf98afca6656aa0",
+      "stage": "prepared_and_locally_validated_A5_pending",
+      "local_evidence": "evidence/trec_covid_local_validation_20261105.json",
+      "commands": "docs/TREC_COVID_REAL_DATA.md",
+      "protocol": "Full50 quality separately; seeded16 natural queries in Q8 A/B packets; six rounds; frozen original-native BM25S 1/8/32 workers",
+      "metric_policy": "Linear nDCG relevance gains, relevance > 0 for recall/MRR; 0/-1 do not count as relevant",
+      "comparison_scope": "Different real dataset, about33x SciFact documents; no document duplication or isolated scale-only causal claim"
     }
   }
 }
