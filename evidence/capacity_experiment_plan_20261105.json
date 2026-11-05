@@ -1,0 +1,165 @@
+{
+  "date": "2026-11-05",
+  "status": "experimental_capacity_tools_locally_checked_A5_build_and_device_pending",
+  "default_capacity": 1024,
+  "candidate_capacities": [
+    2048,
+    4096
+  ],
+  "candidate_promoted": false,
+  "unchanged_existing_operator_and_host_sources": true,
+  "unchanged_CMake_security_flags": true,
+  "generated_source_variants": {
+    "1024": {
+      "capacity": 1024,
+      "scratch_bytes": 16736,
+      "buffer_bytes": 50848,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "b06ccdec83c2a0a9c7bb20f48f6c74d1ddd34c698d62793b47f13293a68692ba",
+      "kernel_sha256": "1d446208bd63668d655231c460d9966cb3329e14d30c1e055c2c3411ea385e9a",
+      "profile": false
+    },
+    "1024_profile": {
+      "capacity": 1024,
+      "scratch_bytes": 16736,
+      "buffer_bytes": 50848,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "dabd08125a5693f13a618d193ffe2263c212a9e4df1367dc029c8d4bb734b1ca",
+      "kernel_sha256": "d1df5eb3043866ad4b6b491d3daa19a292d7aa0e161097f2df6ce5e848b770ff",
+      "profile": true
+    },
+    "2048": {
+      "capacity": 2048,
+      "scratch_bytes": 24928,
+      "buffer_bytes": 59040,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "8058f4fbfa6b46fbf4427def592ac293384074eea61b85366a933707a94c5110",
+      "kernel_sha256": "b973961db2e5e085f567b10ce6a7bb87e9950a64a35a9979f89f02d02e0e30cd",
+      "profile": false
+    },
+    "2048_profile": {
+      "capacity": 2048,
+      "scratch_bytes": 24928,
+      "buffer_bytes": 59040,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "900e837977f801730f3d3839a0e084920db6c610e454120de04c19753aba0a20",
+      "kernel_sha256": "f572efa5a52465be1bbb91d1c422147230d1ef07233067d1ceaecc4b22e479a0",
+      "profile": true
+    },
+    "4096": {
+      "capacity": 4096,
+      "scratch_bytes": 41312,
+      "buffer_bytes": 75424,
+      "dynamic_ub_bytes": 98304,
+      "host_sha256": "cd0bc4f46e91709d26bac57c709808b18d1c68c67cb64c9e776e31cbbfd63ac5",
+      "kernel_sha256": "c9b6a50a2cccbfaa4ca9df2c3989e2f8b3e2a1fb7a43e835d7e4dc78cd76dd0c",
+      "profile": false
+    },
+    "4096_profile": {
+      "capacity": 4096,
+      "scratch_bytes": 41312,
+      "buffer_bytes": 75424,
+      "dynamic_ub_bytes": 98304,
+      "host_sha256": "a9cdc60be80a47f53c0956c4afd8fac7c40fd35c5b70e642782d04608eb5f46b",
+      "kernel_sha256": "e4fd5294e8f031055a2311f3de48fdb392e0b7b9126ec18c57d7dcb3268028b4",
+      "profile": true
+    }
+  },
+  "coverage": {
+    "scope": "Same-source local SciFact preparation, one 8192-document padded leaf per query; input eligibility, not device timing",
+    "source": "results/scifact_prepared_local_01/performance/preparation_report.json",
+    "source_sha256": "cf57040dc45f51982bd85089feb481f26adeb5e859bbb4f60439a36b239960ca",
+    "index_id": "d8969249cabe570802a80ed442b88cf4724a7a0f3999b40a2cdb0a69f1d166a2",
+    "queries_per_case": 8,
+    "words_per_case": {
+      "A": 88,
+      "B": 67
+    },
+    "positive_documents_per_query": {
+      "A": [
+        2268,
+        2310,
+        3602,
+        1595,
+        1718,
+        3439,
+        2527,
+        4399
+      ],
+      "B": [
+        2813,
+        1799,
+        480,
+        1332,
+        1002,
+        2577,
+        2607,
+        510
+      ]
+    },
+    "simd_eligible_by_capacity": {
+      "1024": {
+        "A": 0,
+        "B": 3
+      },
+      "2048": {
+        "A": 2,
+        "B": 5
+      },
+      "4096": {
+        "A": 7,
+        "B": 8
+      }
+    }
+  },
+  "protocol": {
+    "workloads": [
+      "same_SciFact_performance_input",
+      "original_synthetic8192",
+      "original_synthetic65536"
+    ],
+    "rounds": 6,
+    "capacity_order": "all six permutations, each position twice",
+    "warmup_AB_cycles": 5,
+    "measured_AB_cycles": 30,
+    "K": 10,
+    "Q": 8,
+    "normal_Search": "Uninstrumented packages and existing validated host runner; full independent oracle and tree/guard/repeat checks",
+    "stages": "Separate instrumented packages; score+append and Pack+threshold+collect per query/leaf; raw system ticks, no unverified clock conversion",
+    "boundaries": [
+      1023,
+      1024,
+      1025,
+      2047,
+      2048,
+      2049,
+      4095,
+      4096,
+      4097
+    ],
+    "CPU_baseline": "Unchanged original native BM25S results retained as context; not replaced by the NPU capacity comparison",
+    "cross_package_check": "Normal and instrumented packages must return byte-identical TopK IDs/scores; instrumented mode 3 also matches mode 0 on every call"
+  },
+  "local_checks": {
+    "python_tool_tests": 49,
+    "dedicated_capacity_tests": 9,
+    "python39_AST": true,
+    "CXX_host_syntax_and_clang_tidy_with_mock_ACL": true,
+    "real_CANN_kernel_compilation": false,
+    "device_execution": false
+  },
+  "limits": [
+    "Coverage is not a speedup guarantee",
+    "Stage instrumentation changes execution boundaries and is excluded from normal Search timings",
+    "Per-leaf times are not additive batch latency",
+    "Stable sparse-input regressions remain measured costs, even when TopK improves"
+  ],
+  "source_sha256": {
+    "standalone/selector_capacity.py": "f9433e02a570de4ff37f18fbc0d83ce0debe3017ec6d8e802359fc5e9caf264f",
+    "tools/capacity_sources.py": "a888fad67c000ff653e0a33668b7afd668d78a187aa7b334b4562be01fe1d7e6",
+    "tools/test_selector_capacity.py": "ed22e928e819cbcdd56e96ab41b23bb6eb3f6f0c7ffe858db837be9e64a6a05e",
+    "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/capacity_profile.cpp": "0edf15dddad0e6fb7537916fac3e18ef440a5d595b1ade091f6850a39ed2e3e9",
+    "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
+  },
+  "commands": "docs/SELECTOR_CAPACITY.md"
+}

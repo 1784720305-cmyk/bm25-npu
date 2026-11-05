@@ -249,5 +249,24 @@
       "B": 6
     },
     "scope": "Retained input directory, matching recipe/query IDs; historical separate session, not a paired causal estimate. Current full index_id was not pasted. Real small-corpus mixed CPU gates remain unchanged."
+  },
+  "experimental_capacity_study": {
+    "status": "experimental_capacity_tools_locally_checked_A5_build_and_device_pending",
+    "default_capacity": 1024,
+    "candidates": [
+      2048,
+      4096
+    ],
+    "candidate_promoted": false,
+    "evidence": "evidence/capacity_experiment_plan_20261105.json",
+    "commands": "docs/SELECTOR_CAPACITY.md",
+    "source_sha256": {
+      "standalone/selector_capacity.py": "f9433e02a570de4ff37f18fbc0d83ce0debe3017ec6d8e802359fc5e9caf264f",
+      "tools/capacity_sources.py": "a888fad67c000ff653e0a33668b7afd668d78a187aa7b334b4562be01fe1d7e6",
+      "tools/test_selector_capacity.py": "ed22e928e819cbcdd56e96ab41b23bb6eb3f6f0c7ffe858db837be9e64a6a05e",
+      "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/capacity_profile.cpp": "0edf15dddad0e6fb7537916fac3e18ef440a5d595b1ade091f6850a39ed2e3e9",
+      "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
+    },
+    "scope": "Separate generated packages and diagnostic executable; existing production source hashes and latest A5 acceptance fingerprints remain unchanged."
   }
 }
