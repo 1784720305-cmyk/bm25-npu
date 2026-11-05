@@ -1,8 +1,8 @@
 {
   "date": "2026-11-05",
-  "status": "A5_existing_acceptance_and_real_data_checks_completed_TREC_COVID_timing_passed",
+  "status": "A5_existing_acceptance_and_real_data_checks_completed_MSMARCO_tools_ready_device_pending",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Supplied original-native BM25S synthetic, SciFact and TREC-COVID A5 results are archived. TREC-COVID all50 quality checks completed; both fixed Q8 packets win six median/P95 rounds, latency ratios 1.40685/1.40808. SciFact mixed timing and native tie-policy differences remain explicit; no universal workload claim.",
+  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Supplied original-native BM25S synthetic, SciFact and TREC-COVID A5 results are archived. TREC-COVID all50 quality checks completed; both fixed Q8 packets win six median/P95 rounds, latency ratios 1.40685/1.40808. SciFact mixed timing and native tie-policy differences remain explicit; no universal workload claim. MS MARCO full 8841823-document source was scanned; reduced 9139-document actual original BM25S/C++ protocol checks passed. The new entry evaluates all 43 graded test queries and fixed Q8 performance; 6980 dev queries are excluded. Full-corpus A5 NPU results remain pending.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -97,11 +97,11 @@
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
     "tools/test_benchmark_policy.py": "418a9b36c03be670fcfc0a5ae5fa0e82a7d127723a095be6cad9c6ac7a56476d",
-    "standalone/large_corpus.py": "fd0c8d13b8f883fe8f1abd325f1df91b50d246d29d99dd63c707c02d06968350",
+    "standalone/large_corpus.py": "37254c7a95606774c830a73910edb6f9beee94fd24fe968c26774885290e68dc",
     "standalone/scifact.py": "c9e487817329b08298e70b172280713eb4b795fae9528ad177d1d1c5efc98272",
     "tools/test_scifact.py": "66d62a16e35e2858aa0b6feee00792e111faaae1218175c72772f7d116cf6592",
-    "standalone/beir_real.py": "27b343591f11b3cf2925a731887604edd357263057710b8664114793316ef7a1",
-    "tools/test_beir_real.py": "fa39a77e09dd220121d2daf291f704bf67d3beec191dcf110008b59e3b74d7fb"
+    "standalone/beir_real.py": "ca0103064fc4b8a12842b7d32744685bf0cd502b878c9b26888ce3603018db0d",
+    "tools/test_beir_real.py": "c00472b8e4c94326376abf46e89cd11dc39dd25086bbf430a329a03300957e41"
   },
   "a5_acceptance": {
     "tested_code_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",

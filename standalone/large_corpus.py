@@ -23,6 +23,7 @@ search = r
 
 CONTRACT = 'large_corpus_file_backed_fp32_reference_v1'
 LIMIT = 2**31 - 1
+MAX_EXTERNAL_VOCAB = 2**24
 
 
 def digest(path):
@@ -99,7 +100,7 @@ def prepare(output, n, vocab, seed, cases, k=10, corpus=None, variable_queries=F
         and n >= k
         and 1 <= q <= 10000
         and q * ((n + 8191) // 8192 * 8192) <= LIMIT
-        and 8 <= vocab <= (1000000 if variable_queries else 65536),
+        and 8 <= vocab <= (MAX_EXTERNAL_VOCAB if variable_queries else 65536),
         'Explicit padded INT32 N/Q/index contract exceeded',
     )
     r.require(

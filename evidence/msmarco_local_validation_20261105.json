@@ -1,0 +1,240 @@
+{
+  "date": "2026-11-05",
+  "status": "full_official_source_scanned_reduced_actual_CPU_protocol_passed_full_A5_run_pending",
+  "source": {
+    "url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/msmarco.zip",
+    "bytes": 1082258632,
+    "official_md5": "444067daf65d982533ea17ebd59501e4",
+    "sha256": "f46aed8343564261c27228b7cf22dde5c9a70143fe34dc3c589bd5322308712a",
+    "query_rows": 509962,
+    "MD5_and_SHA256_verified": true
+  },
+  "full_source_scan": {
+    "docs": 8841823,
+    "vocab": 1624803,
+    "posting_records": 264520096,
+    "tokens": 340859891,
+    "document_ids": "All source IDs match zero-based decimal ordinal; no duplicate/missing ID",
+    "test_queries": 43,
+    "judgments": 9260,
+    "grades": {
+      "0": 5158,
+      "1": 1601,
+      "2": 1804,
+      "3": 697
+    },
+    "query_lengths": [
+      3,
+      4,
+      5,
+      5,
+      2,
+      4,
+      5,
+      4,
+      3,
+      5,
+      4,
+      3,
+      5,
+      3,
+      3,
+      5,
+      3,
+      3,
+      2,
+      5,
+      4,
+      3,
+      5,
+      3,
+      3,
+      3,
+      5,
+      5,
+      4,
+      4,
+      3,
+      4,
+      5,
+      4,
+      3,
+      5,
+      4,
+      5,
+      3,
+      4,
+      3,
+      8,
+      4
+    ],
+    "OOV": 1,
+    "elapsed_seconds": 263.2030000000086
+  },
+  "evaluation_split": {
+    "selected": "test",
+    "queries": 43,
+    "judgments": 9260,
+    "grade_counts": {
+      "0": 5158,
+      "1": 1601,
+      "2": 1804,
+      "3": 697
+    },
+    "dev_queries": 6980,
+    "dev_judgments": 7437,
+    "dev_evaluated": false,
+    "quality_packets": {
+      "A": 22,
+      "B": 22,
+      "empty_padding_rows_excluded_from_metrics": 1
+    },
+    "performance": "Seed 20261105, 16 of the 43 test queries; Q8 A/B, K10; planned six alternating rounds",
+    "metric_policy": "Linear nDCG gains, relevance > 0 for recall/MRR; not official TREC relevance>=2 leaderboard metrics"
+  },
+  "tokenizer_validation": {
+    "original_commit": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7",
+    "fixture_documents": 9139,
+    "uniformly_sampled_full_corpus_documents": 885,
+    "all_test_query_texts": 43,
+    "matched": true
+  },
+  "local_fixture": {
+    "scope": "LOCAL reduced corpus containing every test-judged document; not full-corpus quality, A5 or NPU performance evidence",
+    "docs": 9139,
+    "test_queries": 43,
+    "judgments": 9260,
+    "fixture_sha256": "280d125fdefdd9c8aececd297bcca229e3d2772f927f1779b046d270bcfe6487",
+    "independent_index_identity_same_for_quality_and_performance": true,
+    "stages": {
+      "quality": {
+        "queries_per_case": 22,
+        "index_id": "0f4264c1eb95ad1ac71c63e9b7f7efd3fd6f3db885d6ac6e73331bcf9032c7af",
+        "actual_CPP_full_FP32_scores_and_strict_IDs_bit_identical": true,
+        "original_index_array_bytes": 2277376,
+        "original_strict_ids_match_project": {
+          "A": true,
+          "B": true
+        },
+        "maximum_original_score_absolute_error": {
+          "A": 3.814697265625e-06,
+          "B": 3.814697265625e-06
+        },
+        "actual_native_workers_checked": [
+          1,
+          2
+        ],
+        "unchanged_source_files_verified": 25,
+        "repeated_results_and_nopython_signatures_checked": true,
+        "native_tie_ID_differences": {
+          "1": {
+            "A": 6,
+            "B": 14
+          },
+          "2": {
+            "A": 6,
+            "B": 14
+          }
+        }
+      },
+      "performance": {
+        "queries_per_case": 8,
+        "index_id": "0f4264c1eb95ad1ac71c63e9b7f7efd3fd6f3db885d6ac6e73331bcf9032c7af",
+        "actual_CPP_full_FP32_scores_and_strict_IDs_bit_identical": true,
+        "original_index_array_bytes": 2277376,
+        "original_strict_ids_match_project": {
+          "A": true,
+          "B": true
+        },
+        "maximum_original_score_absolute_error": {
+          "A": 2.86102294921875e-06,
+          "B": 3.814697265625e-06
+        },
+        "actual_native_workers_checked": [
+          1,
+          2
+        ],
+        "unchanged_source_files_verified": 25,
+        "repeated_results_and_nopython_signatures_checked": true,
+        "native_tie_ID_differences": {
+          "1": {
+            "A": 0,
+            "B": 2
+          },
+          "2": {
+            "A": 0,
+            "B": 2
+          }
+        }
+      }
+    }
+  },
+  "resource_plan_from_local_full_source_counts": {
+    "docs": 8841823,
+    "vocab": 1624803,
+    "posting_records": 264520096,
+    "stages": {
+      "quality": {
+        "docs": 8841823,
+        "padded_docs": 8847360,
+        "leaves": 1080,
+        "list_counts": [
+          1080,
+          34,
+          2,
+          1
+        ],
+        "pipeline_stages": 4,
+        "resident_index_bytes": 16209345764,
+        "directory_bytes": 14051296344,
+        "candidate_bytes": 1965920,
+        "packet_input_bytes": 5824,
+        "packet_output_bytes": 1792,
+        "known_device_bytes_upper_bound": 16211321352,
+        "debug_score_bytes": 778567808,
+        "cpu_peak_known_bytes": 6327160248,
+        "scope": "Device workspace/capture/runtime allocations excluded here; actual executable checks free memory and every actual workspace."
+      },
+      "performance": {
+        "docs": 8841823,
+        "padded_docs": 8847360,
+        "leaves": 1080,
+        "list_counts": [
+          1080,
+          34,
+          2,
+          1
+        ],
+        "pipeline_stages": 4,
+        "resident_index_bytes": 16209345764,
+        "directory_bytes": 14051296344,
+        "candidate_bytes": 714880,
+        "packet_input_bytes": 2144,
+        "packet_output_bytes": 640,
+        "known_device_bytes_upper_bound": 16210065480,
+        "debug_score_bytes": 283115648,
+        "cpu_peak_known_bytes": 5336876072,
+        "scope": "Device workspace/capture/runtime allocations excluded here; actual executable checks free memory and every actual workspace."
+      }
+    },
+    "additional_disk_estimate_bytes": 34979589936,
+    "minimum_device_free_bytes_with_runner_margin": 22579538730,
+    "scope": "Known buffers and diagnostics plus margins, not a guarantee of upstream Python/JIT/runtime peak. Actual runner probes free memory and workspaces again before execution."
+  },
+  "user_supplied_A5_resources": {
+    "memory_report": "results/msmarco_device5_memory_01.json",
+    "free": 131728125952,
+    "total": 132338679808,
+    "disk_available_df_h": "890G",
+    "scope": "Existing probe JSON pasted after duplicate-output refusal; actual capture timestamp unavailable. Fresh probe remains required and automatic in the real runner."
+  },
+  "checks": {
+    "unit_tests_passed": 37,
+    "mathematical_models_checked": 376,
+    "CXX_layout_files_checked": 57,
+    "Python_syntax_compatible_with_3_9": true,
+    "CXX_operators_CMake_unchanged_from_A5_validated_9a99bbc": true
+  },
+  "full_corpus_A5_NPU_run_completed": false,
+  "scope": "Source/profile and actual reduced-corpus host validation only. No full-corpus index, ranking quality, NPU latency, speedup or throughput evidence yet."
+}

@@ -1,4 +1,4 @@
-"""Pinned public BEIR corpora, full-query quality, and separate fixed-Q8 performance."""
+"""Pinned public BEIR corpora, declared quality coverage, and separate fixed-Q8 performance."""
 
 import argparse
 import ast
@@ -8,6 +8,7 @@ import json
 import math
 import random
 import re
+import shutil
 import sys
 import urllib.request
 import zipfile
@@ -44,6 +45,17 @@ DATASETS = {
         'sort_docs': False,
         'grades': (-1, 0, 1, 2),
         'status': 'actual_TREC_COVID_all50_quality_and_Q8_six_round_search_checked',
+    },
+    'msmarco': {
+        'bytes': 1082258632,
+        'sha256': 'f46aed8343564261c27228b7cf22dde5c9a70143fe34dc3c589bd5322308712a',
+        'docs': 8841823,
+        'queries': 509962,
+        'test_queries': 43,
+        'judgments': 9260,
+        'sort_docs': False,
+        'grades': (0, 1, 2, 3),
+        'status': 'actual_MSMARCO_TREC_DL_test43_quality_and_Q8_six_round_search_checked',
     },
 }
 ARCHIVE_SHA256 = DATASETS['scifact']['sha256']
@@ -113,6 +125,44 @@ def read_source(archive, dataset='scifact'):
     return CorpusRows(archive, dataset), queries, qrels
 
 
+def query_groups(qids, dataset):
+    """Keep every test query; an odd test split gets one empty, unevaluated padding row."""
+    qids = sorted(qids)
+    r.require(len(qids) >= 16 and (len(qids) % 2 == 0 or dataset == 'msmarco'), 'Unsupported test split size')
+    performance = random.Random(20261105).sample(qids, 16)
+    half = (len(qids) + 1) // 2
+    quality_b = qids[half:] + ([None] if len(qids) % 2 else [])
+    return {
+        'quality': {'A': qids[:half], 'B': quality_b},
+        'performance': {'A': performance[:8], 'B': performance[8:]},
+    }
+
+
+def resource_plan(n, vocab, postings, groups, output):
+    """Bound retained buffers using actual vocabulary/posting counts, outside Search timing."""
+    index_bytes = 8 * postings + 4 * n + 12 * vocab + 8
+    plans, prepared, measured = {}, 0, 0
+    for name, cases in groups.items():
+        q = len(cases['A'])
+        plan = support.layout(n, vocab, postings, q, 10, q * 64)
+        plans[name] = plan
+        prepared += index_bytes + 8 * q * n
+        rounds = 1 if name == 'quality' else 6
+        measured += rounds * 4 * 8 * q * n + 8 * q * n + 8 * postings + 64 * vocab
+    device = max(plan['known_device_bytes_upper_bound'] + plan['debug_score_bytes'] for plan in plans.values())
+    disk = prepared + measured + 2 * 1024**3
+    return {
+        'docs': n,
+        'vocab': vocab,
+        'posting_records': postings,
+        'stages': plans,
+        'additional_disk_estimate_bytes': disk,
+        'disk_free_bytes': shutil.disk_usage(output).free,
+        'minimum_device_free_bytes_with_runner_margin': math.ceil((device + 1024**3) * 5 / 4),
+        'scope': 'Known buffers and diagnostics plus margins, not a guarantee of upstream Python/JIT/runtime peak. Actual runner probes free memory and workspaces again before execution.',
+    }
+
+
 def prepare(output, archive=None, dataset='scifact'):
     spec = DATASETS[dataset]
     url = f'https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{dataset}.zip'
@@ -144,6 +194,8 @@ def prepare(output, archive=None, dataset='scifact'):
     doc_id_set = set(doc_ids)
     r.require(len(doc_ids) == len(doc_id_set) == spec['docs'], 'Missing/duplicate corpus IDs')
     r.require(all(set(v).issubset(doc_id_set) for v in qrels.values()), 'Judgment refers to missing document')
+    r.require(8 <= len(vocabulary) <= corpus.MAX_EXTERNAL_VOCAB, 'External vocabulary limit exceeded; no terms dropped')
+    del doc_id_set
     vocabulary = sorted(vocabulary)
     word_ids = {word: i for i, word in enumerate(vocabulary)}
     qids = sorted(qrels)
@@ -153,22 +205,30 @@ def prepare(output, archive=None, dataset='scifact'):
         all(len(row) <= 64 for row in query_ids.values()), 'Natural queries exceed the supported packet; no truncation'
     )
     documents = output / 'corpus_ids.jsonl'
+    postings = 0
     with documents.open('w', encoding='utf-8', newline='\n') as stream:
         for ordinal, row in enumerate(docs):
             r.require(row['_id'] == doc_ids[ordinal], 'Corpus order changed between passes')
             tokens = tokenize(row.get('title', '') + ' ' + row['text'], stopwords)
+            if dataset == 'msmarco':
+                postings += len(set(tokens))
             stream.write(json.dumps([word_ids[word] for word in tokens]) + '\n')
+            if (ordinal + 1) % 500000 == 0:
+                print('Encoded corpus documents: ' + str(ordinal + 1), flush=True)
     r.write_json(output / 'mapping.json', {'doc_ids': doc_ids, 'vocabulary': vocabulary})
     r.write_json(output / 'queries.json', {qid: texts[qid] for qid in qids})
     r.write_json(output / 'qrels.json', qrels)
-    performance = random.Random(20261105).sample(qids, 16)
-    r.require(len(qids) >= 16 and len(qids) % 2 == 0, 'Even-sized complete quality packets required')
-    half = len(qids) // 2
-    query_groups = {
-        'quality': {'A': qids[:half], 'B': qids[half:]},
-        'performance': {'A': performance[:8], 'B': performance[8:]},
-    }
-    for name, groups in query_groups.items():
+    groups_by_stage = query_groups(qids, dataset)
+    half = len(groups_by_stage['quality']['A'])
+    if dataset == 'msmarco':
+        plan = resource_plan(len(doc_ids), len(vocabulary), postings, groups_by_stage, output)
+        r.write_json(output / 'resource_plan.json', plan)
+        print('RESOURCE PLAN: ' + json.dumps(plan), flush=True)
+        r.require(
+            plan['additional_disk_estimate_bytes'] < plan['disk_free_bytes'] * 4 // 5,
+            'MS MARCO disk budget exceeded; see resource_plan.json; data is retained',
+        )
+    for name, groups in groups_by_stage.items():
         target = output / name
         print(f'Building {name} index/oracle: N{len(doc_ids)}, Q{len(groups["A"])}', flush=True)
         description = corpus.prepare(
@@ -176,10 +236,12 @@ def prepare(output, archive=None, dataset='scifact'):
             len(doc_ids),
             len(vocabulary),
             0,
-            {case: [query_ids[qid] for qid in ids] for case, ids in groups.items()},
+            {case: [query_ids[qid] if qid is not None else [] for qid in ids] for case, ids in groups.items()},
             corpus=documents,
             variable_queries=True,
         )
+        if dataset == 'msmarco':
+            r.require(description['posting_records'] == postings, 'Source and builder posting counts disagree')
         r.write_json(target / 'qids.json', groups)
         print(f"Prepared {name}: Q{description['queries']}, natural query lengths preserved", flush=True)
     r.require(
@@ -210,9 +272,12 @@ def prepare(output, archive=None, dataset='scifact'):
         'query_policy': 'No length truncation; OOV tokens omitted using the fixed document vocabulary; empty queries retain zero-score semantics',
         'query_lengths_after_OOV_filter': corpus.distribution([len(row) for row in query_ids.values()]),
         'OOV_tokens': sum(word not in word_ids for row in query_tokens.values() for word in row),
-        'quality': f'All {len(qids)} judged queries, A/B {half} each, one checked round; not a Q8 performance result',
+        'quality': f'All {len(qids)} judged queries, A/B {half} each, one checked round; not a Q8 performance result'
+        + ('; one empty padding row excluded from metrics' if len(qids) % 2 else ''),
         'performance': 'Seeded 16-query sample, two Q8 packets, six rounds; labels not used for sampling',
     }
+    if dataset == 'msmarco':
+        record['evaluation_split'] = 'test: 43 graded queries (not the 6980-query dev split)'
     r.require(corpus.digest(archive) == spec['sha256'], 'Source archive changed during preparation')
     record['file_sha256'] = {
         path.relative_to(output).as_posix(): corpus.digest(path) for path in output.rglob('*') if path.is_file()
@@ -237,6 +302,10 @@ def ranking_metrics(predictions, qrels):
 
 def evaluate_quality(data, measurement):
     groups, mapping, qrels = read(data / 'quality/qids.json'), read(data / 'mapping.json'), read(data / 'qrels.json')
+    qids = [qid for ids in groups.values() for qid in ids if qid is not None]
+    r.require(len(qids) == len(set(qids)) and set(qids) == set(qrels), 'Quality must cover every test query once')
+    padding = sum(qid is None for ids in groups.values() for qid in ids)
+    r.require(padding == len(qids) % 2, 'Unexpected quality padding')
     report = read(measurement / 'report.json')
     r.require(report['status'] == 'actual_real_query_quality_checked', 'Quality round did not complete')
     results = {}
@@ -257,7 +326,8 @@ def evaluate_quality(data, measurement):
             )
             r.require(all(0 <= value < len(mapping['doc_ids']) for value in ids), 'Invalid document ID')
             for offset, qid in enumerate(qids):
-                predictions[qid] = [mapping['doc_ids'][i] for i in ids[offset * 10 : (offset + 1) * 10]]
+                if qid is not None:
+                    predictions[qid] = [mapping['doc_ids'][i] for i in ids[offset * 10 : (offset + 1) * 10]]
         r.write_json(measurement / (role + '.rankings.json'), predictions)
         results[role] = ranking_metrics(predictions, qrels)
     return results

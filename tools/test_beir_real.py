@@ -54,7 +54,76 @@ class BeirRealTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 large_corpus.prepare(root / 'synthetic', 16, 65537, 0, cases)
             with self.assertRaises(ValueError):
-                large_corpus.prepare(root / 'too_large', 16, 1000001, 0, cases, corpus=source, variable_queries=True)
+                large_corpus.prepare(
+                    root / 'too_large',
+                    16,
+                    large_corpus.MAX_EXTERNAL_VOCAB + 1,
+                    0,
+                    cases,
+                    corpus=source,
+                    variable_queries=True,
+                )
+
+    def test_large_vocabulary_is_not_truncated_to_a_million(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / 'documents.jsonl'
+            source.write_text((json.dumps([1000001, 1]) + '\n') * 16, encoding='utf-8')
+            cases = {'A': [[1000001]], 'B': [[1, 1000001]]}
+            record = large_corpus.prepare(
+                root / 'external', 16, 1000002, 0, cases, corpus=source, variable_queries=True
+            )
+            large_corpus.validate(root / 'external')
+            self.assertEqual([[1000001]], large_corpus.load_raw(root / 'external/A.txt'))
+            self.assertEqual(32, record['posting_records'])
+
+    def test_odd_test_split_keeps_all_queries_and_one_empty_padding_row(self):
+        ids = [str(i) for i in range(43)]
+        groups = tool.query_groups(ids, 'msmarco')
+        actual = [qid for row in groups['quality'].values() for qid in row if qid is not None]
+        self.assertEqual(sorted(ids), actual)
+        self.assertEqual([22, 22], list(map(len, groups['quality'].values())))
+        self.assertIsNone(groups['quality']['B'][-1])
+        self.assertEqual(16, len({qid for row in groups['performance'].values() for qid in row}))
+        self.assertEqual(groups, tool.query_groups(reversed(ids), 'msmarco'))
+
+    def test_quality_padding_does_not_enter_metrics_and_missing_query_fails(self):
+        from array import array
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            data, measurement = root / 'data', root / 'measurement'
+            (data / 'quality').mkdir(parents=True)
+            measurement.mkdir()
+            groups = {'A': ['q0', 'q1'], 'B': ['q2', None]}
+            tool.r.write_json(data / 'quality/qids.json', groups)
+            tool.r.write_json(data / 'mapping.json', {'doc_ids': [str(i) for i in range(10)]})
+            tool.r.write_json(data / 'qrels.json', {q: {'0': 1} for q in ('q0', 'q1', 'q2')})
+            tool.r.write_json(measurement / 'report.json', {'status': 'actual_real_query_quality_checked'})
+            for role in ('npu', 'original_native_t1', 'original_native_t8', 'original_native_t32'):
+                for case in groups:
+                    path = measurement / 'round1' / role
+                    path = path / 'actual' / ('after_' + case) if role == 'npu' else path / case
+                    path.mkdir(parents=True)
+                    (path / 'top_ids.bin').write_bytes(array('i', list(range(10)) * 2).tobytes())
+            results = tool.evaluate_quality(data, measurement)
+            self.assertTrue(all(v['queries'] == 3 and v['mrr_at_10'] == 1 for v in results.values()))
+            groups['A'][1] = None
+            tool.r.write_json(data / 'quality/qids.json', groups)
+            with self.assertRaises(ValueError):
+                tool.evaluate_quality(data, measurement)
+
+    def test_large_plan_counts_resident_directory_and_diagnostic_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            groups = tool.query_groups([str(i) for i in range(43)], 'msmarco')
+            plan = tool.resource_plan(8841823, 2000000, 300000000, groups, Path(temporary))
+            quality = plan['stages']['quality']
+            self.assertEqual(8841823, quality['docs'])
+            self.assertEqual(2000000 * (1080 + 1) * 8, quality['directory_bytes'])
+            self.assertGreater(plan['minimum_device_free_bytes_with_runner_margin'], quality['resident_index_bytes'])
+            self.assertGreater(plan['additional_disk_estimate_bytes'], 20 * 1024**3)
+            with self.assertRaises(ValueError):
+                tool.resource_plan(8841823, 2000000, 300000000, {'quality': {'A': list(range(3490))}}, Path(temporary))
 
     def test_dataset_identity_cannot_be_silently_switched(self):
         with tempfile.TemporaryDirectory() as temporary:
