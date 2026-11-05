@@ -81,7 +81,11 @@ struct Buffers {
         if (!bytes)
             return nullptr;
         void *p = nullptr;
-        Require(aclrtMalloc(&p, bytes, ACL_MEM_MALLOC_NORMAL_ONLY), "aclrtMalloc");
+        const auto status = aclrtMalloc(&p, bytes, ACL_MEM_MALLOC_HUGE_FIRST);
+        if (status != ACL_ERROR_NONE) {
+            const auto operation = "aclrtMalloc bytes=" + std::to_string(bytes) + " policy=ACL_MEM_MALLOC_HUGE_FIRST";
+            Require(status, operation.c_str());
+        }
         Check(p != nullptr, "allocator returned null");
         items.push_back(p);
         return p;

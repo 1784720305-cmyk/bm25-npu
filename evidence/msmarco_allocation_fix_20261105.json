@@ -1,0 +1,92 @@
+{
+  "date": "2026-11-05",
+  "status": "A5_allocation_failure_observed_local_host_fix_checked_target_revalidation_pending",
+  "parent_commit": "266e938",
+  "observed_A5": {
+    "input": "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01",
+    "result": "/test/w50066029/bm25-npu-indexsdk/results/msmarco_a5_01",
+    "data_preparation_completed": true,
+    "docs": 8841823,
+    "vocab": 1624803,
+    "posting_records": 264520096,
+    "index_bytes": 2171025704,
+    "quality_queries_per_packet": 22,
+    "performance_queries_per_packet": 8,
+    "original_BM25S_build_stage_returned_success": true,
+    "failed_stage": "quality/round1/npu",
+    "error": "aclrtMalloc failed, code=207001, Memory_Allocation_Failure(EL0004)",
+    "original_error_time_string": "2026-11-05-20:14:37.290.509",
+    "requested_bytes_logged_by_old_binary": false,
+    "directory_payload_bytes": 14051296344,
+    "directory_allocation_bytes_with_guards": 14051296472,
+    "scope": "Directory size is derived from the source construction, not a proven identification of the failed allocation. Full NPU quality and six-round performance did not complete."
+  },
+  "reasoning": {
+    "old_policy": "ACL_MEM_MALLOC_NORMAL_ONLY",
+    "new_policy": "ACL_MEM_MALLOC_HUGE_FIRST",
+    "reference_commit": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
+    "reference_code": "feature_retrieval/src/ascendfaiss/ascenddaemon/utils/MemorySpace.cpp: MemorySpace::DEVICE_HUGEPAGE",
+    "policy_reference": "https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1alpha002/API/appdevgapi/aclpythondevg_01_0962.html",
+    "allocation_reference": "https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/API/runtimeapi/aclcppdevg_03_0095.html",
+    "causal_status": "Policy is a supported explanation to test; the A5 same-size policy comparison has not yet been supplied. Aggregate HBM free space does not guarantee a specific allocation."
+  },
+  "production_change": {
+    "parent_commit": "266e938",
+    "before_sha256": "0f35073df250b0397eb151caad41ad2c7a2a9a7770232fb6969c83f0ba7b019a",
+    "after_sha256": "f878ccb905e0c0b2d490f5e8b01ba5bb1434c548d0e7d8f3f27aad6aca3d5f9d",
+    "change": "HUGE_FIRST allocation and requested-byte/policy error context; no operator/query/scoring/guard changes",
+    "target_A5_status": "pending_allocation_probe_host_and_device_revalidation"
+  },
+  "unchanged": {
+    "operators": true,
+    "other_production_CPP": true,
+    "CMake_and_security_flags": true,
+    "guards_and_ownership_rules": true,
+    "scoring_query_and_index_contracts": true,
+    "frozen_original_BM25S_source": true
+  },
+  "local_validation": {
+    "compiler": "GNU MinGW 15.2.0, 64-bit Windows, NPU build disabled",
+    "fresh_build": "results/indexsdk_allocator_cpu_01",
+    "ctest_passed": 7,
+    "Python_tool_tests_passed": 40,
+    "mathematical_models_checked": 376,
+    "CPP_mock_cases": [
+      "zero-byte no call",
+      "14051296472-byte size preserved",
+      "huge-first policy",
+      "207001 plus size and policy preserved in thrown error",
+      "failed allocation registers no handle",
+      "successful allocation freed once",
+      "seven existing teardown failures and retries"
+    ],
+    "Python_mock_cases": [
+      "ordinary failure and huge-first success",
+      "free on post-allocation query error",
+      "actual-free-memory budget refusal without allocation"
+    ],
+    "clang_tidy": {
+      "status": "passed",
+      "files": 13,
+      "tool": "LLVM (http://llvm.org/):\n  LLVM version 23.1.4\n  Optimized build.",
+      "allow_test_stubs": true,
+      "missing_production_files": [
+        "F:/Ascend/bm25/bm25-a5/feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/large_search.cpp"
+      ],
+      "config_sha256": "1ad0fed152d06e536f0babc2ec2e97c61c6dcdcb8ebfcfa2b912b76f730491d3",
+      "scope": "CPU/mock compilation database, explicit MinGW target and C++ system headers; not real CANN production coverage"
+    },
+    "probe_Python_3_9_syntax": true,
+    "scope": "No CANN/Ascend device available on this Windows host. None of these checks proves target allocation success or performance."
+  },
+  "next_target_checks": [
+    "same-size NORMAL_ONLY/HUGE_FIRST allocation probe with release and fresh memory snapshots",
+    "fresh real CANN host build, production clang-tidy and installed consumption",
+    "selector/merge/shared SDK and synthetic10M device regression",
+    "MS MARCO test43 quality and native-BM25S Q8 six-round performance in a new output"
+  ],
+  "target_allocation_probe_completed": false,
+  "target_new_host_checks_completed": false,
+  "target_device_regression_completed": false,
+  "target_MSMARCO_quality_and_performance_completed": false
+}

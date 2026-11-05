@@ -4,7 +4,8 @@
 #include <cstddef>
 #include <cstdint>
 using aclmdlRI = void *;
-constexpr int ACL_MEM_MALLOC_NORMAL_ONLY = 0;
+constexpr int ACL_MEM_MALLOC_HUGE_FIRST = 0;
+constexpr int ACL_MEM_MALLOC_NORMAL_ONLY = 2;
 constexpr int ACL_MEMCPY_HOST_TO_DEVICE = 1;
 constexpr int ACL_MEMCPY_DEVICE_TO_HOST = 2;
 constexpr int ACL_HBM_MEM = 0;

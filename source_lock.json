@@ -1,8 +1,8 @@
 {
   "date": "2026-11-05",
-  "status": "A5_existing_acceptance_and_real_data_checks_completed_MSMARCO_tools_ready_device_pending",
+  "status": "MSMARCO_A5_allocation_failed_host_policy_fix_ready_target_revalidation_pending",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Supplied original-native BM25S synthetic, SciFact and TREC-COVID A5 results are archived. TREC-COVID all50 quality checks completed; both fixed Q8 packets win six median/P95 rounds, latency ratios 1.40685/1.40808. SciFact mixed timing and native tie-policy differences remain explicit; no universal workload claim. MS MARCO full 8841823-document source was scanned; reduced 9139-document actual original BM25S/C++ protocol checks passed. The new entry evaluates all 43 graded test queries and fixed Q8 performance; 6980 dev queries are excluded. Full-corpus A5 NPU results remain pending.",
+  "note": "Historical production baseline 9a99bbc is retained in archived evidence. Current host Buffers allocation changes NORMAL_ONLY to HUGE_FIRST with allocation-size diagnostics and needs fresh A5 validation. Operators, other production C++ and CMake security policy remain unchanged. Supplied original-native BM25S synthetic, SciFact and TREC-COVID A5 results are archived. TREC-COVID all50 quality checks completed; both fixed Q8 packets win six median/P95 rounds, latency ratios 1.40685/1.40808. SciFact mixed timing and native tie-policy differences remain explicit; no universal workload claim. MS MARCO full 8841823-document source was scanned; reduced 9139-document actual original BM25S/C++ protocol checks passed. The new entry evaluates all 43 graded test queries and fixed Q8 performance; 6980 dev queries are excluded. Full-corpus A5 NPU results remain pending. Full MS MARCO inputs were prepared on A5 and the original BM25S build stage succeeded; the first NPU quality invocation failed at aclrtMalloc with 207001. Allocation-policy causality, full quality, performance and device regression remain pending.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -20,7 +20,7 @@
     "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/AscendIndexBm25.cpp": "48ae7d6c8c2526b5a7b27df1312797697eb6b0533a454ae424651693f3f29b09",
     "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_api.h": "251cb3ae940430b706fa96b9000ee8695ebc6c70b46c1ced9c531771bd57a431",
     "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_runtime.cpp": "1156e929843dfd3c9fcfe2de107441f2a5fdf86f32335995f4d4feb66bb99e7b",
-    "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_runtime.h": "0f35073df250b0397eb151caad41ad2c7a2a9a7770232fb6969c83f0ba7b019a",
+    "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_runtime.h": "f878ccb905e0c0b2d490f5e8b01ba5bb1434c548d0e7d8f3f27aad6aca3d5f9d",
     "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/large_search.cpp": "9cfbf46e806e98d60110d5eed5d2e99e5922a8b701ea45e2fb1f9d35429bdc24",
     "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/large_search.h": "60586c6a6bdc1f232ac05e3ecfaafb9cea8c40dae7d9ba3a6d4bef249bd231b7",
     "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/planned_search.cpp": "133279a91c48c3b745e3504225c0b3f7426b81ba2cfe94c401f9fbc3a36997fe",
@@ -55,13 +55,13 @@
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/acl/acl.h": "0a357963eadbe90d05877cb8442653dfc5d87a86069578f6286f10b44c3dce78",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/acl/acl_base.h": "dadc18479e977d770adf12658a3d6edac4d3748ebb49b2d1710e0f9688df05bd",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/acl/acl_base_rt.h": "bda4bc11e6b16966620eade405669aca52f7d6e03e77fe640c1e690db5ca24a6",
-    "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/acl/acl_rt.h": "e10c1b79e958bc0ce7f6c6f67003ab7d58e2828042470e70adbf16370480efc9",
+    "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/acl/acl_rt.h": "acc05ec44ead33bf4280e29b8583db3010b788ce78799150a4a452f642a0eee2",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/aclnn/acl_meta.h": "53d3b5561f89b15becb2eb115411509882b22b4c798dd20f824ff3a12ca77946",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/aclnn_bm25_fused_score_top_k.h": "4b02a2a58fa482174d64231ec20d1ed329f963b03681af73b4e812f6c51d69da",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/aclnn_bm25_top_k_merge.h": "eb33fb9775b045439359963813c3ad0901fe2009d4268dc383db0db7ad00d0e3",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/ascendhost/src/bm25/large_search.h": "01b1b0cca07ab49ab707e79dfb9cfba03837660426ff1fba4ed9b48cb3bce3ac",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/mock/dlfcn.h": "319db6535e28b16badcc83259ca09d67707f2e1c74adc783f88069ed646dbbab",
-    "feature_retrieval/src/ascendfaiss/ut/cases/bm25/plan_resources_tests.cpp": "4bab89e23ac6892548e2df4bcdfd1a27b2775051105d4b99be9b735ed60cb7d6",
+    "feature_retrieval/src/ascendfaiss/ut/cases/bm25/plan_resources_tests.cpp": "135a8aee242acf628df1076772a57def6a3703cbc95a095db23c1362bcf83802",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/runtime_tests.cpp": "b77570161d16351a2da1a35a66ab9d43239f6ca29f7db492640c9b714fdbabfc",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/sdk_error_adapter_tests.cpp": "502fae7dd1c4fba885635da6ccc3683cd961ebfab95d4f80a8f1b709f419e039",
     "feature_retrieval/src/ascendfaiss/ut/cases/bm25/sdk_facade_tests.cpp": "9a70309eaf3c79d2496b70497331243ed6b26ce5cf3be84a75f2542273932049"
@@ -101,7 +101,9 @@
     "standalone/scifact.py": "c9e487817329b08298e70b172280713eb4b795fae9528ad177d1d1c5efc98272",
     "tools/test_scifact.py": "66d62a16e35e2858aa0b6feee00792e111faaae1218175c72772f7d116cf6592",
     "standalone/beir_real.py": "ca0103064fc4b8a12842b7d32744685bf0cd502b878c9b26888ce3603018db0d",
-    "tools/test_beir_real.py": "c00472b8e4c94326376abf46e89cd11dc39dd25086bbf430a329a03300957e41"
+    "tools/test_beir_real.py": "c00472b8e4c94326376abf46e89cd11dc39dd25086bbf430a329a03300957e41",
+    "tools/probe_device_allocation.py": "436c91476f1a6be3b30fe95de0a18e97d19f8eec8b34e9438f09533065567048",
+    "tools/test_device_allocation.py": "4565d9d5b75e6d10a35d6d31d14b1095936f68540b0bacf68585df12a67efbce"
   },
   "a5_acceptance": {
     "tested_code_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",
@@ -176,6 +178,15 @@
         "B": 1.4080822283941292
       },
       "quality": "A5 aggregates exactly reproduce independent strict CPU and original-native CPU results; native tie differences remain separate"
+    }
+  },
+  "pending_production_changes": {
+    "feature_retrieval/src/ascendfaiss/ascendhost/src/bm25/fused_runtime.h": {
+      "parent_commit": "266e938",
+      "before_sha256": "0f35073df250b0397eb151caad41ad2c7a2a9a7770232fb6969c83f0ba7b019a",
+      "after_sha256": "f878ccb905e0c0b2d490f5e8b01ba5bb1434c548d0e7d8f3f27aad6aca3d5f9d",
+      "change": "HUGE_FIRST allocation and requested-byte/policy error context; no operator/query/scoring/guard changes",
+      "target_A5_status": "pending_allocation_probe_host_and_device_revalidation"
     }
   }
 }

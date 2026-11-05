@@ -1,6 +1,7 @@
 #include "acl/acl_base_rt.h"
 #include "acl/acl_rt.h"
 #include "aclnn/acl_meta.h"
+#include "ascendhost/src/bm25/fused_runtime.h"
 #include "ascendhost/src/bm25/planned_search.h"
 #include "common/bm25/validation.h"
 #include <cstdint>
@@ -16,6 +17,10 @@ std::string failing;
 std::set<void *> freedHost, freedBuffer, destroyedTensor;
 int destroyedModel = 0;
 int forbidden = 0;
+int allocationCalls = 0;
+int allocationPolicy = -1;
+aclError allocationStatus = 0;
+size_t allocationBytes = 0;
 aclrtContext current = reinterpret_cast<void *>(1);
 aclError Destroy(void *handle, std::set<void *> &seen, const char *stage)
 {
@@ -75,6 +80,14 @@ aclError aclrtCreateStream(aclrtStream *stream)
 aclError aclrtDestroyStream(aclrtStream) { return failing == "destroyStream" ? 42 : 0; }
 aclError aclrtSynchronizeStream(aclrtStream) { return failing == "sync" ? 42 : 0; }
 const char *aclGetRecentErrMsg() { return "injected failure"; }
+aclError aclrtMalloc(void **p, size_t bytes, int policy)
+{
+    ++allocationCalls;
+    allocationBytes = bytes;
+    allocationPolicy = policy;
+    *p = allocationStatus ? nullptr : reinterpret_cast<void *>(6);
+    return allocationStatus;
+}
 aclError aclrtFreeHost(void *p) { return Destroy(p, freedHost, "freeHost"); }
 aclError aclrtFree(void *p) { return Destroy(p, freedBuffer, "freeBuffer"); }
 aclError aclDestroyTensor(aclTensor *p) { return Destroy(p, destroyedTensor, "destroyTensor"); }
@@ -124,7 +137,32 @@ int main()
                       destroyedModel == 1 && forbidden == 0,
                   "Cleanup skipped or repeated resource destruction");
         }
-        std::cout << "PASS: seven injected teardown failures preserve handles and allow ordered retry\n";
+        freedBuffer.clear();
+        {
+            ascend::bm25::Buffers buffers;
+            Check(buffers.Allocate(0) == nullptr && allocationCalls == 0, "Zero bytes must not call allocator");
+            constexpr size_t largeBytes = 14051296472ULL;
+            allocationStatus = 207001;
+            bool rejected = false;
+            try {
+                buffers.Allocate(largeBytes);
+            } catch (const std::exception &error) {
+                const std::string message = error.what();
+                rejected = message.find(std::to_string(largeBytes)) != std::string::npos &&
+                           message.find("ACL_MEM_MALLOC_HUGE_FIRST") != std::string::npos &&
+                           message.find("207001") != std::string::npos;
+            }
+            Check(rejected && buffers.items.empty() && freedBuffer.empty(),
+                  "Allocation failure must preserve bytes/policy/code and register no handle");
+            allocationStatus = 0;
+            Check(buffers.Allocate(largeBytes) == reinterpret_cast<void *>(6) && allocationBytes == largeBytes &&
+                      allocationPolicy == ACL_MEM_MALLOC_HUGE_FIRST && allocationCalls == 2 &&
+                      buffers.items.size() == 1,
+                  "Large allocation lost size, policy or ownership");
+            Check(buffers.Close() && buffers.Close() && freedBuffer.size() == 1,
+                  "Successful large allocation must be freed exactly once");
+        }
+        std::cout << "PASS: seven teardown failures and large-allocation size/policy/error/ownership contracts\n";
         return 0;
     } catch (const std::exception &error) {
         std::cerr << error.what() << '\n';
