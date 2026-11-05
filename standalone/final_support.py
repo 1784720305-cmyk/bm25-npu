@@ -165,7 +165,8 @@ def verify_run(path, inputs, description, index, role, device, warmup=5, repeats
     q = description['queries']
     k = description['k']
     npu = role == 'npu'
-    plan = layout(n, index['vocab_size'], index['posting_count'], q, k, q * 3)
+    words = description.get('capacity_words', q * 3)
+    plan = layout(n, index['vocab_size'], index['posting_count'], q, k, words)
     wanted = {
         'status': 'search_benchmark_calls_completed_checks_pending',
         'backend': 'npu' if npu else 'cpu',
@@ -174,7 +175,7 @@ def verify_run(path, inputs, description, index, role, device, warmup=5, repeats
         'k': k,
         'partitions': plan['leaves'] if npu else threads,
         'capacity_queries': q,
-        'capacity_words': q * 3,
+        'capacity_words': words,
         'timer_policy': g.checks.TIMER,
         'warmup_cycles': warmup,
         'measured_cycles': repeats,

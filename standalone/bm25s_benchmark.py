@@ -171,7 +171,9 @@ def measure(inputs, built, output, dependency, workers, strict, warmup=5, repeat
     before = hashes(model)
     r.require(before == prior['index_hashes'], 'Loaded eager index changed')
     raw = {c: corpus.load_raw(inputs / (c + '.txt')) for c in ('A', 'B')}
-    session = api.SearchSession(np, model, index['vocab_size'], d['k'], d['queries'], 3 * d['queries'], workers, strict)
+    session = api.SearchSession(
+        np, model, index['vocab_size'], d['k'], d['queries'], d.get('capacity_words', 3 * d['queries']), workers, strict
+    )
     full = {c: np.load(built / (c + '_scores.npy'), mmap_mode='r') for c in raw}
     ids = {c: np.load(built / (c + '_strict_ids.npy')) for c in raw}
     values = {c: np.load(built / (c + '_strict_values.npy')) for c in raw}
@@ -211,6 +213,10 @@ def measure(inputs, built, output, dependency, workers, strict, warmup=5, repeat
             samples.append({'case': case, 'cycle': cycle, 'call_wall_ms': elapsed})
     r.require(hashes(model) == before, 'BM25S index mutated')
     api.original.source_still_matches(source)
+    for case, (score_bytes, id_bytes) in saved.items():
+        (output / case).mkdir()
+        (output / case / 'top_scores.bin').write_bytes(score_bytes)
+        (output / case / 'top_ids.bin').write_bytes(id_bytes)
     report = {
         'status': 'actual_original_bm25s_large_search_checked',
         'variant': 'strict_adapter' if strict else 'original_native',
@@ -271,7 +277,10 @@ def main():
     p.add_argument('--dependency-dir', type=Path)
     p.add_argument('--workers', type=int, default=8)
     p.add_argument('--variant', choices=['original_native', 'strict_adapter'], default='original_native')
+    p.add_argument('--warmup', type=int, default=5)
+    p.add_argument('--repeats', type=int, default=30)
     a = p.parse_args()
+    r.require(0 <= a.warmup <= 1000 and 10 <= a.repeats <= 100000, 'Invalid measurement cycles')
     if a.mode == 'build':
         build(a.input.resolve(), a.output.resolve(), a.dependency_dir.resolve() if a.dependency_dir else None)
     else:
@@ -282,6 +291,8 @@ def main():
             a.dependency_dir.resolve() if a.dependency_dir else None,
             a.workers,
             a.variant == 'strict_adapter',
+            a.warmup,
+            a.repeats,
         )
 
 

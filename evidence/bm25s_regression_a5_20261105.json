@@ -1,0 +1,1121 @@
+{
+  "date": "2026-11-05",
+  "status": "user_A5_original_native_BM25S_synthetic_regression_recomputed",
+  "provenance": {
+    "attachment": "C:\\Users\\kojo-jotaro\\.codex\\attachments\\9f77d200-9d68-4fbc-a6e5-506e8502997c\\已粘贴的文本.txt",
+    "bytes": 26527,
+    "sha256": "f99cf4f0777ea33ec1cee7ab8137b841edee7a8ec66d4ce99499dc2dc07da233",
+    "received": "Terminal transcript with all 24 process summaries, commands, historical comparison and final decision; not independently rerun on local hardware",
+    "raw_report_received": false,
+    "raw_sample_files_received": false,
+    "expected_driver_commit": "810145a4b4471150e12313c6bbb9dc8a8f21e376",
+    "runtime_source_or_binary_hashes_in_transcript": false
+  },
+  "run": {
+    "output": "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01",
+    "input": "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+    "docs": 10000000,
+    "queries_per_batch": 8,
+    "query_terms": 3,
+    "k": 10,
+    "device": 5,
+    "rounds": 6,
+    "warmup_cycles": 5,
+    "measured_samples_per_case_per_process": 30,
+    "cpu_placement_command": "numactl --physcpubind=0-31 --membind=0",
+    "exclusive_resource_reservation_verified": false,
+    "numba_threads": "32",
+    "OMP_NUM_THREADS": "32",
+    "OMP_DYNAMIC": "FALSE",
+    "OMP_PROC_BIND": "close",
+    "OMP_PLACES": "cores",
+    "dependency_check": "BM25S dependencies verified",
+    "private_dependencies": "/test/w50066029/bm25-npu/results/bm25s_numba_py39"
+  },
+  "BM25S": {
+    "source_commit": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7",
+    "variant": "original_native",
+    "workers": [
+      1,
+      8,
+      32
+    ],
+    "api": "Frozen upstream BM25.retrieve; source and index checks enforced by the expected driver",
+    "tie_scope": "Native tie ID policy differs from the project strict contract; native timing wins are not strict-equivalent ranking wins"
+  },
+  "measurement_scope": "Complete steady-state raw-token-ID Search to CPU Top-K; excludes corpus/index construction, initial upload, JIT/capture/warmup and diagnostics. Not a production service capacity claim.",
+  "process_summaries": 24,
+  "formal_search_calls": 1440,
+  "NPU_formal_search_calls": 360,
+  "per_round": [
+    {
+      "round": 1,
+      "process_order": [
+        "npu",
+        "original_native_t1",
+        "original_native_t8",
+        "original_native_t32"
+      ],
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 2.0123585000000004,
+            "p95_batch_ms": 2.015343,
+            "mean_batch_ms": 1.9871487333333333,
+            "search_time_throughput_qps": 4025.8687564772454
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 1.9809010000000002,
+            "p95_batch_ms": 2.011917,
+            "mean_batch_ms": 1.9830694333333334,
+            "search_time_throughput_qps": 4034.1502246609853
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round1/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 126.535736,
+            "p95_batch_ms": 131.716867,
+            "mean_batch_ms": 126.25851203333333,
+            "search_time_throughput_qps": 63.36206463361402
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 126.8980345,
+            "p95_batch_ms": 132.389446,
+            "mean_batch_ms": 127.006164,
+            "search_time_throughput_qps": 62.98906878251988
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round1/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 31.3450155,
+            "p95_batch_ms": 34.32134,
+            "mean_batch_ms": 32.13773666666667,
+            "search_time_throughput_qps": 248.92854412792602
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 31.346653,
+            "p95_batch_ms": 38.093117,
+            "mean_batch_ms": 32.6337547,
+            "search_time_throughput_qps": 245.14494496705893
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round1/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 31.079276999999998,
+            "p95_batch_ms": 36.305917,
+            "mean_batch_ms": 31.983930866666668,
+            "search_time_throughput_qps": 250.1256031771104
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 31.0312955,
+            "p95_batch_ms": 35.250845,
+            "mean_batch_ms": 31.454609333333334,
+            "search_time_throughput_qps": 254.33474360535692
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round1/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native"
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "process_order": [
+        "original_native_t32",
+        "original_native_t8",
+        "original_native_t1",
+        "npu"
+      ],
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 31.796483,
+            "p95_batch_ms": 35.90826,
+            "mean_batch_ms": 32.4822361,
+            "search_time_throughput_qps": 246.28846288079285
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 31.983183,
+            "p95_batch_ms": 33.543183,
+            "mean_batch_ms": 32.1392932,
+            "search_time_throughput_qps": 248.91648830659415
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round2/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 31.443303,
+            "p95_batch_ms": 33.495671,
+            "mean_batch_ms": 31.794076466666667,
+            "search_time_throughput_qps": 251.6191973176924
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 31.432777,
+            "p95_batch_ms": 37.173278,
+            "mean_batch_ms": 31.882679366666668,
+            "search_time_throughput_qps": 250.91994019687058
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round2/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 125.667959,
+            "p95_batch_ms": 131.417598,
+            "mean_batch_ms": 125.85488496666666,
+            "search_time_throughput_qps": 63.56527203627291
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 125.6587605,
+            "p95_batch_ms": 130.678019,
+            "mean_batch_ms": 126.4225028,
+            "search_time_throughput_qps": 63.27987362072695
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round2/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 1.9921625,
+            "p95_batch_ms": 1.997817,
+            "mean_batch_ms": 1.9740035333333332,
+            "search_time_throughput_qps": 4052.677649715791
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 1.985032,
+            "p95_batch_ms": 2.0131,
+            "mean_batch_ms": 1.9848588999999999,
+            "search_time_throughput_qps": 4030.513201719276
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round2/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+        ]
+      }
+    },
+    {
+      "round": 3,
+      "process_order": [
+        "npu",
+        "original_native_t1",
+        "original_native_t8",
+        "original_native_t32"
+      ],
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 2.001943,
+            "p95_batch_ms": 2.007261,
+            "mean_batch_ms": 1.9801198333333334,
+            "search_time_throughput_qps": 4040.1595223319396
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 1.9655429999999998,
+            "p95_batch_ms": 2.00042,
+            "mean_batch_ms": 1.9659060666666668,
+            "search_time_throughput_qps": 4069.3704219370807
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round3/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 130.775145,
+            "p95_batch_ms": 140.780042,
+            "mean_batch_ms": 132.068027,
+            "search_time_throughput_qps": 60.57484299360359
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 130.02594599999998,
+            "p95_batch_ms": 135.287893,
+            "mean_batch_ms": 130.69578289999998,
+            "search_time_throughput_qps": 61.21085028520841
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round3/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 32.0129375,
+            "p95_batch_ms": 38.942551,
+            "mean_batch_ms": 33.855820666666666,
+            "search_time_throughput_qps": 236.29614767768837
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 31.4846955,
+            "p95_batch_ms": 38.750844,
+            "mean_batch_ms": 33.29551863333333,
+            "search_time_throughput_qps": 240.27257506032404
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round3/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 31.322602,
+            "p95_batch_ms": 52.370452,
+            "mean_batch_ms": 34.93722136666667,
+            "search_time_throughput_qps": 228.98214818058594
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 31.4583355,
+            "p95_batch_ms": 55.899355,
+            "mean_batch_ms": 34.68198786666667,
+            "search_time_throughput_qps": 230.66728558800142
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round3/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native"
+        ]
+      }
+    },
+    {
+      "round": 4,
+      "process_order": [
+        "original_native_t32",
+        "original_native_t8",
+        "original_native_t1",
+        "npu"
+      ],
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 31.592216,
+            "p95_batch_ms": 32.009853,
+            "mean_batch_ms": 31.951686066666667,
+            "search_time_throughput_qps": 250.37802334775483
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 31.576238,
+            "p95_batch_ms": 42.118064,
+            "mean_batch_ms": 32.433208533333335,
+            "search_time_throughput_qps": 246.66076412939455
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round4/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 31.715421499999998,
+            "p95_batch_ms": 34.568941,
+            "mean_batch_ms": 31.803979066666667,
+            "search_time_throughput_qps": 251.54085226979333
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 31.7228775,
+            "p95_batch_ms": 32.459718,
+            "mean_batch_ms": 31.656230533333332,
+            "search_time_throughput_qps": 252.7148641900422
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round4/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 124.4254605,
+            "p95_batch_ms": 130.470607,
+            "mean_batch_ms": 125.4274158,
+            "search_time_throughput_qps": 63.78190883527714
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 125.0336575,
+            "p95_batch_ms": 132.813332,
+            "mean_batch_ms": 125.87070536666667,
+            "search_time_throughput_qps": 63.55728266315552
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round4/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 1.9793889999999998,
+            "p95_batch_ms": 1.984837,
+            "mean_batch_ms": 1.9728983,
+            "search_time_throughput_qps": 4054.9479919973573
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 1.9804655,
+            "p95_batch_ms": 1.995463,
+            "mean_batch_ms": 1.9811109,
+            "search_time_throughput_qps": 4038.1384000259654
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round4/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+        ]
+      }
+    },
+    {
+      "round": 5,
+      "process_order": [
+        "npu",
+        "original_native_t1",
+        "original_native_t8",
+        "original_native_t32"
+      ],
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 1.99357,
+            "p95_batch_ms": 2.003235,
+            "mean_batch_ms": 1.9773786,
+            "search_time_throughput_qps": 4045.760381952146
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 1.971427,
+            "p95_batch_ms": 1.998338,
+            "mean_batch_ms": 1.971385,
+            "search_time_throughput_qps": 4058.060703515549
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round5/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 125.71887050000001,
+            "p95_batch_ms": 138.421103,
+            "mean_batch_ms": 126.93468916666667,
+            "search_time_throughput_qps": 63.024536889958505
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 125.56643199999999,
+            "p95_batch_ms": 142.42568,
+            "mean_batch_ms": 127.08701070000001,
+            "search_time_throughput_qps": 62.94899813864297
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round5/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 31.076403,
+            "p95_batch_ms": 33.860319,
+            "mean_batch_ms": 31.291820466666667,
+            "search_time_throughput_qps": 255.65786460145165
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 31.0174445,
+            "p95_batch_ms": 31.435902,
+            "mean_batch_ms": 31.402760566666668,
+            "search_time_throughput_qps": 254.75467301724493
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round5/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 32.9918115,
+            "p95_batch_ms": 34.392006,
+            "mean_batch_ms": 33.4495259,
+            "search_time_throughput_qps": 239.16631954415834
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 32.96982250000001,
+            "p95_batch_ms": 39.955,
+            "mean_batch_ms": 33.57917243333333,
+            "search_time_throughput_qps": 238.2429172691156
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round5/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native"
+        ]
+      }
+    },
+    {
+      "round": 6,
+      "process_order": [
+        "original_native_t32",
+        "original_native_t8",
+        "original_native_t1",
+        "npu"
+      ],
+      "original_native_t32": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 33.1109795,
+            "p95_batch_ms": 39.876141,
+            "mean_batch_ms": 33.9272725,
+            "search_time_throughput_qps": 235.79850104366628
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 33.351235,
+            "p95_batch_ms": 40.289873,
+            "mean_batch_ms": 33.718046666666666,
+            "search_time_throughput_qps": 237.26166818283463
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round6/original_native_t32",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "32",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t8": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 32.58009800000001,
+            "p95_batch_ms": 38.720278,
+            "mean_batch_ms": 32.93326806666667,
+            "search_time_throughput_qps": 242.915461162422
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 32.567884500000005,
+            "p95_batch_ms": 43.711324,
+            "mean_batch_ms": 33.820032033333334,
+            "search_time_throughput_qps": 236.54619818559388
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round6/original_native_t8",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "8",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "original_native_t1": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 125.1350305,
+            "p95_batch_ms": 129.764539,
+            "mean_batch_ms": 124.8524117,
+            "search_time_throughput_qps": 64.07565453539412
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 124.801154,
+            "p95_batch_ms": 131.191139,
+            "mean_batch_ms": 124.71931373333334,
+            "search_time_throughput_qps": 64.14403479724942
+          }
+        },
+        "command": [
+          "/usr/bin/python3",
+          "-u",
+          "/test/w50066029/bm25-npu-indexsdk/standalone/bm25s_benchmark.py",
+          "measure",
+          "--input",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+          "--built",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/bm25s_index",
+          "--output",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round6/original_native_t1",
+          "--dependency-dir",
+          "/test/w50066029/bm25-npu/results/bm25s_numba_py39",
+          "--workers",
+          "1",
+          "--variant",
+          "original_native"
+        ]
+      },
+      "npu": {
+        "summary": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 1.9891535,
+            "p95_batch_ms": 1.994251,
+            "mean_batch_ms": 1.9738442333333333,
+            "search_time_throughput_qps": 4053.0047229157412
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 1.976905,
+            "p95_batch_ms": 2.001802,
+            "mean_batch_ms": 1.9769924333333333,
+            "search_time_throughput_qps": 4046.5506418309847
+          }
+        },
+        "command": [
+          "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_a5_acceptance_02/build/bm25_large_search_benchmark",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+          "/test/w50066029/bm25-npu-indexsdk/results/bm25s_regression_10m_01/round6/npu/actual",
+          "5",
+          "/test/w50066029/bm25-npu/results/final_runtime/vendors",
+          "10",
+          "8",
+          "24",
+          "5",
+          "30",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+          "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+        ]
+      }
+    }
+  ],
+  "reported_historical_comparison": {
+    "status": "historical_reference_for_review",
+    "cases": {
+      "A": {
+        "historical_median_batch_ms": 2.00303175,
+        "current_median_batch_ms": 1.99286625,
+        "median_change_percent": -0.5075056848200199,
+        "historical_p95_batch_ms": 2.0096095,
+        "current_p95_batch_ms": 2.000526,
+        "p95_change_percent": -0.4520032374448868
+      },
+      "B": {
+        "historical_median_batch_ms": 1.977809,
+        "current_median_batch_ms": 1.9786852499999998,
+        "median_change_percent": 0.04430407587385776,
+        "historical_p95_batch_ms": 2.0105760000000004,
+        "current_p95_batch_ms": 2.001111,
+        "p95_change_percent": -0.47076061785281675
+      }
+    },
+    "evidence": "/test/w50066029/bm25-npu-indexsdk/evidence/bm25s_current_npu_device_evidence_20261029.json",
+    "evidence_sha256": "9de770f0b1c3b9d7f6b348d6976925775ce82c05747f04168086980b05ccaec0",
+    "scope": "Separate historical A5 session, not a paired control or automatic regression acceptance threshold."
+  },
+  "reported_decision": {
+    "bm25s_decision": {
+      "original_native": {
+        "A": {
+          "cpu_medians_ms": [
+            31.079276999999998,
+            31.443303,
+            31.322602,
+            31.592216,
+            31.076403,
+            32.58009800000001
+          ],
+          "npu_medians_ms": [
+            2.0123585000000004,
+            1.9921625,
+            2.001943,
+            1.9793889999999998,
+            1.99357,
+            1.9891535
+          ],
+          "cpu_p95_ms": [
+            34.32134,
+            33.495671,
+            38.942551,
+            32.009853,
+            33.860319,
+            38.720278
+          ],
+          "npu_p95_ms": [
+            2.015343,
+            1.997817,
+            2.007261,
+            1.984837,
+            2.003235,
+            1.994251
+          ],
+          "cpu_over_npu": 15.74764613530888,
+          "npu_wins": 6,
+          "timing_gate_passed": true,
+          "strict_equivalent_win": false
+        },
+        "B": {
+          "cpu_medians_ms": [
+            31.0312955,
+            31.432777,
+            31.4583355,
+            31.576238,
+            31.0174445,
+            32.567884500000005
+          ],
+          "npu_medians_ms": [
+            1.9809010000000002,
+            1.985032,
+            1.9655429999999998,
+            1.9804655,
+            1.971427,
+            1.976905
+          ],
+          "cpu_p95_ms": [
+            35.250845,
+            33.543183,
+            38.750844,
+            32.459718,
+            31.435902,
+            40.289873
+          ],
+          "npu_p95_ms": [
+            2.011917,
+            2.0131,
+            2.00042,
+            1.995463,
+            1.998338,
+            2.001802
+          ],
+          "cpu_over_npu": 15.892146691850058,
+          "npu_wins": 6,
+          "timing_gate_passed": true,
+          "strict_equivalent_win": false
+        }
+      }
+    }
+  },
+  "local_recomputed_aggregate": {
+    "A": {
+      "npu_median_of_round_medians_ms": 1.99286625,
+      "npu_median_of_round_p95_ms": 2.000526,
+      "bm25s_median_of_round_fastest_native_ms": 31.382952500000002,
+      "cpu_over_npu": 15.74764613530888,
+      "npu_search_time_qps_from_summarized_means": 4045.3779370037287,
+      "npu_p95_wins_all_native_configurations": 6,
+      "historical_npu_median_ms": 2.00303175,
+      "npu_vs_history_percent": -0.5075056848200199,
+      "historical_bm25s_median_ms": 38.255616,
+      "bm25s_vs_history_percent": -17.965110011560135,
+      "native_median_winning_workers": [
+        32,
+        8,
+        32,
+        32,
+        8,
+        8
+      ]
+    },
+    "B": {
+      "npu_median_of_round_medians_ms": 1.9786852499999998,
+      "npu_median_of_round_p95_ms": 2.001111,
+      "bm25s_median_of_round_fastest_native_ms": 31.445556250000003,
+      "cpu_over_npu": 15.892146691850058,
+      "npu_search_time_qps_from_summarized_means": 4046.083974865704,
+      "npu_p95_wins_all_native_configurations": 6,
+      "historical_npu_median_ms": 1.977809,
+      "npu_vs_history_percent": 0.04430407587385776,
+      "historical_bm25s_median_ms": 38.271054500000005,
+      "bm25s_vs_history_percent": -17.83462290018688,
+      "native_median_winning_workers": [
+        32,
+        8,
+        32,
+        32,
+        8,
+        8
+      ]
+    }
+  },
+  "validation": {
+    "complete_process_order_and_worker_commands": true,
+    "six_round_native_decision_exactly_reproduced": true,
+    "historical_fingerprint_and_deltas_recomputed": true,
+    "per_process_QPS_consistent_with_Q8_and_mean_batch_time": true,
+    "correctness_scope": "Each completed summary follows driver verification; no raw outputs were separately downloaded. NPU oracle/guard/bit checks and original native model checks are inferred from the expected frozen measurement code and complete transcript."
+  },
+  "assessment": {
+    "user_goal": "NPU performance close to previous results, CPU opponent original BM25S; synthetic first then real dataset",
+    "synthetic_goal": "met_for_reported_10M_Q8_K10_workload",
+    "NPU_performance": "Approximately unchanged: -0.508%/+0.044% median differences from the referenced historical session",
+    "ratio_interpretation": "The ratio declined from about 19x to about 15.8x because the native CPU baseline is about 18% faster in this session, not because NPU Search became slower.",
+    "not_inferred": "No causal NPU optimization, statistical equivalence, exclusive CPU reservation, resolution of the separate 4%-5% C++ question or real-data performance is claimed.",
+    "next_stage": "User has no real dataset yet; choose public natural-text corpus with queries and qrels, then implement matching tokenization/import and variable-query measurement."
+  }
+}

@@ -91,7 +91,7 @@ def distribution(values):
     }
 
 
-def prepare(output, n, vocab, seed, cases, k=10, corpus=None):
+def prepare(output, n, vocab, seed, cases, k=10, corpus=None, variable_queries=False):
     r.require(not output.exists() and sys.byteorder == 'little', 'New output and little-endian host required')
     q = len(cases['A'])
     r.require(
@@ -106,11 +106,16 @@ def prepare(output, n, vocab, seed, cases, k=10, corpus=None):
         set(cases) == {'A', 'B'}
         and cases['A'] != cases['B']
         and all(
-            len(rows) == q and all(len(row) == 3 and all(0 <= term < vocab for term in row) for row in rows)
+            len(rows) == q
+            and all(
+                (len(row) <= 64 if variable_queries else len(row) == 3) and all(0 <= term < vocab for term in row)
+                for row in rows
+            )
             for rows in cases.values()
         ),
-        'Fixed Q,three-word A/B queries required',
+        'Equal-sized A/B query sets required; default is three terms, variable input allows up to 64',
     )
+    r.require(not variable_queries or corpus is not None, 'Variable-query preparation requires an external corpus')
     df = array('q', [0]) * vocab
     total = 0
     tf_hist = Counter()
@@ -258,14 +263,14 @@ def prepare(output, n, vocab, seed, cases, k=10, corpus=None):
         'generation': {
             'seed': seed,
             'vocab': vocab,
-            'synthetic_length_range': [16, 48],
+            'synthetic_length_range': None if variable_queries else [16, 48],
             'prefix_stable': True,
             'source_jsonl': str(corpus) if corpus else None,
             'source_sha256': source_sha,
         },
         'docs': n,
         'queries': q,
-        'query_length': 3,
+        'query_length': None if variable_queries else 3,
         'k': k,
         'posting_records': m,
         'tokens': total,
@@ -277,6 +282,9 @@ def prepare(output, n, vocab, seed, cases, k=10, corpus=None):
         'index_id': record['index_id'],
         'source_reference': 'ordered_FP32_formula_from_original_document_TF_DF_not_generated_postings',
     }
+    if variable_queries:
+        report['capacity_words'] = max(sum(map(len, queries)) for queries in cases.values())
+        report['query_length_distribution'] = distribution([len(row) for queries in cases.values() for row in queries])
     r.write_json(output / 'preparation_report.json', report)
     report['file_sha256'] = {
         str(p.relative_to(output)): digest(p)

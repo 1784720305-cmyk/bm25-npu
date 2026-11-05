@@ -1,0 +1,80 @@
+{
+  "date": "2026-11-05",
+  "status": "local_SciFact_source_preparation_CPP_and_original_native_CPU_checks_passed_A5_pending",
+  "source": {
+    "url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/scifact.zip",
+    "archive_sha256": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165",
+    "archive_bytes": 2816079,
+    "dataset_card": "https://huggingface.co/datasets/BeIR/scifact",
+    "qrels": "https://huggingface.co/datasets/BeIR/scifact-qrels"
+  },
+  "documents": 5183,
+  "test_queries": 300,
+  "judgments": 339,
+  "vocabulary": 35867,
+  "query_lengths_after_OOV_filter": {
+    "count": 300,
+    "min": 3,
+    "median": 9.0,
+    "p95": 17,
+    "max": 22,
+    "mean": 9.33
+  },
+  "OOV_tokens": 91,
+  "validation": {
+    "unit_tests": 28,
+    "tokenization": "Matches actual frozen BM25S basic tokenizer on all 6292 document and query texts",
+    "CPP_CPU": "Actual MinGW directory CPU on full corpus: all 300 quality queries and separate Q8 sample pass complete score/strict Top-K bits and before/after repetition checks",
+    "original_BM25S": "Actual NumPy2.0.2/Numba0.60.0 original CPU build, formula verification and native parallel retrieval on both full 300-query quality and Q8 performance inputs",
+    "maximum_score_error_vs_independent_FP32": {
+      "A": 7.62939453125e-06,
+      "B": 1.52587890625e-05
+    },
+    "original_strict_ids_match_project": {
+      "A": true,
+      "B": true
+    },
+    "native_id_differences_from_original_strict": {
+      "A": 0,
+      "B": 1
+    },
+    "native_nopython_signatures": {
+      "original_retrieval": [
+        "(Array(int32, 1, 'C', False, aligned=True), Array(int32, 1, 'C', False, aligned=True), int64, bool, dtype(float32), dtype(int32), Array(float32, 1, 'C', False, aligned=True), Array(int64, 1, 'C', False, aligned=True), Array(int32, 1, 'C', False, aligned=True), int64, none, none) -> Tuple(array(float32, 2d, C), array(int32, 2d, C))"
+      ]
+    },
+    "packages": {
+      "numpy": "2.0.2",
+      "scipy": "1.14.1",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "jax": null
+    },
+    "existing_synthetic_regressions": "376 mathematical model/CLI checks and actual unchanged upstream 128-document native/strict serial/parallel integration passed after the driver changes",
+    "python_3_9_syntax": "passed for all tools and standalone Python sources"
+  },
+  "quality_metrics_LOCAL_CPU_only": {
+    "CXX_CPU": {
+      "queries": 300,
+      "ndcg_at_10": 0.6625278689612291,
+      "recall_at_10": 0.7799444444444444,
+      "mrr_at_10": 0.631021164021164
+    },
+    "original_native_CPU_t2": {
+      "queries": 300,
+      "ndcg_at_10": 0.6625278689612291,
+      "recall_at_10": 0.7799444444444444,
+      "mrr_at_10": 0.631021164021164
+    }
+  },
+  "measurement_separation": {
+    "quality": "All 300 queries, Q150 A and Q150 B, checked once; timings do not count toward Q8 performance",
+    "performance": "16 fixed-seed real queries, Q8 A/B, six A5 rounds planned"
+  },
+  "scope": "Local Windows CPU validation, not A5/NPU correctness, latency, or quality evidence. Real A5 device stage remains pending.",
+  "local_work": {
+    "prepared_inputs": "F:\\Ascend\\bm25\\bm25-a5\\results\\scifact_prepared_local_01",
+    "CPP": "F:\\Ascend\\bm25\\bm25-a5\\results\\scifact_cpu_REAL_5gzbxnpt",
+    "original_native": "F:\\Ascend\\bm25\\bm25-a5\\results\\scifact_NATIVE_LOCAL_2pux_rn5"
+  }
+}

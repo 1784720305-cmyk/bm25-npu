@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-04",
-  "status": "A5_production_code_validated_original_BM25S_regression_pending",
+  "date": "2026-11-05",
+  "status": "A5_production_and_synthetic_performance_passed_SciFact_device_pending",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Benchmark drivers now offer frozen-original-BM25S as the primary CPU baseline, scoped historical NPU comparison, and optional balanced C++ pairs. Driver changes have 24 local unit tests; new A5 measurements remain pending. Prior evidence and tested hashes are retained.",
+  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Supplied original-native BM25S A5 synthetic regression is recomputed and meets the near-previous-speed goal. New natural-query/SciFact drivers have local source, original CPU and C++ CPU validation; real A5 execution remains pending. Historical hashes and evidence are retained.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -93,10 +93,13 @@
     "tools/a5_environment.py": "f1d7923e58e2bff6b622e52022295227254b713490f2ec57c90013c9cf49a362",
     "tools/compare_cpu_builds.py": "0d8f449061796d340ea18e27d2c1f8cd3f75986e3f490ff30d97780f09e798fc",
     "tools/test_a5_diagnostics.py": "5598f3f568c5f24a3f2611d85ddd23695fddd67d6b64b72ea712125b983cfc09",
-    "standalone/final_support.py": "9eef9e010e82c0e59d7290509e558e3d1bf146062f4eadde9966d6a9bc5020ba",
-    "standalone/benchmark_final.py": "05b62ca4e70f8ce7a2c1373ecd9434db33f89bbbe9864c69e885a2186917ebf1",
-    "standalone/bm25s_benchmark.py": "848c4073b9b4d20d2f16877d886e63e78fd3339b8ea284190d4ac96611b2333a",
-    "tools/test_benchmark_policy.py": "418a9b36c03be670fcfc0a5ae5fa0e82a7d127723a095be6cad9c6ac7a56476d"
+    "standalone/final_support.py": "738f9f61be938924431c58f390c7741e429762ea5614342dc738c29d581193f5",
+    "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
+    "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
+    "tools/test_benchmark_policy.py": "418a9b36c03be670fcfc0a5ae5fa0e82a7d127723a095be6cad9c6ac7a56476d",
+    "standalone/large_corpus.py": "133d25d0f83a64e49ca7bdeba14dd98e3a05a53eb81142049fc8efc2fe1dfe88",
+    "standalone/scifact.py": "690a31a348eb8d239eb1f40b6b6d833987324f5b40460f4b2aabfe0ad1581134",
+    "tools/test_scifact.py": "66d62a16e35e2858aa0b6feee00792e111faaae1218175c72772f7d116cf6592"
   },
   "a5_acceptance": {
     "tested_code_commit": "9a99bbc6719bb7144db3ebca8303393496db32bb",
@@ -110,11 +113,11 @@
     "evidence": "evidence/cpu_regression_source_audit_20261104.json",
     "status": "controlled_comparison_completed_quiet_window_followup_pending",
     "production_build_policy_changed_in_this_update": false,
-    "local_validation": "24 local unit tests pass. Prior isolated CPU compilation and 12/12 small-fixture checkpoint equivalence remain archived. New paired protocol and native-primary driver have not been executed on A5.",
+    "local_validation": "28 tool unit tests. Original-native primary driver has supplied A5 synthetic results; optional balanced C++ pairs remain unexecuted on A5. Natural-query/SciFact code has local C++/original CPU execution only.",
     "comparison_evidence": "evidence/cpu_regression_a5_comparison_20261104.json",
     "reported_comparison_status": "completed_with_bit_identical_outputs",
     "interpretation": "New/old aggregate differences 5.11%/4.19%; same new binary varies 13.45%/13.01%. High system-load background and missing per-core contention/quota telemetry prevent causal flag attribution.",
-    "role": "Optional C++ diagnostic; original native BM25S is the primary CPU performance opponent for the next run",
+    "role": "Optional C++ diagnostic; original native BM25S is the primary CPU performance opponent",
     "stable_overhead_policy": "A stable 4%-5% slowdown under established low-interference conditions is measured version overhead; do not dismiss it using global system load. Acceptance is separate from measurement."
   },
   "performance_regression": {
@@ -122,10 +125,20 @@
     "primary_CPU_baseline": "original_native_BM25S_retrieve",
     "BM25S_commit": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7",
     "protocol": "Same-input Q8/3terms/K10, native 1/8/32 workers and NPU, six forward/reverse rounds; independent correctness checks retained",
-    "synthetic_stage": "prepared_locally_A5_measurement_pending",
-    "real_data_stage": "pending_synthetic_review_and_dataset_details",
+    "synthetic_stage": "user_A5_passed_near_previous_speed_all24_summaries_recomputed",
+    "real_data_stage": "SciFact_prepared_and_locally_validated_A5_pending",
     "commands": "docs/BM25S_PERFORMANCE.md",
     "historical_reference": "evidence/bm25s_current_npu_device_evidence_20261029.json",
-    "historical_scope": "Separate historical session; numerical deltas for review, no invented acceptance threshold"
+    "historical_scope": "Separate historical session; numerical deltas for review, no invented acceptance threshold",
+    "synthetic_evidence": "evidence/bm25s_regression_a5_20261105.json",
+    "real_dataset": {
+      "name": "BEIR SciFact",
+      "docs": 5183,
+      "test_queries": 300,
+      "judgments": 339,
+      "source_archive_sha256": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165",
+      "commands": "docs/SCIFACT_REAL_DATA.md",
+      "local_evidence": "evidence/scifact_local_validation_20261105.json"
+    }
   }
 }

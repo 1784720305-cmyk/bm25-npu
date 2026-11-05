@@ -87,6 +87,10 @@ def main():
     p.add_argument('--device', type=int, default=5)
     p.add_argument('--bm25s', action='store_true')
     p.add_argument('--cpu-baseline', choices=('cpp', 'bm25s'), default='cpp')
+    p.add_argument('--real-input', action='store_true', help='External corpus with natural variable-length queries')
+    p.add_argument(
+        '--quality-only', action='store_true', help='One checked round for full-query quality, not a performance gate'
+    )
     p.add_argument('--dependency-dir', type=Path, default=ROOT / 'results/bm25s_numba_py39')
     a = p.parse_args()
     a.bm25s = a.bm25s or a.cpu_baseline == 'bm25s'
@@ -108,7 +112,18 @@ def main():
         r.require((a.vendors / alias).resolve(strict=True).name == target, 'Final vendor mismatch: ' + alias)
     description, index = corpus.validate(a.input)
     n, q, k = description['docs'], description['queries'], description['k']
-    r.require((q, k, description['query_length']) == (8, 10, 3), 'Declared final benchmark is Q8/3words/K10')
+    if a.real_input:
+        r.require(
+            a.cpu_baseline == 'bm25s'
+            and description['query_length'] is None
+            and description['dataset_kind'] == 'external_token_ID_jsonl_not_MT_approved',
+            'Real input requires an external variable-query corpus and original BM25S baseline',
+        )
+    else:
+        r.require((q, k, description['query_length']) == (8, 10, 3), 'Declared final benchmark is Q8/3words/K10')
+    r.require(not a.quality_only or a.real_input, 'Quality-only requires real input')
+    rounds, warmup, repeats = (1, 1, 10) if a.quality_only else (6, 5, 30)
+    words = description.get('capacity_words', 3 * q)
     roles = measurement_roles(n, a.cpu_baseline, a.bm25s)
     runners = {
         'npu': a.npu_runner or a.host_build / 'bm25_large_search_benchmark',
@@ -119,10 +134,10 @@ def main():
             cpu_directory=a.directory_runner or a.host_build / 'bm25_directory_cpu_benchmark',
         )
     r.require(all(x.is_file() for x in runners.values()), 'Required actual host binary missing')
-    plan = s.layout(n, index['vocab_size'], index['posting_count'])
+    plan = s.layout(n, index['vocab_size'], index['posting_count'], q, k, words)
     r.require(plan['cpu_peak_known_bytes'] + 1024**3 < s.host_available_bytes() * 4 // 5, 'Host budget exceeded')
     disk = (
-        6 * sum(not role.startswith(('original_native', 'strict_adapter')) for role in roles) * 4 * q * n * 4
+        rounds * sum(not role.startswith(('original_native', 'strict_adapter')) for role in roles) * 4 * q * n * 4
         + (8 * index['posting_count'] + 8 * q * n if a.bm25s else 0)
         + 1024**3
     )
@@ -137,6 +152,7 @@ def main():
         'scope': 'Final Warp Append+tree Merge only; complete steady-state Search, no experimental candidate.',
         'primary_cpu_baseline': 'original_native' if a.cpu_baseline == 'bm25s' else 'cpp',
         'performance_acceptance': 'pending_review',
+        'measurement_mode': 'quality_only' if a.quality_only else 'six_round_performance',
     }
 
     def save():
@@ -177,7 +193,7 @@ def main():
                 timeout=14400,
             )
             report['bm25s_construction'] = json.loads((built / 'report.json').read_text(encoding='utf-8'))
-        for ordinal in range(6):
+        for ordinal in range(rounds):
             corpus.validate(a.input)
             order = roles if ordinal % 2 == 0 else list(reversed(roles))
             row = {'round': ordinal + 1, 'process_order': list(order)}
@@ -203,6 +219,10 @@ def main():
                         workers,
                         '--variant',
                         variant,
+                        '--warmup',
+                        str(warmup),
+                        '--repeats',
+                        str(repeats),
                     ]
                     s.execute(cmd, target.parent / (role + '.log'), timeout=3600)
                     result = json.loads((target / 'report.json').read_text(encoding='utf-8'))
@@ -219,21 +239,31 @@ def main():
                             a.vendors,
                             k,
                             q,
-                            3 * q,
-                            5,
-                            30,
+                            words,
+                            warmup,
+                            repeats,
                             a.input / 'A/expected_scores.bin',
                             a.input / 'B/expected_scores.bin',
                         ]
                     else:
-                        args += [threads, k, threads, q, 3 * q, 5, 30]
+                        args += [threads, k, threads, q, words, warmup, repeats]
                     s.execute(
                         args,
                         target / 'run.log',
                         s.environment(a.vendors) if base == 'npu' else os.environ.copy(),
                         timeout=3600,
                     )
-                    result = s.verify_run(actual, a.input, description, index, base, a.device, threads=threads)
+                    result = s.verify_run(
+                        actual,
+                        a.input,
+                        description,
+                        index,
+                        base,
+                        a.device,
+                        warmup=warmup,
+                        repeats=repeats,
+                        threads=threads,
+                    )
                     result['command'] = list(map(str, args))
                     r.write_json(target / 'report.json', result)
                 row[role] = {
@@ -249,7 +279,7 @@ def main():
             report['cpu_decision'] = s.cpu_gate(
                 [{**row, 'candidate': row['npu']} for row in report['per_round']], cpu_roles
             )
-        if a.bm25s:
+        if a.bm25s and not a.quality_only:
             from standalone.bm25s_benchmark import decide
 
             report['bm25s_decision'] = decide(
@@ -268,7 +298,9 @@ def main():
         r.require(
             all(s.digest(path) == report['runner_sha256'][role] for role, path in runners.items()), 'Runner changed'
         )
-        report['status'] = 'actual_final_search_six_rounds_checked'
+        report['status'] = (
+            'actual_real_query_quality_checked' if a.quality_only else 'actual_final_search_six_rounds_checked'
+        )
         save()
         print('REPORT: ' + str(a.output / 'report.json'), flush=True)
         print(
