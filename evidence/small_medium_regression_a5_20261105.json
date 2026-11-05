@@ -1,0 +1,313 @@
+{
+  "date": "2026-11-05",
+  "status": "small_and_medium_real_data_regression_completed_SciFact_CPU_timing_mixed",
+  "provenance": {
+    "source": "User-pasted terminal summaries, not a local device run",
+    "attachment_sha256": "86e1affda46040f55852c5ccc55a599aec7987f4a30304b3a87a391ea059e9f3",
+    "new_raw_reports_samples_or_rankings_received": false,
+    "repeat_source_and_binary_hashes_received": false,
+    "host_build_path_matches_previous_validated_run": true
+  },
+  "execution": {
+    "host_build": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build",
+    "validated_implementation_commit": "d685cf4",
+    "device": 5,
+    "placement": "numactl --physcpubind=0-31 --membind=0",
+    "exclusive_CPU_reservation_verified": false,
+    "CPU_baseline": "frozen original BM25S native retrieve, 1/8/32 workers",
+    "Q": 8,
+    "K": 10,
+    "rounds": 6,
+    "samples_per_case_per_round": 30,
+    "timing": "Complete Search, excluding construction/JIT/upload/diagnostics"
+  },
+  "datasets": {
+    "scifact": {
+      "previous_evidence": "evidence/scifact_a5_20261105.json",
+      "previous_evidence_sha256": "274fc3fe8c3635fe8b5244867d78d1097252d98db6fdde93a8d6bb3b802e4c19",
+      "current_run": "/test/w50066029/bm25-npu-indexsdk/results/scifact_a5_02",
+      "queries": 300,
+      "reported_quality": {
+        "npu": {
+          "queries": 300,
+          "ndcg_at_10": 0.6625278689612291,
+          "recall_at_10": 0.7799444444444444,
+          "mrr_at_10": 0.631021164021164
+        },
+        "original_native_t1": {
+          "queries": 300,
+          "ndcg_at_10": 0.6625278689612291,
+          "recall_at_10": 0.7799444444444444,
+          "mrr_at_10": 0.631021164021164
+        },
+        "original_native_t8": {
+          "queries": 300,
+          "ndcg_at_10": 0.6625278689612291,
+          "recall_at_10": 0.7799444444444444,
+          "mrr_at_10": 0.631021164021164
+        },
+        "original_native_t32": {
+          "queries": 300,
+          "ndcg_at_10": 0.6625278689612291,
+          "recall_at_10": 0.7799444444444444,
+          "mrr_at_10": 0.631021164021164
+        }
+      },
+      "quality_exactly_matches_previous_by_role": true,
+      "reported_performance": {
+        "A": {
+          "cpu_medians_ms": [
+            0.08397099999999999,
+            0.0862495,
+            0.084922,
+            0.08425099999999999,
+            0.0839815,
+            0.0835605
+          ],
+          "npu_medians_ms": [
+            0.086509,
+            0.086735,
+            0.084882,
+            0.08667,
+            0.086615,
+            0.086785
+          ],
+          "cpu_p95_ms": [
+            0.089234,
+            0.112218,
+            0.090837,
+            0.089184,
+            0.090195,
+            0.117747
+          ],
+          "npu_p95_ms": [
+            0.087832,
+            0.087792,
+            0.085629,
+            0.088373,
+            0.087561,
+            0.087731
+          ],
+          "cpu_over_npu": 0.9708428311740774,
+          "npu_wins": 1,
+          "timing_gate_passed": false,
+          "strict_equivalent_win": false
+        },
+        "B": {
+          "cpu_medians_ms": [
+            0.0788335,
+            0.0805705,
+            0.07969499999999999,
+            0.077291,
+            0.078959,
+            0.0791085
+          ],
+          "npu_medians_ms": [
+            0.074131,
+            0.07461699999999999,
+            0.072559,
+            0.074181,
+            0.074116,
+            0.0743665
+          ],
+          "cpu_p95_ms": [
+            0.084326,
+            0.103075,
+            0.085318,
+            0.080491,
+            0.081372,
+            0.101112
+          ],
+          "npu_p95_ms": [
+            0.076885,
+            0.076445,
+            0.075713,
+            0.077266,
+            0.076685,
+            0.077787
+          ],
+          "cpu_over_npu": 1.0657768757753925,
+          "npu_wins": 6,
+          "timing_gate_passed": true,
+          "strict_equivalent_win": false
+        }
+      },
+      "computed": {
+        "A": {
+          "old_NPU_median_batch_ms": 0.086272,
+          "new_NPU_median_batch_ms": 0.0866425,
+          "NPU_median_change_percent": 0.42945567507417515,
+          "NPU_median_change_microseconds": 0.37049999999999583,
+          "old_NPU_median_round_P95_ms": 0.0879325,
+          "new_NPU_median_round_P95_ms": 0.08776149999999999,
+          "NPU_P95_change_percent": -0.19446734711284774,
+          "new_CPU_median_batch_ms": 0.08411625,
+          "CPU_over_NPU": 0.9708428311740774,
+          "NPU_latency_change_vs_CPU_percent": 3.0032841454534553,
+          "median_wins": 1,
+          "P95_wins": 6,
+          "timing_gate_passed": false
+        },
+        "B": {
+          "old_NPU_median_batch_ms": 0.07358025,
+          "new_NPU_median_batch_ms": 0.074156,
+          "NPU_median_change_percent": 0.7824789940235277,
+          "NPU_median_change_microseconds": 0.5757499999999999,
+          "old_NPU_median_round_P95_ms": 0.075724,
+          "new_NPU_median_round_P95_ms": 0.07678499999999999,
+          "NPU_P95_change_percent": 1.4011409856848456,
+          "new_CPU_median_batch_ms": 0.07903375,
+          "CPU_over_NPU": 1.0657768757753925,
+          "NPU_latency_change_vs_CPU_percent": -6.171730431619404,
+          "median_wins": 6,
+          "P95_wins": 6,
+          "timing_gate_passed": true
+        }
+      }
+    },
+    "trec-covid": {
+      "previous_evidence": "evidence/trec_covid_a5_20261105.json",
+      "previous_evidence_sha256": "bac5a634c85c8cb0b906fa530084b7f0ab3de8fd2d0a10f81467e1a9b6bd7d08",
+      "current_run": "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_a5_02",
+      "queries": 50,
+      "reported_quality": {
+        "npu": {
+          "queries": 50,
+          "ndcg_at_10": 0.5769513068939649,
+          "recall_at_10": 0.015566685596385304,
+          "mrr_at_10": 0.7898333333333335
+        },
+        "original_native_t1": {
+          "queries": 50,
+          "ndcg_at_10": 0.5745521464553993,
+          "recall_at_10": 0.015476669973839244,
+          "mrr_at_10": 0.7898333333333335
+        },
+        "original_native_t8": {
+          "queries": 50,
+          "ndcg_at_10": 0.5745521464553993,
+          "recall_at_10": 0.015476669973839244,
+          "mrr_at_10": 0.7898333333333335
+        },
+        "original_native_t32": {
+          "queries": 50,
+          "ndcg_at_10": 0.5745521464553993,
+          "recall_at_10": 0.015476669973839244,
+          "mrr_at_10": 0.7898333333333335
+        }
+      },
+      "quality_exactly_matches_previous_by_role": true,
+      "reported_performance": {
+        "A": {
+          "cpu_medians_ms": [
+            0.350951,
+            0.3454335,
+            0.35186300000000004,
+            0.3708815,
+            0.348883,
+            0.35483200000000004
+          ],
+          "npu_medians_ms": [
+            0.248778,
+            0.247351,
+            0.248983,
+            0.246039,
+            0.248723,
+            0.248743
+          ],
+          "cpu_p95_ms": [
+            0.417186,
+            0.381552,
+            0.415814,
+            0.444978,
+            0.379459,
+            0.359018
+          ],
+          "npu_p95_ms": [
+            0.251016,
+            0.249765,
+            0.251327,
+            0.249394,
+            0.251016,
+            0.251257
+          ],
+          "cpu_over_npu": 1.4127880096328194,
+          "npu_wins": 6,
+          "timing_gate_passed": true,
+          "strict_equivalent_win": false
+        },
+        "B": {
+          "cpu_medians_ms": [
+            0.285669,
+            0.31375549999999996,
+            0.305498,
+            0.319659,
+            0.29962900000000003,
+            0.2922335
+          ],
+          "npu_medians_ms": [
+            0.214437,
+            0.21297,
+            0.2140015,
+            0.2129395,
+            0.21416600000000002,
+            0.21504299999999998
+          ],
+          "cpu_p95_ms": [
+            0.353961,
+            0.369024,
+            0.410987,
+            0.378808,
+            0.414351,
+            0.311067
+          ],
+          "npu_p95_ms": [
+            0.216996,
+            0.214942,
+            0.217897,
+            0.214862,
+            0.216825,
+            0.218838
+          ],
+          "cpu_over_npu": 1.4132950305663086,
+          "npu_wins": 6,
+          "timing_gate_passed": true,
+          "strict_equivalent_win": false
+        }
+      },
+      "computed": {
+        "A": {
+          "old_NPU_median_batch_ms": 0.24825475000000002,
+          "new_NPU_median_batch_ms": 0.24873299999999998,
+          "NPU_median_change_percent": 0.19264485372383344,
+          "NPU_median_change_microseconds": 0.4782499999999579,
+          "old_NPU_median_round_P95_ms": 0.250806,
+          "new_NPU_median_round_P95_ms": 0.251016,
+          "NPU_P95_change_percent": 0.0837300543049313,
+          "new_CPU_median_batch_ms": 0.351407,
+          "CPU_over_NPU": 1.4127880096328194,
+          "NPU_latency_change_vs_CPU_percent": -29.217972322691367,
+          "median_wins": 6,
+          "P95_wins": 6,
+          "timing_gate_passed": true
+        },
+        "B": {
+          "old_NPU_median_batch_ms": 0.2151325,
+          "new_NPU_median_batch_ms": 0.21408375000000002,
+          "NPU_median_change_percent": -0.4874902676257564,
+          "NPU_median_change_microseconds": -1.0487499999999872,
+          "old_NPU_median_round_P95_ms": 0.21778150000000002,
+          "new_NPU_median_round_P95_ms": 0.2169105,
+          "NPU_P95_change_percent": -0.39994214384601046,
+          "new_CPU_median_batch_ms": 0.3025635,
+          "CPU_over_NPU": 1.4132950305663086,
+          "NPU_latency_change_vs_CPU_percent": -29.243365442295577,
+          "median_wins": 6,
+          "P95_wins": 6,
+          "timing_gate_passed": true
+        }
+      }
+    }
+  },
+  "scope": "Four median changes are cross-session observations with the same prepared data and declared protocol; not a paired statistical equivalence proof or a causal estimate. SciFact A fails the CPU timing win gate; this is distinct from NPU-versus-history regression and correctness. No Q1/concurrent-service claim."
+}

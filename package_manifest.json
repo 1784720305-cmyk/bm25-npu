@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "IndexSDK-aligned BM25 package. Host huge-first allocation fix at d685cf4 passed same-size A5 allocation comparison, real CANN host checks, installed consumers, shared SDK/device and synthetic10M regression. Full MS MARCO corpus test43 quality and fixed Q8 native-BM25S performance completed with latency ratios 7.95662/7.70407. Native tie differences and the unexplained slower first round remain explicit. Current archive changes only docs/metadata/evidence; no universal workload claim.",
+  "scope": "IndexSDK-aligned BM25 package. Huge-first allocation fix passed real A5 host/device and MS MARCO checks. Subsequent SciFact/TREC-COVID repeats reproduce prior role-specific quality; observed NPU median changes are -0.49% to +0.78%, median-of-round-P95 changes -0.40% to +1.40%. SciFact A still fails the native-CPU median win gate; other real cases retain their reported gates. Original-native BM25S, mixed small-corpus timing, cross-session limits and the MS MARCO slower first round remain explicit. Archive-only update; implementation unchanged.",
   "text_line_endings": "LF",
   "reference_commits": {
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -12,7 +12,7 @@
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
     ".pre-commit-config.yaml": "d18cae61fe460685d6b3e1721bf9aa30aa2e4d249388df7c8fdf9a5657f99a57",
     "CMakeLists.txt": "efbb01dc2062aae2a92fc873e4663d300062bb2eca9e9167d8f09b7ad92c84f5",
-    "README.md": "e6ae7ec37619c638bd921d967f13fc7a1e0b96e06fe0228ffc0ba6c1491f9da6",
+    "README.md": "585e243444444dc561ea8fd6f1b1f88ba5f1ba0862bcdb8b25cf5931f53d1bbb",
     "cmake/AscendBm25Config.cmake.in": "ec11d408ef32f39c0dadf697f97c828a12b184975995ed78947e643b687acb39",
     "cmake/Install.cmake": "e6414e4980bf184558dd5bf05d66db54dd5433036e5cc7a76ea0fb30617639e0",
     "docs/A5_ACCEPTANCE.md": "b9c7e21201f26be3d35443b4e026f66ff4d000fe82994ef0748e24a0cc26f13d",
@@ -24,9 +24,9 @@
     "docs/INDEXSDK_INTEGRATION.md": "2b6b566bbad6a9a1d8cc8c10a4d27e295e821f74dffe80eca300bf051626d706",
     "docs/INDEXSDK_REFACTOR.md": "57cdcd947373ca19b59109fe231d06dda81740b130325c8f5d39eef110d0efef",
     "docs/MSMARCO_REAL_DATA.md": "e168e9d89259bcc734781ece5f24b10540f675a5f5d6ea6fd8f2fe531c1529ba",
-    "docs/SCIFACT_REAL_DATA.md": "fb7f35ffd0caaf66ea46d5a40ed99b2049403758d9169827d274abba7ea5948d",
+    "docs/SCIFACT_REAL_DATA.md": "607f6ac8f3961e9c23ee63857c5ae055dad5458087dc73d505aa28caef341628",
     "docs/STATIC_CHECKS.md": "78fcaae11840361e0274094b6c5c70ac4e4832d05fd77355eb6c5a257e91b286",
-    "docs/TREC_COVID_REAL_DATA.md": "53d460ce1f787cf5fd250398be4bcbe4ad12ba6ce9273cfa91f5bfaafa2173d6",
+    "docs/TREC_COVID_REAL_DATA.md": "d2cd65684fa59c077b745bd4eaac34ace010d31f10a8ef765726901a4f2c8663",
     "docs/indexsdk_path_mapping.json": "564b9eaedc16a763313625b22d6e0b922b5a9d55ec8db3f746d2eaa4001de9b4",
     "evidence/a5_acceptance_runner_local_validation_20261104.json": "e7ebcd4682d416c1c0f1f1ee360f43cd4c3d7f2cb7f6e47f5b5ec3ea5e93645e",
     "evidence/a5_host_static_fix_local_validation_20261104.json": "058af5063e99c95f642c3277ab5bbdb9d6a9d7ddb33b4ad2535229192d1bc5cd",
@@ -148,7 +148,7 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "dc6248ace079496a39247fc70f18ff4227878dce8c7d5d7d77a9cbaf71df85bc",
-    "source_lock.json": "58e52033e26d493efdc371ce7d028fbb6f46e376a631f95916346e5ebee4636f",
+    "source_lock.json": "7bb5e58dd7e9b037ffcc26ceabfa678b188cfb01247187be96e3a81dddec46ce",
     "standalone/beir_real.py": "ca0103064fc4b8a12842b7d32744685bf0cd502b878c9b26888ce3603018db0d",
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
@@ -175,6 +175,7 @@
     "tools/test_benchmark_policy.py": "418a9b36c03be670fcfc0a5ae5fa0e82a7d127723a095be6cad9c6ac7a56476d",
     "tools/test_device_allocation.py": "4565d9d5b75e6d10a35d6d31d14b1095936f68540b0bacf68585df12a67efbce",
     "tools/test_scifact.py": "66d62a16e35e2858aa0b6feee00792e111faaae1218175c72772f7d116cf6592",
-    "verify_package.py": "5d377581c823e467a8136d8b400f5bca982113041cacb0cf8e70af6f08aa91de"
+    "verify_package.py": "5d377581c823e467a8136d8b400f5bca982113041cacb0cf8e70af6f08aa91de",
+    "evidence/small_medium_regression_a5_20261105.json": "b4c2ab1649a06731cbead976b91ab039437a706ee56015a681d1857d43586a31"
   }
 }
