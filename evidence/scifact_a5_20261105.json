@@ -1,0 +1,245 @@
+{
+  "date": "2026-11-05",
+  "status": "user_A5_SciFact_quality_passed_performance_mixed_recomputed",
+  "provenance": {
+    "origin": "User-pasted A5 terminal summary, not an independent local device run",
+    "raw_main_report_received": false,
+    "individual_worker_reports_received": false,
+    "raw_rankings_and_timing_samples_received": false,
+    "expected_driver_commit": "972f376e5c59c995cac75e0ba2b095b5be5a3143",
+    "runtime_source_and_binary_fingerprints_received": false
+  },
+  "dataset": {
+    "name": "BEIR SciFact",
+    "documents": 5183,
+    "test_queries": 300,
+    "judgments": 339,
+    "vocabulary": 35867,
+    "archive_sha256": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165",
+    "data_directory": "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01",
+    "quality_query_count_per_packet": 150,
+    "performance_query_count_per_packet": 8,
+    "k": 10,
+    "posting_count_reported": 533645,
+    "index_bytes_reported": 4720304
+  },
+  "execution": {
+    "device": 5,
+    "cpu_affinity_command": "numactl --physcpubind=0-31 --membind=0",
+    "exclusive_resource_reservation_verified": false,
+    "output": "/test/w50066029/bm25-npu-indexsdk/results/scifact_a5_01",
+    "quality_stage": "One checked round, both Q150 packets, all 300 judged queries, original native 1/8/32 workers and NPU",
+    "performance_stage": "16 seeded natural queries, two Q8 packets, six forward/reverse rounds, default five warmups and thirty samples/case/process"
+  },
+  "reported_quality": {
+    "npu": {
+      "queries": 300,
+      "ndcg_at_10": 0.6625278689612291,
+      "recall_at_10": 0.7799444444444444,
+      "mrr_at_10": 0.631021164021164
+    },
+    "original_native_t1": {
+      "queries": 300,
+      "ndcg_at_10": 0.6625278689612291,
+      "recall_at_10": 0.7799444444444444,
+      "mrr_at_10": 0.631021164021164
+    },
+    "original_native_t8": {
+      "queries": 300,
+      "ndcg_at_10": 0.6625278689612291,
+      "recall_at_10": 0.7799444444444444,
+      "mrr_at_10": 0.631021164021164
+    },
+    "original_native_t32": {
+      "queries": 300,
+      "ndcg_at_10": 0.6625278689612291,
+      "recall_at_10": 0.7799444444444444,
+      "mrr_at_10": 0.631021164021164
+    }
+  },
+  "reported_performance": {
+    "A": {
+      "cpu_medians_ms": [
+        0.0836405,
+        0.083255,
+        0.0843115,
+        0.08327999999999999,
+        0.0855085,
+        0.0830845
+      ],
+      "npu_medians_ms": [
+        0.085408,
+        0.0854935,
+        0.08642,
+        0.08705550000000001,
+        0.086124,
+        0.0870105
+      ],
+      "cpu_p95_ms": [
+        0.090796,
+        0.096104,
+        0.088583,
+        0.087041,
+        0.118217,
+        0.087231
+      ],
+      "npu_p95_ms": [
+        0.086189,
+        0.0866,
+        0.087662,
+        0.088383,
+        0.092318,
+        0.088203
+      ],
+      "cpu_over_npu": 0.9674083132418397,
+      "npu_wins": 0,
+      "timing_gate_passed": false,
+      "strict_equivalent_win": false
+    },
+    "B": {
+      "cpu_medians_ms": [
+        0.0784475,
+        0.07757700000000001,
+        0.077932,
+        0.076345,
+        0.07975,
+        0.07656450000000001
+      ],
+      "npu_medians_ms": [
+        0.072769,
+        0.072839,
+        0.0735555,
+        0.0744665,
+        0.073605,
+        0.0743965
+      ],
+      "cpu_p95_ms": [
+        0.085107,
+        0.086811,
+        0.082755,
+        0.085949,
+        0.084026,
+        0.083786
+      ],
+      "npu_p95_ms": [
+        0.073981,
+        0.074953,
+        0.075944,
+        0.077867,
+        0.075504,
+        0.076865
+      ],
+      "cpu_over_npu": 1.0567305764794221,
+      "npu_wins": 6,
+      "timing_gate_passed": true,
+      "strict_equivalent_win": false
+    }
+  },
+  "locally_recomputed_performance": {
+    "A": {
+      "cpu_median_of_round_fastest_native_ms": 0.08346025,
+      "npu_median_of_round_medians_ms": 0.086272,
+      "NPU_latency_change_vs_native_percent": 3.3689690601214295,
+      "NPU_minus_native_microseconds": 2.8117500000000017,
+      "cpu_median_of_round_best_P95_ms": 0.0896895,
+      "npu_median_of_round_P95_ms": 0.0879325,
+      "NPU_P95_wins": 4,
+      "NPU_median_wins": 0,
+      "rounds": 6
+    },
+    "B": {
+      "cpu_median_of_round_fastest_native_ms": 0.0777545,
+      "npu_median_of_round_medians_ms": 0.07358025,
+      "NPU_latency_change_vs_native_percent": -5.368499572372021,
+      "NPU_minus_native_microseconds": -4.174250000000004,
+      "cpu_median_of_round_best_P95_ms": 0.0845665,
+      "npu_median_of_round_P95_ms": 0.075724,
+      "NPU_P95_wins": 6,
+      "NPU_median_wins": 6,
+      "rounds": 6
+    }
+  },
+  "local_expected_performance_packets": {
+    "A": {
+      "query_lengths": [
+        10,
+        8,
+        11,
+        8,
+        11,
+        11,
+        10,
+        19
+      ],
+      "total_terms": 88,
+      "unique_term_hit_records": [
+        3463,
+        2792,
+        5649,
+        2120,
+        2019,
+        5513,
+        3567,
+        9105
+      ],
+      "hit_documents": [
+        2268,
+        2310,
+        3602,
+        1595,
+        1718,
+        3439,
+        2527,
+        4399
+      ]
+    },
+    "B": {
+      "query_lengths": [
+        10,
+        9,
+        5,
+        6,
+        6,
+        17,
+        10,
+        4
+      ],
+      "total_terms": 67,
+      "unique_term_hit_records": [
+        4239,
+        2139,
+        533,
+        1528,
+        1070,
+        3724,
+        3721,
+        609
+      ],
+      "hit_documents": [
+        2813,
+        1799,
+        480,
+        1332,
+        1002,
+        2577,
+        2607,
+        510
+      ]
+    }
+  },
+  "input_statistics_scope": "Packet details above come from the locally prepared pinned dataset and fixed seed; actual A5 packet files/hashes were not supplied.",
+  "verification": {
+    "quality_metrics_equal_across_four_implementations": true,
+    "native_ratios_and_six_round_win_gates_reproduced": true,
+    "correctness_scope": "Successful quality/performance continuation and final output follow NPU independent score/strict-ID/tree/guard/repeat and upstream native checks in the expected driver; raw outputs were not inspected separately.",
+    "quality_scope": "Equal aggregate retrieval metrics do not prove all per-query rankings or tie IDs are bit-identical.",
+    "performance_scope": "Fastest-native selection per round is supplied by the driver. Worker-level timings were not available for an independent re-selection; raw samples/means are also absent, so no combined QPS is derived."
+  },
+  "assessment": {
+    "quality": "All 300 queries have matching nDCG@10, Recall@10 and MRR@10 for NPU and original native 1/8/32 workers",
+    "performance": "A: NPU slower in all six rounds, median-of-medians +3.369% (+2.812us/batch). B: faster in all six, -5.368% (-4.174us/batch). Joint A/B timing gate is not passed.",
+    "cause_scope": "These compare NPU against original BM25S, not the refactored NPU against its old binary. No structure regression or system-load cause is inferred. Query mix differs and requires profiling for causal attribution.",
+    "generalization": "Quality covers all 300 test queries; performance covers the fixed 16-query sample only. Do not claim an overall SciFact speed win, a large-corpus speed ratio, or a service throughput from these aggregates.",
+    "decision": "Retain production structure and hardening. Archive the observed A latency disadvantage versus BM25S; any further optimization or scale study needs its own measurement."
+  }
+}

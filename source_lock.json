@@ -1,8 +1,8 @@
 {
   "date": "2026-11-05",
-  "status": "A5_production_and_synthetic_performance_passed_SciFact_device_pending",
+  "status": "A5_correctness_and_synthetic_performance_passed_SciFact_performance_mixed",
   "historical_lock": "evidence/delivery_lock_20261029.json",
-  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Supplied original-native BM25S A5 synthetic regression is recomputed and meets the near-previous-speed goal. New natural-query/SciFact drivers have local source, original CPU and C++ CPU validation; real A5 execution remains pending. Historical hashes and evidence are retained.",
+  "note": "Production C++, operators and CMake policy remain byte-identical to A5-validated 9a99bbc. Original-native BM25S synthetic regression meets the near-previous-speed goal. Supplied A5 SciFact results have matching all300 quality metrics; fixed Q8 A is 3.37% slower than native CPU, B 5.37% faster. Real timing is mixed, not an all-gates pass. Historical hashes and evidence are retained.",
   "frozen_operators": {
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/operator.json": "38a3d41264ad0dfb50de210d9772e734ebc704c3d44581bad5506583c3003db2",
     "feature_retrieval/src/ascendfaiss/ops/ascendc/bm25/fused/op_host/bm25_fused_score_top_k.cpp": "5708c45dc42e8af83953ed4909b5b657b2df94cc205d6ff4d660f29f1e57aa8a",
@@ -113,7 +113,7 @@
     "evidence": "evidence/cpu_regression_source_audit_20261104.json",
     "status": "controlled_comparison_completed_quiet_window_followup_pending",
     "production_build_policy_changed_in_this_update": false,
-    "local_validation": "28 tool unit tests. Original-native primary driver has supplied A5 synthetic results; optional balanced C++ pairs remain unexecuted on A5. Natural-query/SciFact code has local C++/original CPU execution only.",
+    "local_validation": "28 tool unit tests and actual local C++/original CPU integration passed. Supplied A5 synthetic and SciFact driver results are archived; optional balanced C++ pairs remain unexecuted on A5.",
     "comparison_evidence": "evidence/cpu_regression_a5_comparison_20261104.json",
     "reported_comparison_status": "completed_with_bit_identical_outputs",
     "interpretation": "New/old aggregate differences 5.11%/4.19%; same new binary varies 13.45%/13.01%. High system-load background and missing per-core contention/quota telemetry prevent causal flag attribution.",
@@ -126,7 +126,7 @@
     "BM25S_commit": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7",
     "protocol": "Same-input Q8/3terms/K10, native 1/8/32 workers and NPU, six forward/reverse rounds; independent correctness checks retained",
     "synthetic_stage": "user_A5_passed_near_previous_speed_all24_summaries_recomputed",
-    "real_data_stage": "SciFact_prepared_and_locally_validated_A5_pending",
+    "real_data_stage": "A5_all300_quality_metrics_matched_Q8_A_slower_B_faster",
     "commands": "docs/BM25S_PERFORMANCE.md",
     "historical_reference": "evidence/bm25s_current_npu_device_evidence_20261029.json",
     "historical_scope": "Separate historical session; numerical deltas for review, no invented acceptance threshold",
@@ -138,7 +138,15 @@
       "judgments": 339,
       "source_archive_sha256": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165",
       "commands": "docs/SCIFACT_REAL_DATA.md",
-      "local_evidence": "evidence/scifact_local_validation_20261105.json"
+      "local_evidence": "evidence/scifact_local_validation_20261105.json",
+      "A5_evidence": "evidence/scifact_a5_20261105.json",
+      "A5_report": "/test/w50066029/bm25-npu-indexsdk/results/scifact_a5_01/report.json",
+      "quality": "NPU and original native 1/8/32 workers: all300 nDCG@10/Recall@10/MRR@10 equal",
+      "timing_gate": {
+        "A": false,
+        "B": true,
+        "both_cases": false
+      }
     }
   }
 }
