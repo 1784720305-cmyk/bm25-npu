@@ -58,7 +58,7 @@ def sources(capacity, profile=False):
             '(*debug != 0 && *debug != 1 && *debug != 2 && *debug != 3)',
         )
         host = once(
-            host, '    dims = {', '    if (*debug == 3 && docs / (*shards) < 8)\n        return false;\n    dims = {'
+            host, '    dims = {', '    if (*debug == 3 && docs / (*shards) < 16)\n        return false;\n    dims = {'
         )
         kernel = once(kernel, '        if (debug != 0) {', '        if (debug == 1) {')
         kernel = once(
@@ -72,6 +72,26 @@ __simt_vf__ __aicore__ LAUNCH_BOUND(kThreads) inline void CapacityProfilePack(
 {
     if (memory[kScoreControl] == 0)
         PackForSimd<true>(memory, memory + kSelection, width, k);
+}
+
+// Separate 64-byte task records, written through the same SIMT GM store path as
+// normal results. Scalar GlobalTensor::SetValue requires DCache management and
+// must not write adjacent 32-byte records belonging to different cores.
+__simt_vf__ __aicore__ LAUNCH_BOUND(kThreads) inline void CapacityProfileTrace(
+    __gm__ int64_t *trace, uint32_t task, int64_t start, int64_t scored, int64_t selected)
+{
+    if (AscendC::Simt::GetThreadIdx<0>() == 0) {
+        const uint64_t at = static_cast<uint64_t>(task) * 8;
+        const int64_t sequence = trace[at + 4];
+        trace[at] = start;
+        trace[at + 1] = scored;
+        trace[at + 2] = selected;
+        trace[at + 3] = kCapacity;
+        trace[at + 5] = sequence;
+        trace[at + 6] = task;
+        trace[at + 7] = 2;
+    }
+    asc_syncthreads();
 }
 '''
         kernel = once(kernel, '} // namespace\n\nextern "C"', wrapper + '\n} // namespace\n\nextern "C"')
@@ -99,12 +119,8 @@ __simt_vf__ __aicore__ LAUNCH_BOUND(kThreads) inline void CapacityProfilePack(
             '''        AscendC::PipeBarrier<PIPE_ALL>();
         if (data.debug == 3) {
             const int64_t profileSelected = AscendC::GetSystemCycle();
-            AscendC::GlobalTensor<int64_t> trace;
-            trace.SetGlobalBuffer(reinterpret_cast<__gm__ int64_t *>(debug_scores));
-            trace.SetValue(task * 4, profileStart);
-            trace.SetValue(task * 4 + 1, profileScored);
-            trace.SetValue(task * 4 + 2, profileSelected);
-            trace.SetValue(task * 4 + 3, kCapacity);
+            AscendC::Simt::VF_CALL<CapacityProfileTrace>(AscendC::Simt::Dim3{kThreads, 1, 1},
+                reinterpret_cast<__gm__ int64_t *>(debug_scores), task, profileStart, profileScored, profileSelected);
             AscendC::PipeBarrier<PIPE_ALL>();
         }
     }

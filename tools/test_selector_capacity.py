@@ -9,7 +9,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from standalone.selector_capacity import ROOT, build, comparisons, profile_summary
+from standalone.selector_capacity import ROOT, TRACE_CONTRACT, build, comparisons, profile_summary
 from standalone.test_final import append_ranges, collect_streams
 from tools.capacity_sources import CAPACITIES, FUSED, layout, once, sources
 
@@ -48,11 +48,13 @@ class CapacityTests(unittest.TestCase):
         for capacity in CAPACITIES:
             host, kernel, _ = sources(capacity, True)
             self.assertIn('*debug != 3', host)
-            self.assertIn('docs / (*shards) < 8', host)
+            self.assertIn('docs / (*shards) < 16', host)
             self.assertIn('if (debug != 3)\n                PackForSimd<true>', kernel)
             self.assertIn('CapacityProfilePack', kernel)
             self.assertLess(kernel.index('profileScored ='), kernel.index('VF_CALL<CapacityProfilePack>'))
-            self.assertIn('trace.SetValue(task * 4 + 3, kCapacity)', kernel)
+            self.assertIn('VF_CALL<CapacityProfileTrace>', kernel)
+            self.assertIn('static_cast<uint64_t>(task) * 8', kernel)
+            self.assertNotIn('AscendC::GlobalTensor<int64_t> trace', kernel)
             self.assertIn('if (debug == 1)', kernel)
 
     def test_append_capacity_boundaries_never_truncate_selection_input(self):
@@ -74,6 +76,19 @@ class CapacityTests(unittest.TestCase):
 
     @staticmethod
     def profile():
+        samples = []
+        for cycle in range(30):
+            for slot in range(2):
+                sequence = 11 + cycle * 2 + slot
+                values = [v for task in range(8) for v in (100, 120, 130, 2048, sequence, sequence, task, 2)]
+                samples.append(
+                    {
+                        'case': 'B' if slot ^ (cycle & 1) else 'A',
+                        'cycle': cycle,
+                        'sequence': sequence,
+                        'task_timestamps': values,
+                    }
+                )
         return {
             'status': 'device_stage_profile_traces_and_bit_checks_passed',
             'completed': True,
@@ -81,11 +96,9 @@ class CapacityTests(unittest.TestCase):
             'guards_passed': True,
             'queries': 8,
             'tasks': 8,
-            'samples': [
-                {'case': case, 'cycle': cycle, 'task_timestamps': [100, 120, 130, 2048] * 8}
-                for cycle in range(30)
-                for case in ('A', 'B')
-            ],
+            'trace_contract': TRACE_CONTRACT,
+            'trace_words': 8,
+            'samples': samples,
         }
 
     def test_profile_units_and_aggregation(self):
@@ -96,7 +109,7 @@ class CapacityTests(unittest.TestCase):
         self.assertNotIn('median_batch_ms', result['A']['topk_ticks'])
 
     def test_incomplete_wrong_capacity_and_nonmonotonic_traces_rejected(self):
-        for kind in ('guard', 'missing', 'wrong_capacity', 'nonmonotonic', 'cycle'):
+        for kind in ('guard', 'missing', 'wrong_capacity', 'nonmonotonic', 'cycle', 'stale', 'overlap', 'old_schema'):
             data = copy.deepcopy(self.profile())
             if kind == 'guard':
                 data['guards_passed'] = False
@@ -106,6 +119,12 @@ class CapacityTests(unittest.TestCase):
                 data['samples'][0]['task_timestamps'][3] = 1024
             elif kind == 'cycle':
                 data['samples'][0]['cycle'] = 9
+            elif kind == 'stale':
+                data['samples'][0]['task_timestamps'][5] -= 1
+            elif kind == 'overlap':
+                data['samples'][0]['task_timestamps'][6] = 1
+            elif kind == 'old_schema':
+                data['trace_words'] = 4
             else:
                 data['samples'][0]['task_timestamps'][1] = 100
             with self.assertRaises(ValueError):
@@ -125,6 +144,13 @@ class CapacityTests(unittest.TestCase):
         self.assertAlmostEqual(result['real']['2048']['A']['search_change_percent'], 5)
         self.assertAlmostEqual(result['real']['2048']['A']['topk_ticks_change_percent'], -10)
         self.assertEqual(result['real']['2048']['A']['search_wins'], 0)
+
+    def test_task_records_do_not_share_a_cache_line(self):
+        old_lines = [(task * 32) // 64 for task in range(16)]
+        self.assertLess(len(set(old_lines)), len(old_lines))
+        starts = [task * 8 * 8 for task in range(16)]
+        self.assertTrue(all(start % 64 == 0 for start in starts))
+        self.assertEqual(len({start // 64 for start in starts}), 16)
 
     def test_mocked_package_build_keeps_baseline_and_template_untouched(self):
         # Exercise file/preset/install isolation, without claiming a CANN compilation.
@@ -201,6 +227,22 @@ class CapacityTests(unittest.TestCase):
             self.assertEqual(result['status'], 'experimental_packages_and_host_built_device_pending')
             with self.assertRaises(ValueError):
                 build(args)
+            old_build = args.output
+            old_report = (old_build / 'build.json').read_bytes()
+            args.output = base / 'repair'
+            args.reuse_normal_build = old_build
+            with (
+                patch('standalone.selector_capacity.s.execute', side_effect=execute),
+                patch('standalone.selector_capacity.s.aliases') as aliases,
+            ):
+                build(args)
+                self.assertEqual(aliases.call_count, 3)
+            self.assertEqual(len(installations), 9)  # Only three replacement diagnostic packages.
+            repaired = json.loads((args.output / 'build.json').read_text())
+            self.assertEqual(repaired['profile_trace_contract'], TRACE_CONTRACT)
+            for capacity in CAPACITIES:
+                self.assertEqual(repaired['variants'][str(capacity)], result['variants'][str(capacity)])
+            self.assertEqual((old_build / 'build.json').read_bytes(), old_report)
 
 
 if __name__ == '__main__':

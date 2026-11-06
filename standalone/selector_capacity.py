@@ -1,6 +1,7 @@
 """Build isolated 1024/2048/4096 packages and compare real/sparse input on A5."""
 
 import argparse
+import copy
 import itertools
 import json
 import os
@@ -14,7 +15,9 @@ from standalone import build_final
 from standalone import final_support as s
 from standalone import large_corpus as corpus
 from standalone import resident_index as r
-from tools.capacity_sources import CAPACITIES, once, write_variant
+from tools.capacity_sources import CAPACITIES, once, sources, write_variant
+
+TRACE_CONTRACT = 'simt_gm_cacheline64_nonce_v2'
 
 
 def read(path):
@@ -60,6 +63,14 @@ def build(args):
     # Check the complete template before creating any output or invoking its build scripts.
     r.require((args.template / 'build.sh').is_file(), 'Actual fused CANN template required')
     merge = (args.vendors / 'bm25_topk_merge').resolve(strict=True)
+    previous = None
+    reuse = getattr(args, 'reuse_normal_build', None)
+    if reuse:
+        previous = read(reuse / 'build.json')
+        r.require(
+            previous['status'] == 'experimental_packages_and_host_built_device_pending', 'Previous build incomplete'
+        )
+        r.require(package_fingerprint(merge) == previous['merge_installed_files'], 'Original Merge package changed')
     output.mkdir(parents=True)
     record = {
         'status': 'building_experimental_packages_device_pending',
@@ -68,11 +79,30 @@ def build(args):
         'baseline_merge': str(merge),
         'execution_source_lock_sha256': s.digest(ROOT / 'source_lock.json'),
         'merge_installed_files': package_fingerprint(merge),
+        'profile_trace_contract': TRACE_CONTRACT,
     }
+    if reuse:
+        record['reused_normal_build_sha256'] = s.digest(reuse / 'build.json')
     try:
         for capacity in CAPACITIES:
             for profile in (False, True):
                 key = f'{capacity}' + ('_profile' if profile else '')
+                if previous and not profile:
+                    variant = copy.deepcopy(previous['variants'][key])
+                    host_source, kernel_source, _ = sources(capacity, False)
+                    for folder, text in (('op_host', host_source), ('op_kernel', kernel_source)):
+                        relative = folder + '/bm25_fused_score_top_k.cpp'
+                        r.require(
+                            variant['source_sha256'][relative] == r.digest(text.encode('utf-8')),
+                            'Normal source differs; refuse package reuse',
+                        )
+                    r.require(
+                        package_fingerprint(Path(variant['vendor'])) == variant['installed_files'],
+                        'Normal package changed; refuse reuse',
+                    )
+                    record['variants'][key] = variant
+                    print('REUSE normal capacity', capacity, flush=True)
+                    continue
                 vendor_name = 'bm25_capacity_' + key
                 project = output / ('project_' + key)
                 build_final.prepare(args.template.resolve(), project, 'fused')
@@ -177,6 +207,8 @@ def profile_summary(data, capacity):
         and data.get('completed') is True
         and data.get('normal_profile_outputs_bit_identical') is True
         and data.get('guards_passed') is True
+        and data.get('trace_contract') == TRACE_CONTRACT
+        and data.get('trace_words') == 8
         and len(data['samples']) == 60,
         'Incomplete stage checks',
     )
@@ -188,9 +220,17 @@ def profile_summary(data, capacity):
         score, topk = [], []
         for sample in samples:
             values = sample['task_timestamps']
-            r.require(len(values) == 4 * data['tasks'], 'Missing task timestamps')
-            r.require(all(x == capacity for x in values[3::4]), 'Loaded device capacity differs from the variant')
-            for start, middle, end in zip(values[::4], values[1::4], values[2::4]):
+            r.require(len(values) == 8 * data['tasks'], 'Missing task timestamps')
+            slot = (case == 'B') ^ (sample['cycle'] & 1)
+            sequence = 11 + sample['cycle'] * 2 + slot
+            r.require(sample['sequence'] == sequence, 'Profile sequence differs')
+            for task in range(data['tasks']):
+                start, middle, end, marker, nonce_in, nonce_out, task_id, version = values[task * 8 : (task + 1) * 8]
+                r.require(marker == capacity, 'Loaded device capacity differs from the variant')
+                r.require(
+                    nonce_in == nonce_out == sequence and task_id == task and version == 2,
+                    'Stale, overlapping or incompatible device trace',
+                )
                 r.require(
                     all(type(x) is int for x in (start, middle, end)) and 0 <= start < middle < end,
                     'Invalid device timestamps',
@@ -237,6 +277,10 @@ def comparisons(rows, workloads):
 def run(args):
     setup = read(args.build / 'build.json')
     r.require(setup['status'] == 'experimental_packages_and_host_built_device_pending', 'Build incomplete')
+    r.require(
+        setup.get('profile_trace_contract') == TRACE_CONTRACT,
+        'Rebuild profile packages with the fixed trace writer; normal packages can be reused',
+    )
     output = args.output.resolve()
     r.require(not output.exists() and output.is_relative_to(ROOT / 'results'), 'New results output required')
     workloads = {}
@@ -291,6 +335,7 @@ def run(args):
             for k, v in workloads.items()
         },
         'stage_units': 'raw GetSystemCycle ticks; no unverified A5 frequency conversion',
+        'profile_trace_contract': TRACE_CONTRACT,
         'stage_scope': 'Instrumented package per-leaf scoring+append and Pack+threshold+collect; barriers and timestamp overhead remain. Not additive to uninstrumented full Search.',
         'performance_acceptance': 'pending_review_no_candidate_promoted',
     }
@@ -422,6 +467,9 @@ def main():
     p.add_argument('--toolkit-home', type=Path, default=Path('/usr/local/Ascend/cann-9.2.0/x86_64-linux'))
     p.add_argument('--jobs', type=int, default=8)
     p.add_argument('--clang-tidy', default='clang-tidy')
+    p.add_argument(
+        '--reuse-normal-build', type=Path, help='Reuse only verified normal packages from a successful older build'
+    )
     p = sub.add_parser('run')
     p.add_argument('--build', type=Path, required=True)
     p.add_argument('--host-build', type=Path, required=True)

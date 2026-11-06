@@ -1,0 +1,304 @@
+{
+  "date": "2026-11-06",
+  "status": "original_A5_build_and_boundaries_passed_partial_Search_v2_trace_fix_pending_A5",
+  "provenance": {
+    "source": "User-pasted terminal transcript and follow-up profile.log tail, not a local device run",
+    "attachment_sha256": "20f7c933163f523273ff8ece9759d32082723c0b265c616329a7becc69b10b5f",
+    "fresh_build_report_binary_hashes_or_raw_failed_trace_received": false
+  },
+  "original_build": {
+    "path": "/test/w50066029/bm25-npu-indexsdk/results/capacity_build_01",
+    "six_operator_builds_and_installations_completed": true,
+    "host_compile_and_real_header_clang_tidy_completed": true,
+    "boundary_checks_completed": 6,
+    "basis": "Successful runner progress beyond its build and six boundary-report gates"
+  },
+  "partial_run": {
+    "path": "/test/w50066029/bm25-npu-indexsdk/results/capacity_a5_01",
+    "completed_summarized_cells": 3,
+    "round": 1,
+    "workload": "scifact",
+    "per_capacity": {
+      "1024": {
+        "search": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.08658,
+            "p95_batch_ms": 0.087952,
+            "mean_batch_ms": 0.086456,
+            "search_time_throughput_qps": 92532.61774775609
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.074181,
+            "p95_batch_ms": 0.076134,
+            "mean_batch_ms": 0.0746369,
+            "search_time_throughput_qps": 107185.58782586093
+          }
+        },
+        "stages": {
+          "A": {
+            "score_and_append_ticks": {
+              "samples": 240,
+              "median": 16216.5,
+              "p95": 32334,
+              "mean": 18488.2125
+            },
+            "topk_ticks": {
+              "samples": 240,
+              "median": 34484.0,
+              "p95": 34676,
+              "mean": 34408.00833333333
+            }
+          },
+          "B": {
+            "score_and_append_ticks": {
+              "samples": 240,
+              "median": 11653.5,
+              "p95": 20377,
+              "mean": 12862.929166666667
+            },
+            "topk_ticks": {
+              "samples": 240,
+              "median": 34165.5,
+              "p95": 34701,
+              "mean": 22798.079166666666
+            }
+          }
+        },
+        "normal_profile_package_topk_sha256": {
+          "A_scores": "62f0da9bdf2efd68e2153e2042f3f25034397c8a443a3b54eb20e9297678714a",
+          "A_ids": "af094e63d0879765ba1511586471f115ab486f114e7ea98f0279e3bf4546b537",
+          "B_scores": "d64df5f25f7acf79dbf8e4906179a416f7cac938bfc20619daee223420ca26cb",
+          "B_ids": "579aa5faa4135c82b2adf5752511e17e65c150006cc685893123bf7a8c3c29ea"
+        },
+        "search_report_sha256": "97b1f32d7ae548bbe547ba2bf80eb959ff155d64a233a49e631fca7e6be57ee7",
+        "profile_report_sha256": "d382844a722a8aaa99a049f74b81141a237ca9c9ff8758133068e3d7c514ac42"
+      },
+      "2048": {
+        "search": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.086445,
+            "p95_batch_ms": 0.087782,
+            "mean_batch_ms": 0.08651173333333333,
+            "search_time_throughput_qps": 92473.00558845198
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.07391049999999999,
+            "p95_batch_ms": 0.075863,
+            "mean_batch_ms": 0.07423636666666666,
+            "search_time_throughput_qps": 107763.89469491817
+          }
+        },
+        "stages": {
+          "A": {
+            "score_and_append_ticks": {
+              "samples": 240,
+              "median": 16165.5,
+              "p95": 32315,
+              "mean": 18390.895833333332
+            },
+            "topk_ticks": {
+              "samples": 240,
+              "median": 34205.0,
+              "p95": 34683,
+              "mean": 26955.270833333332
+            }
+          },
+          "B": {
+            "score_and_append_ticks": {
+              "samples": 240,
+              "median": 11385.5,
+              "p95": 20273,
+              "mean": 12747.275
+            },
+            "topk_ticks": {
+              "samples": 240,
+              "median": 4546.5,
+              "p95": 34698,
+              "mean": 15325.083333333334
+            }
+          }
+        },
+        "normal_profile_package_topk_sha256": {
+          "A_scores": "62f0da9bdf2efd68e2153e2042f3f25034397c8a443a3b54eb20e9297678714a",
+          "A_ids": "af094e63d0879765ba1511586471f115ab486f114e7ea98f0279e3bf4546b537",
+          "B_scores": "d64df5f25f7acf79dbf8e4906179a416f7cac938bfc20619daee223420ca26cb",
+          "B_ids": "579aa5faa4135c82b2adf5752511e17e65c150006cc685893123bf7a8c3c29ea"
+        },
+        "search_report_sha256": "0465d5e292da9de65d377e802d6bb583ff52a3e785f1f72601f009c04092c00a",
+        "profile_report_sha256": "0a4096bb529a47a1e07467ca51d7a455fc883ca652cc7bf09e04df1367d958e7"
+      },
+      "4096": {
+        "search": {
+          "A": {
+            "samples": 30,
+            "median_batch_ms": 0.0865995,
+            "p95_batch_ms": 0.088042,
+            "mean_batch_ms": 0.08671203333333333,
+            "search_time_throughput_qps": 92259.39806124564
+          },
+          "B": {
+            "samples": 30,
+            "median_batch_ms": 0.046218999999999996,
+            "p95_batch_ms": 0.048243,
+            "mean_batch_ms": 0.04636616666666667,
+            "search_time_throughput_qps": 172539.60323080406
+          }
+        },
+        "stages": {
+          "A": {
+            "score_and_append_ticks": {
+              "samples": 240,
+              "median": 16153.0,
+              "p95": 32372,
+              "mean": 18385.708333333332
+            },
+            "topk_ticks": {
+              "samples": 240,
+              "median": 5616.5,
+              "p95": 34675,
+              "mean": 9400.816666666668
+            }
+          },
+          "B": {
+            "score_and_append_ticks": {
+              "samples": 240,
+              "median": 11442.5,
+              "p95": 20258,
+              "mean": 12755.633333333333
+            },
+            "topk_ticks": {
+              "samples": 240,
+              "median": 4520.5,
+              "p95": 6145,
+              "mean": 4581.820833333333
+            }
+          }
+        },
+        "normal_profile_package_topk_sha256": {
+          "A_scores": "62f0da9bdf2efd68e2153e2042f3f25034397c8a443a3b54eb20e9297678714a",
+          "A_ids": "af094e63d0879765ba1511586471f115ab486f114e7ea98f0279e3bf4546b537",
+          "B_scores": "d64df5f25f7acf79dbf8e4906179a416f7cac938bfc20619daee223420ca26cb",
+          "B_ids": "579aa5faa4135c82b2adf5752511e17e65c150006cc685893123bf7a8c3c29ea"
+        },
+        "search_report_sha256": "741f73e9f93e2700e2fc48c1891f553a257c994ad4974850fcdcb049be5a2c87",
+        "profile_report_sha256": "2e59bae2b49c9dbb97bdf336abd55cf5bb5382699c79714e5e3959f9856c90d4"
+      }
+    },
+    "Search_median_change_percent_vs_same_round_1024": {
+      "1024": {
+        "A": 0.0,
+        "B": 0.0
+      },
+      "2048": {
+        "A": -0.15592515592516287,
+        "B": -0.3646486297030349
+      },
+      "4096": {
+        "A": 0.02252252252250564,
+        "B": -37.69428829484639
+      }
+    },
+    "failed_step": "round1/sparse8192/1024/profile.log",
+    "failure": "Missing/nonmonotonic device timestamps",
+    "stage_values_valid_for_performance_conclusions": false,
+    "Search_results": "Retained as partial uninstrumented first-round evidence; not a six-round acceptance or sparse-regression result"
+  },
+  "source_audit": {
+    "defects": [
+      "32-byte scalar-write records from different cores share a 64-byte DCache line",
+      "GlobalTensor::SetValue writes lacked required DCache writeback handling"
+    ],
+    "relation_to_failure": "Definite source contract violations can cause missing/overwritten trace values, consistent with the reported failure. The exact failing timestamps were not supplied; repaired A5 confirmation remains pending.",
+    "primary_source": "https://www.hiascend.com/doc_center/source/en/canncommercial/800/apiref/ascendcopapi/atlasascendc_api_07_0007.html"
+  },
+  "fix": {
+    "trace_contract": "simt_gm_cacheline64_nonce_v2",
+    "stride_bytes": 64,
+    "writer": "SIMT GM stores, no scalar GlobalTensor SetValue; write occurs after the measured timestamp",
+    "checks": [
+      "strictly increasing timestamps",
+      "capacity marker",
+      "per-call input nonce and output echo",
+      "task number",
+      "layout version",
+      "guards",
+      "mode 0/mode 3 and normal/profile package TopK bits"
+    ],
+    "failure_dump": "profile.json.failure.json with cycle/case/task/nonce and raw record",
+    "normal_packages_changed": false,
+    "existing_accepted_core_or_CMake_flags_changed": false,
+    "rebuild": "Only three profile packages and diagnostic host; validated old normal packages remain available via --reuse-normal-build",
+    "new_device_runs_must_use_fresh_output_and_all_six_rounds": true
+  },
+  "generated_source_variants": {
+    "1024": {
+      "capacity": 1024,
+      "scratch_bytes": 16736,
+      "buffer_bytes": 50848,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "b06ccdec83c2a0a9c7bb20f48f6c74d1ddd34c698d62793b47f13293a68692ba",
+      "kernel_sha256": "1d446208bd63668d655231c460d9966cb3329e14d30c1e055c2c3411ea385e9a"
+    },
+    "1024_profile": {
+      "capacity": 1024,
+      "scratch_bytes": 16736,
+      "buffer_bytes": 50848,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "544a05ee1a17e50062e1a926fb1ea3d23800b204b0a390fd48da33459b6e952e",
+      "kernel_sha256": "cf5a67cf9a22b8ab0278ec7c7bfea22f84bc14238bbc32e30bc0efc6d16845c5"
+    },
+    "2048": {
+      "capacity": 2048,
+      "scratch_bytes": 24928,
+      "buffer_bytes": 59040,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "8058f4fbfa6b46fbf4427def592ac293384074eea61b85366a933707a94c5110",
+      "kernel_sha256": "b973961db2e5e085f567b10ce6a7bb87e9950a64a35a9979f89f02d02e0e30cd"
+    },
+    "2048_profile": {
+      "capacity": 2048,
+      "scratch_bytes": 24928,
+      "buffer_bytes": 59040,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "1e8aa6d220cb0a7487afae084382d68f3b8b22094ab72a2a62826cebd5625daa",
+      "kernel_sha256": "7ad0ef4f599110c3216c2d2f957b48075c315a965aa4e33335836cc7350949cc"
+    },
+    "4096": {
+      "capacity": 4096,
+      "scratch_bytes": 41312,
+      "buffer_bytes": 75424,
+      "dynamic_ub_bytes": 98304,
+      "host_sha256": "cd0bc4f46e91709d26bac57c709808b18d1c68c67cb64c9e776e31cbbfd63ac5",
+      "kernel_sha256": "c9b6a50a2cccbfaa4ca9df2c3989e2f8b3e2a1fb7a43e835d7e4dc78cd76dd0c"
+    },
+    "4096_profile": {
+      "capacity": 4096,
+      "scratch_bytes": 41312,
+      "buffer_bytes": 75424,
+      "dynamic_ub_bytes": 98304,
+      "host_sha256": "36fdefb29f2ccd3f656e9d8aa4c755794e941cee1580bd85e9b3ed79a073b39c",
+      "kernel_sha256": "53340816185b2c288d6ac4468e38d420cabe2fc54550e4e82d4822ce989bed30"
+    }
+  },
+  "local_checks": {
+    "tool_tests": 50,
+    "dedicated_capacity_tests": 10,
+    "mock_header_host_clang_tidy": true,
+    "Python39_AST": true,
+    "structure": true,
+    "real_CANN_compile_of_v2": false,
+    "A5_device_run_of_v2": false
+  },
+  "source_sha256": {
+    "standalone/selector_capacity.py": "d138ba45e2036d450e22a369fb267096af38c49383c8f24b2ec27b872ed30a71",
+    "tools/capacity_sources.py": "9a23cc7fd8177b2bc607b79a93abbe46eb6dd4aa090b5757eb30c968cd4cd711",
+    "tools/test_selector_capacity.py": "0133f3923959d711b05f68438d337640cb702cc4b11c5e77df80d4c9c4fe9acb",
+    "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/capacity_profile.cpp": "ec26e641b6166e12da088ff503f7ca78a0c7a45b01f54eeb856d9cc9b7e29b02",
+    "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
+  },
+  "commands": "docs/SELECTOR_CAPACITY.md"
+}

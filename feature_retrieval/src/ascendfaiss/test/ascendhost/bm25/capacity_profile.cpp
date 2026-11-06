@@ -23,7 +23,8 @@ public:
                         const fs::path &output)
     {
         const size_t tasks = s.plan.q * s.plan.leaves;
-        const size_t traceBytes = Bytes(tasks * 4, sizeof(int64_t));
+        constexpr size_t traceWords = 8; // One independent 64-byte record per task.
+        const size_t traceBytes = Bytes(tasks * traceWords, sizeof(int64_t));
         const size_t fullBytes = Bytes(s.plan.q * s.plan.padded, sizeof(float));
         Check(traceBytes <= fullBytes, "Trace shape too small");
         s.MemoryGate(fullBytes + 128, "Profile trace exceeds budget");
@@ -31,6 +32,7 @@ public:
         Tensors tensors;
         buffers.stream = tensors.stream = s.resources.runtime.stream;
         auto *base = static_cast<unsigned char *>(buffers.Allocate(fullBytes + 128));
+        Check(reinterpret_cast<uintptr_t>(base + 64) % 64 == 0, "Trace base must be 64-byte aligned");
         auto *trace = tensors.Describe(s.plan.q, s.plan.padded, ACL_FLOAT, base + 64);
         std::array<PlannedResult, 2> gold;
         for (size_t which = 0; which < 2; ++which) {
@@ -45,7 +47,8 @@ public:
         std::vector<uint64_t> workBytes;
         std::ofstream out(output);
         out << "{\"status\":\"device_stage_profile_traces_and_bit_checks_passed\",\"tasks\":" << tasks
-            << ",\"queries\":" << s.plan.q << ",\"samples\":[";
+            << ",\"queries\":" << s.plan.q
+            << ",\"trace_contract\":\"simt_gm_cacheline64_nonce_v2\",\"trace_words\":8,\"samples\":[";
         bool comma = false;
         for (int cycle = -5; cycle < 30; ++cycle)
             for (int slot = 0; slot < 2; ++slot) {
@@ -58,7 +61,10 @@ public:
                 }();
                 for (size_t pos : {size_t(0), fullBytes + 64})
                     Require(aclrtMemcpy(base + pos, 64, guard.data(), 64, ACL_MEMCPY_HOST_TO_DEVICE), "trace guard");
-                std::vector<int64_t> values(tasks * 4, -1);
+                const int64_t sequence = (cycle + 5) * 2 + slot + 1;
+                std::vector<int64_t> values(tasks * traceWords, -1);
+                for (size_t task = 0; task < tasks; ++task)
+                    values[task * traceWords + 4] = sequence;
                 Require(aclrtMemcpy(base + 64, traceBytes, values.data(), traceBytes, ACL_MEMCPY_HOST_TO_DEVICE),
                         "poison trace");
                 auto prepared = s.Prepare(trace, 3);
@@ -91,13 +97,26 @@ public:
                 }
                 s.resources.CheckGuards();
                 for (size_t task = 0; task < tasks; ++task) {
-                    const auto *v = values.data() + task * 4;
-                    Check(v[0] >= 0 && v[1] > v[0] && v[2] > v[1], "Missing/nonmonotonic device timestamps");
-                    Check(v[3] == 1024 || v[3] == 2048 || v[3] == 4096, "Invalid device capacity marker");
+                    const auto *v = values.data() + task * traceWords;
+                    const bool valid = v[0] >= 0 && v[1] > v[0] && v[2] > v[1] &&
+                                       (v[3] == 1024 || v[3] == 2048 || v[3] == 4096) && v[4] == sequence &&
+                                       v[5] == sequence && v[6] == static_cast<int64_t>(task) && v[7] == 2;
+                    if (!valid) {
+                        // Preserve the complete failing record before throwing; never relax the timing gate.
+                        const auto context = "cycle=" + std::to_string(cycle) + " case=" + (which ? "B" : "A") +
+                                             " task=" + std::to_string(task) + " sequence=" + std::to_string(sequence);
+                        std::ofstream failure(output.string() + ".failure.json");
+                        failure << "{\"context\":\"" << context << "\",\"record\":[";
+                        for (size_t i = 0; i < traceWords; ++i)
+                            failure << (i ? "," : "") << v[i];
+                        failure << "]}\n";
+                        failure.close();
+                        Check(false, "Invalid device trace: " + context + "; see " + output.string() + ".failure.json");
+                    }
                 }
                 if (cycle >= 0) {
                     out << (comma ? "," : "") << "{\"case\":\"" << (which ? "B" : "A") << "\",\"cycle\":" << cycle
-                        << ",\"task_timestamps\":[";
+                        << ",\"sequence\":" << sequence << ",\"task_timestamps\":[";
                     for (size_t i = 0; i < values.size(); ++i)
                         out << (i ? "," : "") << values[i];
                     out << "]}";
