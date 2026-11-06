@@ -1,6 +1,6 @@
 {
   "date": "2026-11-06",
-  "status": "concentrated_A5_matrix_completed_split_frozen_IndexSDK_integration_build_pending",
+  "status": "actual_integrated_IndexSDK_A5_build_install_static_shared_quality_and_six_round_Search_completed",
   "historical_lock": "evidence/delivery_lock_20261029.json",
   "note": "Current host huge-first allocator was validated on A5 at d685cf4 after the same-size policy probe reproduced NORMAL_ONLY207001 versus HUGE_FIRST success. Fresh real CANN host build, tests, production clang-tidy, installed consumption, selector/merge/shared SDK and synthetic10M checks passed. Synthetic NPU A/B 1.7590635/1.74224325ms show no observed slowdown versus earlier session references; not a paired causal estimate. MS MARCO all 43 test-query quality and native-BM25S fixed Q8 six-round performance passed, with latency ratios 7.95662/7.70407. Native tie-policy metric differences and the unexplained slower first round are retained. Operators, other production C++ and CMake security flags are unchanged; source groups track the current accepted code. Historical and small-corpus mixed results remain archived; no universal workload claim. Subsequent SciFact/TREC-COVID repeats on the accepted host build reproduced every role-specific quality metric. NPU median changes versus prior sessions range from -0.48749% to +0.78248%; median-of-round-P95 changes range from -0.39994% to +1.40114%. SciFact A still fails the native-CPU median win gate while B passes; both TREC-COVID gates pass. These are cross-session observations, not a zero-overhead or equivalence proof. A retained 8192-document synthetic input was subsequently measured with the accepted host build: A/B NPU medians 0.0295995/0.0305685 ms, 17.03%/14.41% lower than the historical session; median and P95 gates versus original native BM25S pass in all six rounds. This addresses the matched small synthetic case only. Real-input query work and selection eligibility differ; their time contributions remain unprofiled.",
   "frozen_operators": {
@@ -340,7 +340,7 @@
       "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
     },
     "CANN_compile_and_device_passed": true,
-    "next_phase": "frozen_split_IndexSDK_source_integration_then_actual_public_API_acceptance",
+    "next_phase": "completed_freeze_and_deliver_no_further_optimization",
     "constraint": "One final sparse-path adjustment; once benefit is clear run concentrated tests, freeze one version, integrate IndexSDK, then test the real integrated path. Do not repeatedly optimize each dataset.",
     "latest_evidence": "evidence/concentrated_preindex_a5_20261106.json",
     "CANN_compile_and_boundary_passed": true,
@@ -358,11 +358,14 @@
     "measured_package_sha256": "0ba0af7e090cc190828dcee6b44fd78efe57b65fc1ad4d0bce700c0f86c3e949",
     "optimization_frozen": true,
     "further_tuning_rounds": 0,
-    "postintegration_accepted": false,
-    "standalone_baseline_source_preserved": true
+    "postintegration_accepted": true,
+    "standalone_baseline_source_preserved": true,
+    "postintegration_evidence": "evidence/indexsdk_postintegration_a5_20261106.json",
+    "postintegration_evidence_sha256": "51eedc878deba344e95b569b577e41dad89d765755746098a9ad1b7f959c6a8b",
+    "acceptance_scope": "Specified A5 IndexSDK shared-library integration matrix,Q8/K10; median performance close; SciFact tail and prior sparse costs retained. No universal concurrency/SLO claim."
   },
   "indexsdk_integration": {
-    "status": "IndexSDK_source_merge_and_public_API_acceptance_tools_locally_checked_A5_build_pending",
+    "status": "actual_integrated_IndexSDK_build_install_static_shared_quality_and_six_round_Search_completed",
     "evidence": "evidence/indexsdk_integration_local_20261106.json",
     "commands": "docs/INDEXSDK_MERGE.md",
     "source_sha256": {
@@ -376,7 +379,7 @@
       "tools/split_sources.py": "fdd083851f087d656bc098ad9ead908c4167158a9c5a80123a158ee443439048"
     },
     "base_commit": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
-    "actual_SDK_build_and_device_passed": false,
+    "actual_SDK_build_and_device_passed": true,
     "only_modified_upstream_file": "feature_retrieval/src/ascendfaiss/ascendhost/CMakeLists.txt",
     "latest_recovery_evidence": "evidence/indexsdk_tidy_recovery_20261106.json",
     "A5_progress": {
@@ -384,10 +387,18 @@
       "original_SDK_shared_library_build_passed": true,
       "unit_tests_passed": true,
       "all_five_BM25_production_clang_tidy_passed": true,
-      "test_program_clang_tidy": "failed_in_unmodified_upstream_headers_due_to_parent_path_scope_leak",
-      "static_and_install_recovery_verified_on_A5": false,
-      "postintegration_device_verified": false,
+      "test_program_clang_tidy": "all7real_units_passed_no_stubs",
+      "static_and_install_recovery_verified_on_A5": true,
+      "postintegration_device_verified": true,
       "recovery_mode": "resume-build"
+    },
+    "latest_A5_evidence": "evidence/indexsdk_postintegration_a5_20261106.json",
+    "latest_A5_evidence_sha256": "51eedc878deba344e95b569b577e41dad89d765755746098a9ad1b7f959c6a8b",
+    "A5_execution_commit": "e158fd202064299f08077e96f6674134241df142",
+    "actual_SDK_binary_sha256": {
+      "libascendfaiss.so": "c9052ddbf7bb537b58c99a8506309a66b3c05b53ddf9312356fc21f0f5c2113a",
+      "bm25_sdk_benchmark": "fe4e87a13d8b0b54778b3f1f0e260265567d089d553aec3c42992a108df4be9b",
+      "bm25_sdk_shared_check": "f0e139f782f14bd7f89726cc3cd8b283b2616478c171e9524f771afc3e7d8442"
     }
   }
 }

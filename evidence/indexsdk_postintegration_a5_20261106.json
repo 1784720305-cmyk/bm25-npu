@@ -1,0 +1,2028 @@
+{
+  "date": "2026-11-06",
+  "status": "actual_integrated_IndexSDK_build_install_static_shared_quality_and_six_round_Search_completed",
+  "acceptance_scope": "Complete for the specified IndexSDK/A5 integration matrix. Performance remains close on these fixed Q8/K10 inputs, with all measured median/P95 costs retained. No universal business SLO or unmeasured concurrency claim.",
+  "provenance": {
+    "execution_commit": "e158fd202064299f08077e96f6674134241df142",
+    "source": "User A5 console attachment and requested JSON readback in this chat; locally audited command coverage, paired sequence, arithmetic and source/hash identities. Not local hardware execution.",
+    "console_attachment": "C:\\Users\\kojo-jotaro\\.codex\\attachments\\1eb06a7c-3964-4561-bdeb-1d5d45299719\\Pasted text.txt",
+    "console_sha256": "8f126587da0dc11bd8eb9e2e19448d2250cc6e5e64bc26aa960cc2e2cf27fe5d",
+    "raw_A5_report_package_and_binary_files_received": false,
+    "raw_per_call_timing_score_and_ID_files_received": false,
+    "reported_artifact_hashes_independently_rehashed_locally": false,
+    "round_medians_P95_changes_pairs_and_wins_independently_recomputed": true
+  },
+  "environment": {
+    "SDK_base_commit": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
+    "device": 5,
+    "CANN": "9.2.0",
+    "cpus": "0-31",
+    "memory_node": 0,
+    "exclusive_core_reservation_verified": false,
+    "SDK_source": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_integrated_01/sdk",
+    "SDK_patch": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_integrated_01/indexsdk-bm25.patch",
+    "SDK_host_build": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host",
+    "relocated_installation": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/relocated",
+    "original_reference_modified": false
+  },
+  "build": {
+    "status": "integrated_IndexSDK_build_static_UT_install_passed_device_pending",
+    "build_status_scope": "Host-stage report intentionally retains device_pending; the separate completed device report supersedes that pending state.",
+    "binary_sha256": {
+      "libascendfaiss.so": "c9052ddbf7bb537b58c99a8506309a66b3c05b53ddf9312356fc21f0f5c2113a",
+      "bm25_sdk_benchmark": "fe4e87a13d8b0b54778b3f1f0e260265567d089d553aec3c42992a108df4be9b",
+      "bm25_sdk_shared_check": "f0e139f782f14bd7f89726cc3cd8b283b2616478c171e9524f771afc3e7d8442"
+    },
+    "fused_vendor": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/operator_install/vendors/bm25_indexsdk_split_1024",
+    "fused_installed_files": {
+      "bin/set_env.bash": "eea45667608fafdcf2248b6a658a767101f5714f84ae559837da282b83cf043f",
+      "framework/tensorflow/npu_supported_ops.json": "201c38cada2cc5acdb47daebd3ec1921437ade94151d261a09110260157acef9",
+      "op_api/include/aclnn_bm25_fused_score_top_k.h": "2ca3483aa2a81560e8fcc817a23666bae829da5f289b3a8ba0270dcc34174f00",
+      "op_api/lib/libcust_opapi.so": "d14dd6b6268fc263c8248d69e4f4d5c2f8c4a488d572e2a9bcc5bb20c112f541",
+      "op_impl/ai_core/tbe/bm25_indexsdk_split_1024_impl/dynamic/LICENSE-CANN": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "op_impl/ai_core/tbe/bm25_indexsdk_split_1024_impl/dynamic/bm25_fused_score_top_k.cpp": "d7bd438887798cd693c90599866dac45891b86e03ff6c99907358feedcc45948",
+      "op_impl/ai_core/tbe/bm25_indexsdk_split_1024_impl/dynamic/bm25_fused_score_top_k.py": "9c0ef875fdd21a3ddb6899ef8c9f5a1a7af21834a3ba61a4f58d8dfa1ffe3fad",
+      "op_impl/ai_core/tbe/bm25_indexsdk_split_1024_impl/dynamic/bm25_fused_score_top_k_tiling.h": "2393e58eda07c9b5bcfca698e503ce1f59fc6583c1e5ef64efc82d80aabab157",
+      "op_impl/ai_core/tbe/config/ascend950/aic-ascend950-ops-info.json": "28b084d90cbe1429e7a729debed2a78ebe1b4644f4ab584ca048c0e369f01353",
+      "op_impl/ai_core/tbe/kernel/ascend950/bm25_fused_score_top_k/Bm25FusedScoreTopK_651286627804fce054e5518a1f678334.json": "3bf716b85386cd250130d2dc5136db2d4ccd013d006f9e4dc2f770d7c467513c",
+      "op_impl/ai_core/tbe/kernel/ascend950/bm25_fused_score_top_k/Bm25FusedScoreTopK_651286627804fce054e5518a1f678334.o": "1004d6ba4873b5da8089d238e32765705de9d21abe7bc0f0eafb68014ae01777",
+      "op_impl/ai_core/tbe/kernel/config/ascend950/binary_info_config.json": "d3b28ac6a3221cc656978d487154c1e5c3a112244d04ff996dbd40bd09bb275c",
+      "op_impl/ai_core/tbe/kernel/config/ascend950/bm25_fused_score_top_k.json": "ce8cae5c95d05d3abb90f7b15980a994af8465bc6d9083c6c789eb30ed78d8db",
+      "op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64/libcust_opmaster_rt2.0.so": "fc2b5d62cf44e930cdade50fe0a15acdbbbcee47491df806300ae807752d7f98",
+      "op_impl/ai_core/tbe/op_tiling/liboptiling.so": "fc2b5d62cf44e930cdade50fe0a15acdbbbcee47491df806300ae807752d7f98",
+      "op_proto/inc/op_proto.h": "ab7fda4cfc06234c213801a7e36eaf60b7bfd8e88cb3aaf17ce410bccee03c67",
+      "op_proto/lib/linux/x86_64/libcust_opsproto_rt2.0.so": "22714ab119f74a8fc7ed76f51810de81342287f9f76ff7768e688a1e22a42b01",
+      "scripts/uninstall.sh": "6a1b4bcef4f1bab3fdd4d51b068cb7c797c1d7879941ac286a9ff0ed4db22652",
+      "version.info": "fd75e9505016e9725e823b2f2dc3a751d7f5e6f9f3d5734d702c4b8c00acfc87"
+    },
+    "merge": "/test/w50066029/bm25-npu/results/custom_opp/vendors/bm25_topk_merge_tree",
+    "merge_installed_files": {
+      "bin/set_env.bash": "d9bf40275aa7c7832c596dcb35cbdc539a620477d3aade159f46f18a0ab1126b",
+      "framework/tensorflow/npu_supported_ops.json": "3449e5b322b1ba572365427f1178ceb223b1e5981d576392680c59f805ff3503",
+      "op_api/include/aclnn_bm25_top_k_merge.h": "a0ee9983427c56e2e5d97cac10be964bb4d618e397178290cbfd51a1a992249c",
+      "op_api/lib/libcust_opapi.so": "ffa49ede8b2b8c0a68e0507ebfed809be33f97b63a6f0019f77ceeb752b87fdc",
+      "op_impl/ai_core/tbe/bm25_topk_merge_tree_impl/dynamic/bm25_top_k_merge.cpp": "25e9b7f637abcf89885593e7b0266bf6fd910d7fbdfe6c4472bb0adf1a6346fd",
+      "op_impl/ai_core/tbe/bm25_topk_merge_tree_impl/dynamic/bm25_top_k_merge.py": "b2e1492acb1cbf0cc31e211cc4e3b126039a5865c3cc6f3ac1c91114a3950469",
+      "op_impl/ai_core/tbe/bm25_topk_merge_tree_impl/dynamic/bm25_top_k_merge_tiling.h": "7b5c0ea9251af3620f0c03e942d2b3a713aa7d4622734e788f800e6c6e09598f",
+      "op_impl/ai_core/tbe/config/ascend950/aic-ascend950-ops-info.json": "936a7a7913167d96a70e82d33b524a3e4eaec11858762a5fced8f50dabc8dc75",
+      "op_impl/ai_core/tbe/kernel/ascend950/bm25_top_k_merge/Bm25TopKMerge_e647676bf4a3a1d67a65ba0f2c659a2a.json": "90f6fb903fd07435fcb83e8dc39e52669fa84c7a20720c53a1d5f47be93ffe4a",
+      "op_impl/ai_core/tbe/kernel/ascend950/bm25_top_k_merge/Bm25TopKMerge_e647676bf4a3a1d67a65ba0f2c659a2a.o": "e91f94bc5b42c7b6b6c3d88d7dcf74d24ed1a3f40461157ea81f6dfea4931592",
+      "op_impl/ai_core/tbe/kernel/config/ascend950/binary_info_config.json": "c3d3ddf79236dad30c63140769b298367c219e9f76b2db4b42a603c24cf8fb64",
+      "op_impl/ai_core/tbe/kernel/config/ascend950/bm25_top_k_merge.json": "b8e89881a2ff66d49ff7839137e6404320ccf63ab40330e339cdd24ea662cff4",
+      "op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64/libcust_opmaster_rt2.0.so": "cfac2935f366e55bbec0c6d8285c2d2398e4459ef3d63c344d311eb612836b8e",
+      "op_impl/ai_core/tbe/op_tiling/liboptiling.so": "cfac2935f366e55bbec0c6d8285c2d2398e4459ef3d63c344d311eb612836b8e",
+      "op_proto/inc/op_proto.h": "ebab560fcc51d7a5010c3bb87ca394ffd4b710fee9888c7eefa38155cd41dba5",
+      "op_proto/lib/linux/x86_64/libcust_opsproto_rt2.0.so": "c7f4791c8765156638def4437575f40c86b1e99084eaf93dc70f6133be817331",
+      "scripts/uninstall.sh": "f928393b79af66ed27f5a7643dddc79debd1c10d5aa18d1d2089cd4892853bbb",
+      "version.info": "fd75e9505016e9725e823b2f2dc3a751d7f5e6f9f3d5734d702c4b8c00acfc87"
+    },
+    "operator_source_sha256": {
+      "op_kernel/bm25_fused_score_top_k.cpp": "d7bd438887798cd693c90599866dac45891b86e03ff6c99907358feedcc45948",
+      "op_kernel/bm25_fused_score_top_k_tiling.h": "2393e58eda07c9b5bcfca698e503ce1f59fc6583c1e5ef64efc82d80aabab157",
+      "bm25_template_backup/op_kernel/bm25_fused_score_top_k.cpp": "fc55bbf3a15ff09f48e3bb154b9d6d13eff0b5b5b97b47fd07c796b6a72ed5be",
+      "bm25_template_backup/op_host/bm25_fused_score_top_k.cpp": "f10b7161bf7f33209b8a539bea8c705b3b731473c48b3184b7989ffc36d6be38",
+      "op_host/bm25_fused_score_top_k.cpp": "b06ccdec83c2a0a9c7bb20f48f6c74d1ddd34c698d62793b47f13293a68692ba",
+      "op_host/bm25_fused_score_top_k_tiling.h": "805d7aa217bca2aeacd3730592bdf45dff2ef36b9eb8586a84b3fb9bbb281d34"
+    },
+    "retained_binaries_unchanged_during_recovery": true,
+    "recovery_checker_sha256": "d8e6e4b8bf413fb954d2e2717031bf95882eeccc956ac7d3eaa2a68c97eedf40",
+    "static_status": "passed",
+    "static_config_sha256": "1ad0fed152d06e536f0babc2ec2e97c61c6dcdcb8ebfcfa2b912b76f730491d3",
+    "production_compile_db_coverage_complete": true,
+    "static_units": [
+      {
+        "file": "ascendhost/src/bm25/AscendIndexBm25.cpp",
+        "exit_code": 0,
+        "uses_test_stubs": false
+      },
+      {
+        "file": "ascendhost/src/bm25/fused_runtime.cpp",
+        "exit_code": 0,
+        "uses_test_stubs": false
+      },
+      {
+        "file": "ascendhost/src/bm25/large_search.cpp",
+        "exit_code": 0,
+        "uses_test_stubs": false
+      },
+      {
+        "file": "ascendhost/src/bm25/planned_search.cpp",
+        "exit_code": 0,
+        "uses_test_stubs": false
+      },
+      {
+        "file": "ascendhost/src/bm25/runtime.cpp",
+        "exit_code": 0,
+        "uses_test_stubs": false
+      },
+      {
+        "file": "test/ascendhost/bm25/sdk_benchmark.cpp",
+        "exit_code": 0,
+        "uses_test_stubs": false
+      },
+      {
+        "file": "test/ascendhost/bm25/sdk_shared_check.cpp",
+        "exit_code": 0,
+        "uses_test_stubs": false
+      }
+    ]
+  },
+  "device": {
+    "status": "postintegration_actual_public_SDK_quality_and_six_round_Search_checked",
+    "library_sha256": "c9052ddbf7bb537b58c99a8506309a66b3c05b53ddf9312356fc21f0f5c2113a",
+    "benchmark_sha256": "fe4e87a13d8b0b54778b3f1f0e260265567d089d553aec3c42992a108df4be9b",
+    "freeze_evidence_sha256": "a33ad9980ccd35ff76357b8e087876d5f15b2915aaea4d3ea50b341a1b128a49",
+    "ldd_selected_SDK_library": "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/libascendfaiss.so",
+    "shared": {
+      "status": "shared_SDK_context_oracle_retry_lifetime_and_stream_passed",
+      "device": 5,
+      "queries": 8,
+      "k": 10,
+      "init_close_cycles": 2
+    },
+    "quality": {
+      "scifact": {
+        "metrics": {
+          "queries": 300,
+          "ndcg_at_10": 0.6625278689612291,
+          "recall_at_10": 0.7799444444444444,
+          "mrr_at_10": 0.631021164021164
+        },
+        "SDK_report_sha256": "7f94b8e292c8ea7f8807a455a15fec478a6cf3ae6329176396696ecc4ca043b5",
+        "same_metrics_as_frozen_split": true,
+        "strict_ID_and_FP32_bit_match_to_frozen_split_checked_by_device_script": true
+      },
+      "trec_covid": {
+        "metrics": {
+          "queries": 50,
+          "ndcg_at_10": 0.5769513068939649,
+          "recall_at_10": 0.015566685596385304,
+          "mrr_at_10": 0.7898333333333335
+        },
+        "SDK_report_sha256": "4b3ba2159363bee39719e1a51789b6bfc1a4b4ed70f85ce88aaff231bdbad47f",
+        "same_metrics_as_frozen_split": true,
+        "strict_ID_and_FP32_bit_match_to_frozen_split_checked_by_device_script": true
+      },
+      "msmarco": {
+        "metrics": {
+          "queries": 43,
+          "ndcg_at_10": 0.43928259378939466,
+          "recall_at_10": 0.1303493715183911,
+          "mrr_at_10": 0.7459948320413436
+        },
+        "SDK_report_sha256": "dd91e0a2e917fbd51e23f1b7d6a86d80dc7e4d15869c7ff9cb39d9d8a9a4cd74",
+        "same_metrics_as_frozen_split": true,
+        "strict_ID_and_FP32_bit_match_to_frozen_split_checked_by_device_script": true
+      }
+    }
+  },
+  "audit": {
+    "console_commands": 81,
+    "recovery_commands": 5,
+    "shared_checks": 1,
+    "full_query_quality_processes": 3,
+    "SDK_performance_processes": 36,
+    "standalone_performance_processes": 36,
+    "paired_rounds": 36,
+    "Q": 8,
+    "K": 10,
+    "warmup_cycles_per_process": 5,
+    "measured_cycles_per_process": 30,
+    "cases_per_cycle": 2,
+    "measured_performance_Search_calls": 4320,
+    "all_six_workloads_have_six_complete_AB_BA_rounds": true,
+    "same_input_same_rebuilt_package_in_each_pair": true
+  },
+  "performance_scope": "Caller public AscendIndexBm25::Search with returned INT64 labels versus same-session standalone NPU Search using INT32 IDs, both using the same rebuilt frozen operator. Values summarize six process medians and six process P95s; P95 is not pooled over all180 samples. Quality-only packet timing summaries are not presented as performance evidence.",
+  "CPU_scope": "Original-native BM25S remains the concentrated-preintegration CPU baseline; it was not re-timed here. Do not mix those CPU sessions with the present SDK numbers to announce a new paired speedup.",
+  "console_commands": [
+    [
+      "/usr/bin/python3",
+      "/test/w50066029/bm25-npu-indexsdk/tools/run_clang_tidy.py",
+      "--build-dir",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host",
+      "--source-root",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_integrated_01/sdk/feature_retrieval/src/ascendfaiss",
+      "--include-tests",
+      "--clang-tidy",
+      "/test/w50066029/bm25-tools/bin/clang-tidy"
+    ],
+    [
+      "cmake",
+      "--install",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host",
+      "--prefix",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/installed"
+    ],
+    [
+      "cmake",
+      "-S",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/consumer",
+      "-B",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/consumer/build",
+      "-DSDK_PREFIX=/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/relocated",
+      "-DTOOLKIT_HOME=/usr/local/Ascend/cann-9.2.0/x86_64-linux"
+    ],
+    [
+      "cmake",
+      "--build",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/consumer/build"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/consumer/build/consumer"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_shared_check",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/shared.json"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/quality",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/quality/scifact",
+      "1",
+      "10"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round1/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round1/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "88",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round2/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "88",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round2/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round3/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round3/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "88",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round4/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "88",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round4/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round5/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round5/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "88",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round6/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "88",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/scifact_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/scifact/round6/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/quality",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/quality/trec_covid",
+      "1",
+      "10"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round1/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round1/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "70",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round2/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "70",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round2/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round3/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round3/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "70",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round4/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "70",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round4/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round5/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round5/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "70",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round6/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "70",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/trec_covid_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/trec_covid/round6/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/quality",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/quality/msmarco",
+      "1",
+      "10"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round1/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round1/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "35",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round2/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "35",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round2/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round3/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round3/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "35",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round4/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "35",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round4/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round5/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round5/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "35",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/index",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round6/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "35",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu-indexsdk/results/msmarco_data_01/performance",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/msmarco/round6/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round1/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round1/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round2/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round2/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round3/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round3/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round4/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round4/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round5/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round5/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round6/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/8192",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse8192/round6/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round1/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round1/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round2/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round2/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round3/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round3/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round4/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round4/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round5/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round5/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/index",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A.txt",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round6/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/score_bitmap_scales1/inputs/65536",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/sparse65536/round6/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round1/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round1/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round2/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round2/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round3/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round3/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round4/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round4/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round5/sdk",
+      "5",
+      "30"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round5/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_alloc_host_01/build/bm25_large_search_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/index",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A.txt",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B.txt",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round6/standalone/actual",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "10",
+      "8",
+      "24",
+      "5",
+      "30",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/A/expected_scores.bin",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000/B/expected_scores.bin"
+    ],
+    [
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/host/bm25_sdk_benchmark",
+      "/test/w50066029/bm25-npu/results/large_scale_close1/inputs/10000000",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_merged_build_01/runtime/vendors",
+      "5",
+      "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_postmerge_a5_01/performance/synthetic10m/round6/sdk",
+      "5",
+      "30"
+    ]
+  ],
+  "round_metric_columns": [
+    "standalone_A_median_batch_ms",
+    "standalone_A_p95_batch_ms",
+    "standalone_B_median_batch_ms",
+    "standalone_B_p95_batch_ms",
+    "sdk_A_median_batch_ms",
+    "sdk_A_p95_batch_ms",
+    "sdk_B_median_batch_ms",
+    "sdk_B_p95_batch_ms"
+  ],
+  "round_metrics": {
+    "scifact": [
+      [
+        0.061607,
+        0.063074,
+        0.048663,
+        0.049694,
+        0.063631,
+        0.077747,
+        0.050846,
+        0.052509
+      ],
+      [
+        0.061292,
+        0.062113,
+        0.0484175,
+        0.050176,
+        0.062944,
+        0.063856,
+        0.050135,
+        0.051938
+      ],
+      [
+        0.061292,
+        0.063506,
+        0.048518,
+        0.049364,
+        0.061121999999999996,
+        0.067662,
+        0.048312,
+        0.052419
+      ],
+      [
+        0.061176999999999995,
+        0.062284,
+        0.048102,
+        0.050065,
+        0.0610265,
+        0.062173,
+        0.048502500000000004,
+        0.051717
+      ],
+      [
+        0.060922000000000004,
+        0.062113,
+        0.048493,
+        0.049434,
+        0.0619985,
+        0.064236,
+        0.049379,
+        0.050726
+      ],
+      [
+        0.060996499999999995,
+        0.061893,
+        0.0480475,
+        0.049484,
+        0.0614175,
+        0.063144,
+        0.048698000000000005,
+        0.052558
+      ]
+    ],
+    "trec_covid": [
+      [
+        0.1725935,
+        0.175954,
+        0.13632450000000002,
+        0.137807,
+        0.17187249999999998,
+        0.174792,
+        0.139785,
+        0.143806
+      ],
+      [
+        0.17228349999999998,
+        0.174772,
+        0.137166,
+        0.137967,
+        0.17722100000000002,
+        0.192169,
+        0.1404355,
+        0.142134
+      ],
+      [
+        0.17219299999999998,
+        0.176245,
+        0.136695,
+        0.138388,
+        0.17465199999999997,
+        0.182764,
+        0.137421,
+        0.138417
+      ],
+      [
+        0.1730645,
+        0.175764,
+        0.137426,
+        0.138447,
+        0.173145,
+        0.18032,
+        0.137341,
+        0.138627
+      ],
+      [
+        0.172934,
+        0.175544,
+        0.1373565,
+        0.13986,
+        0.173871,
+        0.177356,
+        0.136384,
+        0.137987
+      ],
+      [
+        0.1748575,
+        0.178388,
+        0.140676,
+        0.143335,
+        0.1742315,
+        0.176034,
+        0.137451,
+        0.139469
+      ]
+    ],
+    "msmarco": [
+      [
+        1.9682075,
+        1.981723,
+        2.118262,
+        2.142213,
+        1.957481,
+        1.971156,
+        2.135363,
+        2.149454
+      ],
+      [
+        1.9565000000000001,
+        1.963084,
+        2.0995895000000004,
+        2.128312,
+        1.9434445,
+        1.952959,
+        2.1061245,
+        2.138117
+      ],
+      [
+        1.9594485000000001,
+        1.964677,
+        2.095523,
+        2.125418,
+        1.948823,
+        1.955924,
+        2.106139,
+        2.135102
+      ],
+      [
+        1.955433,
+        1.961532,
+        2.1030995,
+        2.127101,
+        1.941617,
+        1.954001,
+        2.1066694999999998,
+        2.136735
+      ],
+      [
+        1.959304,
+        1.964957,
+        2.092934,
+        2.125097,
+        1.94967,
+        1.955624,
+        2.105814,
+        2.136925
+      ],
+      [
+        1.9570555,
+        1.96702,
+        2.103936,
+        2.129964,
+        1.9449715,
+        1.951788,
+        2.106785,
+        2.136675
+      ]
+    ],
+    "sparse8192": [
+      [
+        0.0293285,
+        0.030356,
+        0.0301355,
+        0.032589,
+        0.030135,
+        0.031247,
+        0.030806,
+        0.032159
+      ],
+      [
+        0.0294795,
+        0.030266,
+        0.030346,
+        0.032178,
+        0.0308215,
+        0.031927,
+        0.031221,
+        0.031928
+      ],
+      [
+        0.029985,
+        0.031037,
+        0.031051500000000003,
+        0.031908,
+        0.028902999999999998,
+        0.029765,
+        0.029704500000000002,
+        0.030486
+      ],
+      [
+        0.030586,
+        0.031477,
+        0.0312165,
+        0.032559,
+        0.029209,
+        0.030365,
+        0.029815,
+        0.030596
+      ],
+      [
+        0.0301355,
+        0.034261,
+        0.030801500000000002,
+        0.032959,
+        0.030055,
+        0.032479,
+        0.030961000000000002,
+        0.031867
+      ],
+      [
+        0.03033,
+        0.031757,
+        0.030841,
+        0.03288,
+        0.0290085,
+        0.030516,
+        0.029705000000000002,
+        0.030496
+      ]
+    ],
+    "sparse65536": [
+      [
+        0.0403555,
+        0.042845,
+        0.041072,
+        0.042955,
+        0.038773,
+        0.03989,
+        0.039764499999999994,
+        0.040651
+      ],
+      [
+        0.0385925,
+        0.03953,
+        0.039003499999999997,
+        0.04033,
+        0.03993,
+        0.042014,
+        0.040176,
+        0.042354
+      ],
+      [
+        0.0383875,
+        0.03957,
+        0.039374000000000006,
+        0.043455,
+        0.038783,
+        0.03999,
+        0.039324,
+        0.04031
+      ],
+      [
+        0.0388385,
+        0.039539,
+        0.0394695,
+        0.042394,
+        0.038328,
+        0.039759,
+        0.038633,
+        0.03984
+      ],
+      [
+        0.039594500000000005,
+        0.040661,
+        0.040486,
+        0.041752,
+        0.04008,
+        0.040711,
+        0.040736499999999995,
+        0.042344
+      ],
+      [
+        0.040476,
+        0.041683,
+        0.040741,
+        0.042574,
+        0.039279,
+        0.04018,
+        0.039419,
+        0.041042
+      ]
+    ],
+    "synthetic10m": [
+      [
+        1.7570805,
+        1.763846,
+        1.744507,
+        1.771988,
+        1.7651975000000002,
+        1.773891,
+        1.7410265,
+        1.774381
+      ],
+      [
+        1.7568305,
+        1.761573,
+        1.7439010000000001,
+        1.768182,
+        1.764717,
+        1.770486,
+        1.742724,
+        1.772578
+      ],
+      [
+        1.7571205,
+        1.762954,
+        1.7503,
+        1.770626,
+        1.766114,
+        1.777265,
+        1.7406655,
+        1.77287
+      ],
+      [
+        1.7566950000000001,
+        1.762664,
+        1.7445515,
+        1.771898,
+        1.7669555,
+        1.771097,
+        1.7431445,
+        1.772809
+      ],
+      [
+        1.7582425000000002,
+        1.762944,
+        1.7470905,
+        1.770285,
+        1.7676965,
+        1.773069,
+        1.7397695,
+        1.769094
+      ],
+      [
+        1.7553535,
+        1.762153,
+        1.7440255,
+        1.769765,
+        1.7647215,
+        1.769965,
+        1.741452,
+        1.77367
+      ]
+    ]
+  },
+  "reported_comparison": {
+    "scifact": {
+      "A": {
+        "baseline_ms": 0.0612345,
+        "dense_ms": 0.061708,
+        "median_change_percent": 0.7732569058292338,
+        "P95_change_percent": 2.9703288664517435,
+        "paired_change_percent": [
+          3.2853409515152254,
+          2.6952946550936607,
+          -0.27736083012465107,
+          -0.2460074864736761,
+          1.7670135583204738,
+          0.6902035362684744
+        ],
+        "median_wins": 2,
+        "P95_wins": 1
+      },
+      "B": {
+        "baseline_ms": 0.048455250000000005,
+        "dense_ms": 0.0490385,
+        "median_change_percent": 1.2036879388714228,
+        "P95_change_percent": 5.221924217064267,
+        "paired_change_percent": [
+          4.485954421223526,
+          3.547271131305818,
+          -0.424584690218055,
+          0.8326057128601905,
+          1.8270678242220395,
+          1.3538685675633655
+        ],
+        "median_wins": 1,
+        "P95_wins": 0
+      }
+    },
+    "trec_covid": {
+      "A": {
+        "baseline_ms": 0.17276375,
+        "dense_ms": 0.17405125,
+        "median_change_percent": 0.745237354479733,
+        "P95_change_percent": 1.6939707379207247,
+        "paired_change_percent": [
+          -0.41774458481925736,
+          2.8659157725493323,
+          1.428048759241074,
+          0.04651444981493835,
+          0.5418252049914862,
+          -0.35800580472670207
+        ],
+        "median_wins": 2,
+        "P95_wins": 2
+      },
+      "B": {
+        "baseline_ms": 0.13726125,
+        "dense_ms": 0.137436,
+        "median_change_percent": 0.1273119689642943,
+        "P95_change_percent": 0.455505987320981,
+        "paired_change_percent": [
+          2.5384285289878017,
+          2.3836081827858013,
+          0.5311094041479114,
+          -0.06185146915430595,
+          -0.708011633959793,
+          -2.2925019193039353
+        ],
+        "median_wins": 3,
+        "P95_wins": 2
+      }
+    },
+    "msmarco": {
+      "A": {
+        "baseline_ms": 1.95817975,
+        "dense_ms": 1.9468972500000001,
+        "median_change_percent": -0.5761728462364002,
+        "P95_change_percent": -0.5091822800800228,
+        "paired_change_percent": [
+          -0.5449882697835529,
+          -0.6672885254280669,
+          -0.5422699295235422,
+          -0.706544279451149,
+          -0.49170521777121,
+          -0.6174582172043697
+        ],
+        "median_wins": 6,
+        "P95_wins": 6
+      },
+      "B": {
+        "baseline_ms": 2.1013445,
+        "dense_ms": 2.1064042499999998,
+        "median_change_percent": 0.24078631561839092,
+        "P95_change_percent": 0.4287950429253007,
+        "paired_change_percent": [
+          0.8073127875588559,
+          0.31125131841245324,
+          0.5066038406641216,
+          0.1697494578834613,
+          0.6154040213403711,
+          0.13541286426963506
+        ],
+        "median_wins": 0,
+        "P95_wins": 0
+      }
+    },
+    "sparse8192": {
+      "A": {
+        "baseline_ms": 0.03006025,
+        "dense_ms": 0.029632,
+        "median_change_percent": -1.424638850308968,
+        "P95_change_percent": -1.2013309018779839,
+        "paired_change_percent": [
+          2.749884924220458,
+          4.552316016214664,
+          -3.608470902117733,
+          -4.502059765905974,
+          -0.2671268105722491,
+          -4.357072205736889
+        ],
+        "median_wins": 4,
+        "P95_wins": 4
+      },
+      "B": {
+        "baseline_ms": 0.03082125,
+        "dense_ms": 0.0303105,
+        "median_change_percent": -1.6571359046112732,
+        "P95_change_percent": -4.121385153803637,
+        "paired_change_percent": [
+          2.2249506396111007,
+          2.8834113227443448,
+          -4.3379546881793125,
+          -4.489612864991265,
+          0.5178319237699514,
+          -3.6834084497908592
+        ],
+        "median_wins": 3,
+        "P95_wins": 6
+      }
+    },
+    "sparse65536": {
+      "A": {
+        "baseline_ms": 0.0392165,
+        "dense_ms": 0.039030999999999996,
+        "median_change_percent": -0.4730151849349218,
+        "P95_change_percent": -0.07603046204086583,
+        "paired_change_percent": [
+          -3.9213985702072796,
+          3.4656992939042564,
+          1.030283295343537,
+          -1.314417395110512,
+          1.226180403843946,
+          -2.9573080343907376
+        ],
+        "median_wins": 3,
+        "P95_wins": 2
+      },
+      "B": {
+        "baseline_ms": 0.03997775,
+        "dense_ms": 0.039591749999999995,
+        "median_change_percent": -0.9655370800007668,
+        "P95_change_percent": -3.854392241785143,
+        "paired_change_percent": [
+          -3.1834339696143465,
+          3.006140474572816,
+          -0.12698735205975975,
+          -2.1193579852797684,
+          0.618732401323907,
+          -3.2448884416189983
+        ],
+        "median_wins": 4,
+        "P95_wins": 4
+      }
+    },
+    "synthetic10m": {
+      "A": {
+        "baseline_ms": 1.7569555000000001,
+        "dense_ms": 1.76565575,
+        "median_change_percent": 0.4951889788898933,
+        "P95_change_percent": 0.5263772943560285,
+        "paired_change_percent": [
+          0.46195948335892023,
+          0.4489050025030972,
+          0.5118317155824004,
+          0.5840797634193651,
+          0.537696023159473,
+          0.5336816772234299
+        ],
+        "median_wins": 0,
+        "P95_wins": 0
+      },
+      "B": {
+        "baseline_ms": 1.74452925,
+        "dense_ms": 1.74123925,
+        "median_change_percent": -0.1885895578993546,
+        "P95_change_percent": 0.1346546128947912,
+        "paired_change_percent": [
+          -0.1995119538070078,
+          -0.06749236338532416,
+          -0.5504484945437871,
+          -0.08065110144355181,
+          -0.4190395403100289,
+          -0.1475609158237634
+        ],
+        "median_wins": 6,
+        "P95_wins": 1
+      }
+    }
+  },
+  "recomputed_comparison": {
+    "scifact": {
+      "A": {
+        "standalone_median_ms": 0.0612345,
+        "SDK_median_ms": 0.061708,
+        "SDK_median_change_percent": 0.7732569058292338,
+        "standalone_median_of_round_P95_ms": 0.062198500000000004,
+        "SDK_median_of_round_P95_ms": 0.06404599999999999,
+        "SDK_P95_change_percent": 2.9703288664517435,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": 0.4735000000000017,
+        "paired_median_changes_percent": [
+          3.2853409515152254,
+          2.6952946550936607,
+          -0.27736083012465107,
+          -0.2460074864736761,
+          1.7670135583204738,
+          0.6902035362684744
+        ],
+        "median_paired_change_percent": 1.228608547294474,
+        "SDK_median_wins": 2,
+        "SDK_P95_wins": 1
+      },
+      "B": {
+        "standalone_median_ms": 0.048455250000000005,
+        "SDK_median_ms": 0.0490385,
+        "SDK_median_change_percent": 1.2036879388714228,
+        "standalone_median_of_round_P95_ms": 0.049589,
+        "SDK_median_of_round_P95_ms": 0.0521785,
+        "SDK_P95_change_percent": 5.221924217064267,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": 0.5832499999999935,
+        "paired_median_changes_percent": [
+          4.485954421223526,
+          3.547271131305818,
+          -0.424584690218055,
+          0.8326057128601905,
+          1.8270678242220395,
+          1.3538685675633655
+        ],
+        "median_paired_change_percent": 1.5904681958927025,
+        "SDK_median_wins": 1,
+        "SDK_P95_wins": 0
+      }
+    },
+    "trec_covid": {
+      "A": {
+        "standalone_median_ms": 0.17276375,
+        "SDK_median_ms": 0.17405125,
+        "SDK_median_change_percent": 0.745237354479733,
+        "standalone_median_of_round_P95_ms": 0.175859,
+        "SDK_median_of_round_P95_ms": 0.178838,
+        "SDK_P95_change_percent": 1.6939707379207247,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": 1.287499999999997,
+        "paired_median_changes_percent": [
+          -0.41774458481925736,
+          2.8659157725493323,
+          1.428048759241074,
+          0.04651444981493835,
+          0.5418252049914862,
+          -0.35800580472670207
+        ],
+        "median_paired_change_percent": 0.2941698274032123,
+        "SDK_median_wins": 2,
+        "SDK_P95_wins": 2
+      },
+      "B": {
+        "standalone_median_ms": 0.13726125,
+        "SDK_median_ms": 0.137436,
+        "SDK_median_change_percent": 0.1273119689642943,
+        "standalone_median_of_round_P95_ms": 0.1384175,
+        "SDK_median_of_round_P95_ms": 0.139048,
+        "SDK_P95_change_percent": 0.455505987320981,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": 0.1747500000000013,
+        "paired_median_changes_percent": [
+          2.5384285289878017,
+          2.3836081827858013,
+          0.5311094041479114,
+          -0.06185146915430595,
+          -0.708011633959793,
+          -2.2925019193039353
+        ],
+        "median_paired_change_percent": 0.23462896749680273,
+        "SDK_median_wins": 3,
+        "SDK_P95_wins": 2
+      }
+    },
+    "msmarco": {
+      "A": {
+        "standalone_median_ms": 1.95817975,
+        "SDK_median_ms": 1.9468972500000001,
+        "SDK_median_change_percent": -0.5761728462364002,
+        "standalone_median_of_round_P95_ms": 1.964817,
+        "SDK_median_of_round_P95_ms": 1.9548125,
+        "SDK_P95_change_percent": -0.5091822800800228,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": -11.282499999999862,
+        "paired_median_changes_percent": [
+          -0.5449882697835529,
+          -0.6672885254280669,
+          -0.5422699295235422,
+          -0.706544279451149,
+          -0.49170521777121,
+          -0.6174582172043697
+        ],
+        "median_paired_change_percent": -0.5812232434939613,
+        "SDK_median_wins": 6,
+        "SDK_P95_wins": 6
+      },
+      "B": {
+        "standalone_median_ms": 2.1013445,
+        "SDK_median_ms": 2.1064042499999998,
+        "SDK_median_change_percent": 0.24078631561839092,
+        "standalone_median_of_round_P95_ms": 2.1277065000000004,
+        "SDK_median_of_round_P95_ms": 2.13683,
+        "SDK_P95_change_percent": 0.4287950429253007,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": 5.059749999999585,
+        "paired_median_changes_percent": [
+          0.8073127875588559,
+          0.31125131841245324,
+          0.5066038406641216,
+          0.1697494578834613,
+          0.6154040213403711,
+          0.13541286426963506
+        ],
+        "median_paired_change_percent": 0.4089275795382874,
+        "SDK_median_wins": 0,
+        "SDK_P95_wins": 0
+      }
+    },
+    "sparse8192": {
+      "A": {
+        "standalone_median_ms": 0.03006025,
+        "SDK_median_ms": 0.029632,
+        "SDK_median_change_percent": -1.424638850308968,
+        "standalone_median_of_round_P95_ms": 0.031257,
+        "SDK_median_of_round_P95_ms": 0.0308815,
+        "SDK_P95_change_percent": -1.2013309018779839,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": -0.4282500000000016,
+        "paired_median_changes_percent": [
+          2.749884924220458,
+          4.552316016214664,
+          -3.608470902117733,
+          -4.502059765905974,
+          -0.2671268105722491,
+          -4.357072205736889
+        ],
+        "median_paired_change_percent": -1.937798856344991,
+        "SDK_median_wins": 4,
+        "SDK_P95_wins": 4
+      },
+      "B": {
+        "standalone_median_ms": 0.03082125,
+        "SDK_median_ms": 0.0303105,
+        "SDK_median_change_percent": -1.6571359046112732,
+        "standalone_median_of_round_P95_ms": 0.032574,
+        "SDK_median_of_round_P95_ms": 0.031231500000000002,
+        "SDK_P95_change_percent": -4.121385153803637,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": -0.5107500000000008,
+        "paired_median_changes_percent": [
+          2.2249506396111007,
+          2.8834113227443448,
+          -4.3379546881793125,
+          -4.489612864991265,
+          0.5178319237699514,
+          -3.6834084497908592
+        ],
+        "median_paired_change_percent": -1.582788263010454,
+        "SDK_median_wins": 3,
+        "SDK_P95_wins": 6
+      }
+    },
+    "sparse65536": {
+      "A": {
+        "standalone_median_ms": 0.0392165,
+        "SDK_median_ms": 0.039030999999999996,
+        "SDK_median_change_percent": -0.4730151849349218,
+        "standalone_median_of_round_P95_ms": 0.0401155,
+        "SDK_median_of_round_P95_ms": 0.040084999999999996,
+        "SDK_P95_change_percent": -0.07603046204086583,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": -0.1855000000000051,
+        "paired_median_changes_percent": [
+          -3.9213985702072796,
+          3.4656992939042564,
+          1.030283295343537,
+          -1.314417395110512,
+          1.226180403843946,
+          -2.9573080343907376
+        ],
+        "median_paired_change_percent": -0.1420670498834875,
+        "SDK_median_wins": 3,
+        "SDK_P95_wins": 2
+      },
+      "B": {
+        "standalone_median_ms": 0.03997775,
+        "SDK_median_ms": 0.039591749999999995,
+        "SDK_median_change_percent": -0.9655370800007668,
+        "standalone_median_of_round_P95_ms": 0.042484,
+        "SDK_median_of_round_P95_ms": 0.0408465,
+        "SDK_P95_change_percent": -3.854392241785143,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": -0.3860000000000044,
+        "paired_median_changes_percent": [
+          -3.1834339696143465,
+          3.006140474572816,
+          -0.12698735205975975,
+          -2.1193579852797684,
+          0.618732401323907,
+          -3.2448884416189983
+        ],
+        "median_paired_change_percent": -1.123172668669764,
+        "SDK_median_wins": 4,
+        "SDK_P95_wins": 4
+      }
+    },
+    "synthetic10m": {
+      "A": {
+        "standalone_median_ms": 1.7569555000000001,
+        "SDK_median_ms": 1.76565575,
+        "SDK_median_change_percent": 0.4951889788898933,
+        "standalone_median_of_round_P95_ms": 1.762804,
+        "SDK_median_of_round_P95_ms": 1.7720829999999999,
+        "SDK_P95_change_percent": 0.5263772943560285,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": 8.700249999999965,
+        "paired_median_changes_percent": [
+          0.46195948335892023,
+          0.4489050025030972,
+          0.5118317155824004,
+          0.5840797634193651,
+          0.537696023159473,
+          0.5336816772234299
+        ],
+        "median_paired_change_percent": 0.5227566964029151,
+        "SDK_median_wins": 0,
+        "SDK_P95_wins": 0
+      },
+      "B": {
+        "standalone_median_ms": 1.74452925,
+        "SDK_median_ms": 1.74123925,
+        "SDK_median_change_percent": -0.1885895578993546,
+        "standalone_median_of_round_P95_ms": 1.7704555000000002,
+        "SDK_median_of_round_P95_ms": 1.7728395,
+        "SDK_P95_change_percent": 0.1346546128947912,
+        "SDK_minus_standalone_microseconds_per_Q8_batch": -3.290000000000015,
+        "paired_median_changes_percent": [
+          -0.1995119538070078,
+          -0.06749236338532416,
+          -0.5504484945437871,
+          -0.08065110144355181,
+          -0.4190395403100289,
+          -0.1475609158237634
+        ],
+        "median_paired_change_percent": -0.1735364348153856,
+        "SDK_median_wins": 6,
+        "SDK_P95_wins": 1
+      }
+    }
+  },
+  "reported_A5_artifact_sha256": {
+    "results/indexsdk_merged_build_01/build.json": "fdd81a48a6c86e20104c39d3334ffef78d0b56ef2275a162ad1d726638f4f01f",
+    "/test/w50066029/bm25-npu-indexsdk/results/indexsdk_integrated_01/integration.json": "f033832d75bf70ec1152b71141ec639ce4a575fdf40f335de93684345657212d",
+    "results/indexsdk_merged_build_01/host/bm25_clang_tidy/report.json": "9a88680dac24dc1713c18e45943767b6b20bbe1f271c1b83f5a024de281fe10a",
+    "results/indexsdk_postmerge_a5_01/report.json": "a82a35af20a91802df39cdb1e3e1634246ed5a201b16ac60afab697b7174b6b1",
+    "results/indexsdk_postmerge_a5_01/linked_library.log": "643b89c522c443374c57a82ee46b43a8141badb7dbc29b287f3821426b2daa1d"
+  },
+  "operator_identity": "All six recorded generated/template source hashes match the frozen selected package. After vendor-directory renaming, all19 installed fused entries retain their hashes except vendor-specific set_env.bash and uninstall.sh. The device .o remains1004d6ba...01777; API shim alone is not used as kernel identity.",
+  "remaining_costs": "SDK SciFact B median+1.20% and median-of-round-P95+5.22%; synthetic10m A median+0.50% (all6 paired rounds slower,about8.70 microseconds/Q8). Preserve these real observations. Earlier split-versus-original sparse8192+4% belongs to a different comparison and is not cancelled by current SDK-versus-split results.",
+  "convergence": {
+    "optimization_frozen": true,
+    "further_tuning_rounds": 0,
+    "required_checks_for_this_integration_matrix_completed": true,
+    "next_step": "Freeze and deliver the actual SDK source patch, relocated SDK library/headers and verified operator/runtime paths; retain all reference data, baseline packages and A5 logs."
+  }
+}

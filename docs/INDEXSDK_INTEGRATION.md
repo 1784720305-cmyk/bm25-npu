@@ -1,6 +1,6 @@
 # IndexSDK 主机接口接入
 
-集中测试已完成并冻结 `split`；将实现编进原 `libascendfaiss.so` 的源码合入、安装消费和实际公开接口复验步骤见 [IndexSDK 合入与验收](INDEXSDK_MERGE.md)。下文保留已验收的独立模块接入契约与历史使用说明。
+冻结的 `split` 已编进原 `libascendfaiss.so`，并完成真实 A5 构建、安装消费与公开接口复验。最终性能、质量和交付路径见 [IndexSDK 集成验收](INDEXSDK_ACCEPTANCE.md)，复现步骤见 [源码合入与验收](INDEXSDK_MERGE.md)。下文保留已验收的独立模块接入契约与历史使用说明。
 
 实际构建、安装消费、共享 SDK 上下文和完整 Search 的两阶段验收命令见 [A5 验收与日志回传](A5_ACCEPTANCE.md)。
 
