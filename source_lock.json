@@ -274,5 +274,21 @@
     "v2_A5_revalidation_passed": true,
     "performance_acceptance": "not_promoted_mixed_workload_results",
     "conclusion": "Keep 1024 as default. Capacity 4096 improves fixed SciFact B by 38.10%, while A is unchanged and sparse8192 median/P95 regressions remain. Per-query summaries identify A query8 (4399 positive candidates) as the remaining dense-path tail task."
+  },
+  "experimental_dense_study": {
+    "status": "isolated_dense_SIMD_threshold_candidate_locally_checked_A5_pending",
+    "candidate_promoted": false,
+    "default_capacity": 1024,
+    "evidence": "evidence/dense_selector_plan_20261106.json",
+    "commands": "docs/DENSE_SELECTOR.md",
+    "source_sha256": {
+      "standalone/dense_selector.py": "3446c3ac5846bfc404f4c8937bc2fc7d83b616536299ae0f0579a2651fcf7f2a",
+      "tools/dense_sources.py": "30545989b99fef6fdfc0e8b06c419577ac5b41ac61326d5700c6365d248b494c",
+      "tools/test_dense_selector.py": "1fb0c4bc822b33666f8cf99dab2d2c8e7145ba4633c32bd2634d4e59a3744aae",
+      "standalone/selector_capacity.py": "d138ba45e2036d450e22a369fb267096af38c49383c8f24b2ec27b872ed30a71",
+      "tools/capacity_sources.py": "9a23cc7fd8177b2bc607b79a93abbe46eb6dd4aa090b5757eb30c968cd4cd711",
+      "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
+    },
+    "A5_compile_and_device_passed": false
   }
 }

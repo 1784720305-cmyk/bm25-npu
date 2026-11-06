@@ -1,0 +1,108 @@
+{
+  "date": "2026-11-06",
+  "status": "isolated_dense_SIMD_threshold_candidate_locally_checked_A5_pending",
+  "candidate_promoted": false,
+  "default_capacity": 1024,
+  "candidate_capacity": 1024,
+  "change": "For valid rows with more than1024 positive candidates, use the existing Reg byte-CDF technique directly on the bounded full local score row, then collect exact raw-score/original-ID winners. No larger candidate array.",
+  "unchanged": [
+    "production operator source files",
+    "host and Search implementation",
+    "CMake security flags",
+    "scoring/append function bodies",
+    "legacy few/zero selection body",
+    "normal 1024 baseline and v2 diagnostic host binaries"
+  ],
+  "generated_variants": {
+    "normal": {
+      "capacity": 1024,
+      "scratch_bytes": 16736,
+      "buffer_bytes": 50848,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "b06ccdec83c2a0a9c7bb20f48f6c74d1ddd34c698d62793b47f13293a68692ba",
+      "candidate_kernel_sha256": "a33457b7453d9db7765b795d6997c57987ff46836904453f9c44fcac5dca00c5",
+      "baseline_kernel_sha256": "1d446208bd63668d655231c460d9966cb3329e14d30c1e055c2c3411ea385e9a"
+    },
+    "profile": {
+      "capacity": 1024,
+      "scratch_bytes": 16736,
+      "buffer_bytes": 50848,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "544a05ee1a17e50062e1a926fb1ea3d23800b204b0a390fd48da33459b6e952e",
+      "candidate_kernel_sha256": "e14223e1047f1deadd910637fe69c0f255f0b6e9d1e75c3e575d0151d4799641",
+      "baseline_kernel_sha256": "cf5a67cf9a22b8ab0278ec7c7bfea22f84bc14238bbc32e30bc0efc6d16845c5"
+    }
+  },
+  "numerics": {
+    "row_limit": 8192,
+    "CDF_count_type": "uint16",
+    "zero_key": "Clear sign bit only after existing valid-score guards, canonicalizing negative zero; original score bits are untouched",
+    "ties": "exact FP32 score descending and original document ID ascending",
+    "truncation": false
+  },
+  "local_validation": {
+    "tool_tests": 55,
+    "dedicated_dense_tests": 5,
+    "exact_CDF_vs_fullsort_cases": 72,
+    "K_values": [
+      1,
+      10,
+      32
+    ],
+    "widths": [
+      1025,
+      2049,
+      4097,
+      8192
+    ],
+    "positive_counts_include": [
+      1025,
+      2049,
+      4097,
+      4399,
+      8192
+    ],
+    "invalid_score_rejection_model": true,
+    "template_baseline_and_install_isolation_mock": true,
+    "Python39_AST": true,
+    "real_SciFact_oracle_rows_checked": 16,
+    "real_SciFact_dense_routed_rows": 13,
+    "preparation_report_sha256": "cf57040dc45f51982bd85089feb481f26adeb5e859bbb4f60439a36b239960ca",
+    "index_id": "d8969249cabe570802a80ed442b88cf4724a7a0f3999b40a2cdb0a69f1d166a2",
+    "scope": "CPU integer model and source/oracle checks only; no CANN kernel compile or device execution"
+  },
+  "protocol": {
+    "baseline_build": "results/capacity_build_02",
+    "reused": "validated normal/profile 1024 pair, diagnostic host, Merge",
+    "new_packages": 2,
+    "inputs": [
+      "same SciFact performance input",
+      "original sparse8192",
+      "original sparse65536"
+    ],
+    "rounds": 6,
+    "order": "AB/BA, three first positions each",
+    "measured_samples_per_case_per_process": 30,
+    "warmup_AB_cycles": 5,
+    "full_Search_checks": "independent full scores/all tree levels/strict IDs/guards/index readback/repeated bits",
+    "cross_package_checks": "normal/profile and candidate/baseline TopK byte-identical",
+    "stage_trace_contract": "simt_gm_cacheline64_nonce_v2",
+    "stage_units": "raw system ticks, separate instrumented package",
+    "CPU_baseline": "frozen original-native BM25S kept unchanged; this study compares NPU algorithms"
+  },
+  "limitations": [
+    "Candidate CANN compilation and correctness are unverified until A5 runs",
+    "New SIMD code/register needs and branches may alter sparse performance despite fixed UB size",
+    "Local threshold/oracle correctness does not predict full Search speedup",
+    "Keep sparse median/P95 regressions and every paired round; no automatic promotion"
+  ],
+  "source_sha256": {
+    "standalone/dense_selector.py": "3446c3ac5846bfc404f4c8937bc2fc7d83b616536299ae0f0579a2651fcf7f2a",
+    "tools/dense_sources.py": "30545989b99fef6fdfc0e8b06c419577ac5b41ac61326d5700c6365d248b494c",
+    "tools/test_dense_selector.py": "1fb0c4bc822b33666f8cf99dab2d2c8e7145ba4633c32bd2634d4e59a3744aae",
+    "standalone/selector_capacity.py": "d138ba45e2036d450e22a369fb267096af38c49383c8f24b2ec27b872ed30a71",
+    "tools/capacity_sources.py": "9a23cc7fd8177b2bc607b79a93abbe46eb6dd4aa090b5757eb30c968cd4cd711",
+    "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
+  },
+  "commands": "docs/DENSE_SELECTOR.md"
+}
