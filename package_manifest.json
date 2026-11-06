@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "IndexSDK-aligned BM25 package. Production operators/host/security sources and fixed optimization-convergence policy remain unchanged. The final split candidate normal/profile packages compiled and passed A5 boundary gates. First concentrated quality invocation was rejected before Search because repeats1 violated the accepted C++ minimum10. Tooling now uses10 quality cycles and validates CLI bounds before launch; performance remains30 cycles. Complete concentrated matrix and subsequent IndexSDK integration are pending. Reuse existing packages and data.",
+  "scope": "IndexSDK-aligned BM25. Concentrated A5 matrix completed at33d4971; split source/package frozen for integration, with real-corpus gains and sparse8192+4% cost explicitly retained. No new tuning. Independent SDK source merge, original shared-library CMake integration and actual public-interface acceptance tooling are locally checked; actual integrated A5 build/device validation remains pending. Original standalone baseline and historical evidence remain preserved.",
   "text_line_endings": "LF",
   "reference_commits": {
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -12,7 +12,7 @@
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
     ".pre-commit-config.yaml": "d18cae61fe460685d6b3e1721bf9aa30aa2e4d249388df7c8fdf9a5657f99a57",
     "CMakeLists.txt": "efbb01dc2062aae2a92fc873e4663d300062bb2eca9e9167d8f09b7ad92c84f5",
-    "README.md": "9ac89ecc03e612a8040935492953df49b72b5dbe9688b71b9cca875321d37f4e",
+    "README.md": "a83a85e18202249f65a4cac8a8a2b8fd95137b7961f31c7f850e1fff43871f84",
     "cmake/AscendBm25Config.cmake.in": "ec11d408ef32f39c0dadf697f97c828a12b184975995ed78947e643b687acb39",
     "cmake/Install.cmake": "e6414e4980bf184558dd5bf05d66db54dd5433036e5cc7a76ea0fb30617639e0",
     "docs/A5_ACCEPTANCE.md": "b9c7e21201f26be3d35443b4e026f66ff4d000fe82994ef0748e24a0cc26f13d",
@@ -21,7 +21,7 @@
     "docs/CPU_REGRESSION.md": "47faff5bb6bef2d5a37d4ac8a2d12700087c1f490f84c7f7795b1a10f06c8e7e",
     "docs/FINAL_DELIVERY.md": "59f5b467e761c99e824dd3a0e686ff0f5001fd0560d01515b24bf962b409c1a0",
     "docs/GIT_SYNC.md": "8631c4e72c21bf0ec8b9f10cf6a39997cc9005127eed20d17851c0f8dc2f3eeb",
-    "docs/INDEXSDK_INTEGRATION.md": "2b6b566bbad6a9a1d8cc8c10a4d27e295e821f74dffe80eca300bf051626d706",
+    "docs/INDEXSDK_INTEGRATION.md": "a11fc7c76d3bebf25e6587a46d8c822104468e3a7574316c39f4fe7433918f40",
     "docs/INDEXSDK_REFACTOR.md": "57cdcd947373ca19b59109fe231d06dda81740b130325c8f5d39eef110d0efef",
     "docs/MSMARCO_REAL_DATA.md": "e168e9d89259bcc734781ece5f24b10540f675a5f5d6ea6fd8f2fe531c1529ba",
     "docs/SCIFACT_REAL_DATA.md": "607f6ac8f3961e9c23ee63857c5ae055dad5458087dc73d505aa28caef341628",
@@ -148,7 +148,7 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "dc6248ace079496a39247fc70f18ff4227878dce8c7d5d7d77a9cbaf71df85bc",
-    "source_lock.json": "a9f405a9bcb3a334ff18449249ca4bd0cb1201f7bb5fdfee014c59bb42a02eec",
+    "source_lock.json": "83a4840db59299a3a4863549b24c24617d25aedb8ccf32bf1c63743f69d98374",
     "standalone/beir_real.py": "ca0103064fc4b8a12842b7d32744685bf0cd502b878c9b26888ce3603018db0d",
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
@@ -164,11 +164,11 @@
     "standalone/test_final.py": "6bb1405b7b9e3d3421faabb5ebd983be5b5d197e7c6b767c78037c55102efe55",
     "tools/a5_environment.py": "f1d7923e58e2bff6b622e52022295227254b713490f2ec57c90013c9cf49a362",
     "tools/check_installed_package.py": "d0ed2beedb8da1a7910a3e2a54379a31acc06f032af2d047d72d25077e2d3c52",
-    "tools/check_structure.py": "b0102a783c8425502f31dc3767824b237a79a755fea2bde76d034d330dc2bb4b",
+    "tools/check_structure.py": "7fdbe185096d9706b91c22de4dcfdc6a43f28ef9cff1117297ade7eeaba52007",
     "tools/compare_cpu_builds.py": "0d8f449061796d340ea18e27d2c1f8cd3f75986e3f490ff30d97780f09e798fc",
     "tools/probe_device_allocation.py": "436c91476f1a6be3b30fe95de0a18e97d19f8eec8b34e9438f09533065567048",
     "tools/run_a5_acceptance.py": "ee95b9a2ccd2832d07c3fb20177c94f87445ee5c8897d65ad1d5714ddb47de72",
-    "tools/run_clang_tidy.py": "a05980527b7d37b58ca81536212d1f43f3a2bdf7e5ea2a615d25ca9631b2b3db",
+    "tools/run_clang_tidy.py": "0bd7d58909340aac11158c7911830b9c4c3af45f73f08d6f2b10b4bd9c024288",
     "tools/test_a5_diagnostics.py": "5598f3f568c5f24a3f2611d85ddd23695fddd67d6b64b72ea712125b983cfc09",
     "tools/test_acceptance_contract.py": "f14ce5101bb4149d4029e79e6e9417bb9459d0359e587d9648d7ab67c8f4e58f",
     "tools/test_beir_real.py": "c00472b8e4c94326376abf46e89cd11dc39dd25086bbf430a329a03300957e41",
@@ -196,7 +196,14 @@
     "tools/split_sources.py": "fdd083851f087d656bc098ad9ead908c4167158a9c5a80123a158ee443439048",
     "tools/test_release_validation.py": "64d8ae3e07ecfffd62b8e1ab38f6b7d8d84bb8e0224f03726b38c71bdc8e5ef5",
     "evidence/release_validation_plan_20261106.json": "4abc0cd61a3055868bfc5f3eedfc80583748cb44ce3898a385ec2e6b03398f0d",
-    "docs/RELEASE_VALIDATION.md": "240233e91059cef4fe96b8f0e850f1fe86cc7b8ed653b0ebbfe919e02e2a31f7",
-    "evidence/release_validation_cli_fix_20261106.json": "c020f683ef872a5b4537dc1eae9d1f9bd12deb50b475fee30987ce1a7d28f853"
+    "docs/RELEASE_VALIDATION.md": "c10c5c61af518e7395e450b20de15443c538386f4590dcf314dc5d29bf8eda38",
+    "evidence/release_validation_cli_fix_20261106.json": "c020f683ef872a5b4537dc1eae9d1f9bd12deb50b475fee30987ce1a7d28f853",
+    "docs/INDEXSDK_MERGE.md": "34aa14a4f6b74f9f208fb781941be1eb77b29d7f8324c5158895f1ab99041550",
+    "evidence/concentrated_preindex_a5_20261106.json": "a33ad9980ccd35ff76357b8e087876d5f15b2915aaea4d3ea50b341a1b128a49",
+    "evidence/indexsdk_integration_local_20261106.json": "fe933d9cd94e7bda17ce80da19bccc6479646ae99953a438ac7b5c6e41963b3f",
+    "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/sdk_benchmark.cpp": "157870ee32a4b97e4585ec76fa7b6ee1c4644741234860288449796569f28480",
+    "integration/indexsdk/Bm25.cmake": "0b8f264b177ba30d4142354e4b2a004a210f036fa53421af6e8d1376791bf528",
+    "tools/indexsdk_integration.py": "dcd98180c472e1e42c358ff5ea6725c0fbc7e450488b3d6fd421af0a7a9522d0",
+    "tools/test_indexsdk_integration.py": "4336ab97b83bf2ff1ffb4fcc1e8036aa82b533ce5ec1773759f649349b690777"
   }
 }

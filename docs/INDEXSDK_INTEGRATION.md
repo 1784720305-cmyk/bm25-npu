@@ -1,5 +1,7 @@
 # IndexSDK 主机接口接入
 
+集中测试已完成并冻结 `split`；将实现编进原 `libascendfaiss.so` 的源码合入、安装消费和实际公开接口复验步骤见 [IndexSDK 合入与验收](INDEXSDK_MERGE.md)。下文保留已验收的独立模块接入契约与历史使用说明。
+
 实际构建、安装消费、共享 SDK 上下文和完整 Search 的两阶段验收命令见 [A5 验收与日志回传](A5_ACCEPTANCE.md)。
 
 当前提供 `faiss::ascend::AscendIndexBm25`，头文件为 `ascendhost/include/index/AscendIndexBm25.h`，可选 CMake 目标为 `bm25_indexsdk`。该接口使用本地 IndexSDK 原始 `common/ErrorCode.h`，没有复制 SDK 错误码或重定义资源代理。它是稀疏词 ID 检索接口，未继承稠密向量 `faiss::Index`。

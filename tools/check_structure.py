@@ -32,11 +32,19 @@ def main():
                         "ut/cases/bm25/sdk_error_adapter_tests.cpp",
                         "ut/cases/bm25/sdk_facade_tests.cpp",
                         "test/ascendhost/bm25/sdk_shared_check.cpp",
+                        "test/ascendhost/bm25/sdk_benchmark.cpp",
                     }
                     and include == "common/ErrorCode.h"
                 ):
                     continue
-                if relative == "test/ascendhost/bm25/sdk_shared_check.cpp" and include == "common/utils/SocUtils.h":
+                if (
+                    relative
+                    in {
+                        "test/ascendhost/bm25/sdk_shared_check.cpp",
+                        "test/ascendhost/bm25/sdk_benchmark.cpp",
+                    }
+                    and include == "common/utils/SocUtils.h"
+                ):
                     continue
                 if not (SOURCE / include).is_file():
                     raise ValueError(f"Missing local header: {relative}: {include}")

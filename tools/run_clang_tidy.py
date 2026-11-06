@@ -59,6 +59,7 @@ def compiler_openmp_header(entry, cache):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--build-dir", required=True, type=Path)
+    parser.add_argument("--source-root", type=Path, help="Integrated IndexSDK ascendfaiss root; check BM25 units only")
     parser.add_argument("--clang-tidy", default="clang-tidy")
     parser.add_argument("--include-tests", action="store_true")
     parser.add_argument("--allow-test-stubs", action="store_true")
@@ -66,6 +67,7 @@ def main():
     parser.add_argument("--extra-arg", action="append", default=[])
     parser.add_argument("--extra-arg-before", action="append", default=[])
     args = parser.parse_args()
+    source = args.source_root.resolve(strict=True) if args.source_root else SOURCE
     build = args.build_dir.resolve(strict=True)
     database = json.loads((build / "compile_commands.json").read_text(encoding="utf-8"))
     selected = {}
@@ -74,9 +76,11 @@ def main():
         if not file.is_absolute():
             file = Path(entry["directory"]) / file
         file = file.resolve()
-        if not file.is_relative_to(SOURCE) or file.suffix != ".cpp":
+        if not file.is_relative_to(source) or file.suffix != ".cpp":
             continue
-        relative = file.relative_to(SOURCE).as_posix()
+        relative = file.relative_to(source).as_posix()
+        if args.source_root and not relative.startswith(("ascendhost/src/bm25/", "test/ascendhost/bm25/")):
+            continue
         if relative.startswith("ops/") or (not args.include_tests and not relative.startswith("ascendhost/")):
             continue
         if uses_stubs(entry) and not args.allow_test_stubs:
@@ -86,11 +90,11 @@ def main():
         if key not in selected or (uses_stubs(selected[key]) and not uses_stubs(entry)):
             selected[key] = {**entry, "file": str(file)}
     required = {
-        str((SOURCE / "ascendhost/src/bm25" / name).resolve()).replace("\\", "/")
+        str((source / "ascendhost/src/bm25" / name).resolve()).replace("\\", "/")
         for name in ("runtime.cpp", "fused_runtime.cpp", "planned_search.cpp", "large_search.cpp")
     }
     if any("AscendIndexBm25.cpp" in row["file"] for row in database):
-        required.add((SOURCE / "ascendhost/src/bm25/AscendIndexBm25.cpp").as_posix())
+        required.add((source / "ascendhost/src/bm25/AscendIndexBm25.cpp").as_posix())
     missing = sorted(required - selected.keys())
     if not selected or (missing and not args.allow_test_stubs):
         raise ValueError(f"Production compilation coverage missing: {missing}. Use a real CANN build database.")
@@ -108,7 +112,7 @@ def main():
     checks = []
     compiler_headers = {}
     header_filter = (
-        "^" + re.escape(SOURCE.as_posix()).replace("/", r"[\\/]") + r"[\\/](common[\\/]bm25|ascendhost)[\\/]"
+        "^" + re.escape(source.as_posix()).replace("/", r"[\\/]") + r"[\\/](common[\\/]bm25|ascendhost)[\\/]"
     )
     for number, (file, entry) in enumerate(sorted(selected.items())):
         command = [args.clang_tidy, file, f"-p={output}", f"--config-file={config}", "--quiet"]

@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-06",
+  "status": "IndexSDK_source_merge_and_public_API_acceptance_tools_locally_checked_A5_build_pending",
+  "selected_evidence": "evidence/concentrated_preindex_a5_20261106.json",
+  "selected_evidence_sha256": "a33ad9980ccd35ff76357b8e087876d5f15b2915aaea4d3ea50b341a1b128a49",
+  "base_commit": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
+  "original_reference_modified": false,
+  "scope": "Independent SDK source tree and review patch; BM25 implementation joins original ascendfaiss_host shared library. No performance tuning or default standalone-source replacement.",
+  "source_preview": {
+    "original_tracked_files": 2180,
+    "new_files_preview": 58,
+    "additional_measured_kernel_tiling_header_captured_on_A5": 1,
+    "modified_upstream_files": [
+      "feature_retrieval/src/ascendfaiss/ascendhost/CMakeLists.txt"
+    ],
+    "patch_applies_cleanly_to_original_reference": true,
+    "path": "results/indexsdk_source_preview_01/sdk",
+    "patch": "results/indexsdk_source_preview_01/indexsdk-bm25.patch"
+  },
+  "local_validation": {
+    "tool_tests_passed_before_latest_header_capture": 68,
+    "focused_integration_tests_passed_after_header_capture": 6,
+    "configuration_and_declaration_syntax_checks": {
+      "scope": "Local prototype-header C++ syntax check and real SDK CMake configure with declaration/library placeholders only; no actual CANN build or device claim",
+      "SDK_target": "ascendfaiss_host",
+      "all_five_BM25_units_in_shared_SDK_target": true,
+      "public_benchmark_links_that_SDK_target": true,
+      "tests_configured": 10,
+      "syntax_passed": true,
+      "configure_passed": true,
+      "all_five_SDK_units_retain_FP32_security_and_GNU_flags": true,
+      "compile_commands_exported": true
+    },
+    "structure_CPP_files": 59,
+    "Python39_AST_passed": true,
+    "ruff_passed": true,
+    "CANN_build_or_device_execution": false,
+    "new_public_benchmark_declaration_only_clang_tidy_passed": true
+  },
+  "actual_A5_gates": [
+    "Capture and hash the measured preindex report/build/package and kernel tiling header",
+    "Rebuild frozen normal operator from merged SDK source; reuse unchanged Merge",
+    "Build original SDK shared target,seven CPU UTs and actual-header clang-tidy",
+    "Check installed/relocated public consumer and exported SDK symbols",
+    "Check real linked SDK library,shared resource lifetimes and full real-query quality",
+    "Six paired SDK/standalone rounds on all six retained Q8 inputs,exact selected bits and actual public API timer"
+  ],
+  "CPU_scope": "Original-native BM25S remains the frozen concentrated-test CPU baseline; postintegration compares public SDK versus matched standalone NPU, not old CPU timings presented as a new paired run.",
+  "convergence": "No further optimization candidate; actual SDK integration and acceptance only. Sparse8192+4% tradeoff remains explicit.",
+  "source_sha256": {
+    "tools/indexsdk_integration.py": "dcd98180c472e1e42c358ff5ea6725c0fbc7e450488b3d6fd421af0a7a9522d0",
+    "tools/test_indexsdk_integration.py": "4336ab97b83bf2ff1ffb4fcc1e8036aa82b533ce5ec1773759f649349b690777",
+    "integration/indexsdk/Bm25.cmake": "0b8f264b177ba30d4142354e4b2a004a210f036fa53421af6e8d1376791bf528",
+    "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/sdk_benchmark.cpp": "157870ee32a4b97e4585ec76fa7b6ee1c4644741234860288449796569f28480",
+    "tools/run_clang_tidy.py": "0bd7d58909340aac11158c7911830b9c4c3af45f73f08d6f2b10b4bd9c024288",
+    "tools/check_structure.py": "7fdbe185096d9706b91c22de4dcfdc6a43f28ef9cff1117297ade7eeaba52007",
+    "standalone/release_validation.py": "d83346d41af5ba35114ba688c737954e40226d758942c7cac503ccc8e467e8f0",
+    "tools/split_sources.py": "fdd083851f087d656bc098ad9ead908c4167158a9c5a80123a158ee443439048"
+  },
+  "commands": "docs/INDEXSDK_MERGE.md"
+}
