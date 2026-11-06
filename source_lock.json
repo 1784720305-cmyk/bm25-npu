@@ -251,7 +251,7 @@
     "scope": "Retained input directory, matching recipe/query IDs; historical separate session, not a paired causal estimate. Current full index_id was not pasted. Real small-corpus mixed CPU gates remain unchanged."
   },
   "experimental_capacity_study": {
-    "status": "original_A5_build_and_boundaries_passed_partial_Search_v2_trace_fix_pending_A5",
+    "status": "all_54_requested_cells_and_v2_trace_checks_completed_performance_acceptance_pending",
     "default_capacity": 1024,
     "candidates": [
       2048,
@@ -268,9 +268,11 @@
       "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
     },
     "scope": "Separate generated packages and diagnostic executable; existing production source hashes and latest A5 acceptance fingerprints remain unchanged.",
-    "latest_evidence": "evidence/capacity_trace_fix_20261106.json",
+    "latest_evidence": "evidence/capacity_a5_20261106.json",
     "profile_trace_contract": "simt_gm_cacheline64_nonce_v2",
     "old_stage_values_withdrawn": true,
-    "v2_A5_revalidation_passed": false
+    "v2_A5_revalidation_passed": true,
+    "performance_acceptance": "not_promoted_mixed_workload_results",
+    "conclusion": "Keep 1024 as default. Capacity 4096 improves fixed SciFact B by 38.10%, while A is unchanged and sparse8192 median/P95 regressions remain. Per-query summaries identify A query8 (4399 positive candidates) as the remaining dense-path tail task."
   }
 }

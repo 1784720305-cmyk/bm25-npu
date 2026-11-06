@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "IndexSDK-aligned BM25 package. Huge-first allocation fix passed real A5 host/device and MS MARCO checks. Subsequent SciFact/TREC-COVID repeats reproduce prior role-specific quality; observed NPU median changes are -0.49% to +0.78%, median-of-round-P95 changes -0.40% to +1.40%. SciFact A still fails the native-CPU median win gate; other real cases retain their reported gates. Original-native BM25S, mixed small-corpus timing, cross-session limits and the MS MARCO slower first round remain explicit. Archive-only update; implementation unchanged. Retained 8192-document synthetic input also checked: NPU medians are 17.03%/14.41% below historical session, with six median/P95 wins against original native BM25S; real-input stage attribution remains unprofiled. Isolated 1024/2048/4096 capacity tools are locally checked; all experimental CANN builds/device timings remain pending and default capacity is unchanged. The original six capacity packages passed A5 build/boundary checks but v1 traces have a DCache/record-sharing defect. V1 stage evidence is withdrawn; fixed v2 SIMT trace writer and normal-package reuse passed local checks, A5 revalidation pending.",
+  "scope": "IndexSDK-aligned BM25 package. Huge-first allocation fix passed real A5 host/device and MS MARCO checks. Subsequent SciFact/TREC-COVID repeats reproduce prior role-specific quality; observed NPU median changes are -0.49% to +0.78%, median-of-round-P95 changes -0.40% to +1.40%. SciFact A still fails the native-CPU median win gate; other real cases retain their reported gates. Original-native BM25S, mixed small-corpus timing, cross-session limits and the MS MARCO slower first round remain explicit. Archive-only update; implementation unchanged. Retained 8192-document synthetic input also checked: NPU medians are 17.03%/14.41% below historical session, with six median/P95 wins against original native BM25S; real-input stage attribution remains unprofiled. Isolated 1024/2048/4096 capacity tools are locally checked; all experimental CANN builds/device timings remain pending and default capacity is unchanged. The original six capacity packages passed A5 build/boundary checks but v1 traces have a DCache/record-sharing defect. V1 stage evidence is withdrawn; fixed v2 SIMT trace writer and normal-package reuse passed local checks, A5 revalidation pending. V2 capacity A5 study completed all54 cells and trace checks.4096 improves SciFact B Search by38.10% but not A and regresses sparse8192 median/P95;1024 stays default. Archive-only update, implementation unchanged.",
   "text_line_endings": "LF",
   "reference_commits": {
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -12,7 +12,7 @@
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
     ".pre-commit-config.yaml": "d18cae61fe460685d6b3e1721bf9aa30aa2e4d249388df7c8fdf9a5657f99a57",
     "CMakeLists.txt": "efbb01dc2062aae2a92fc873e4663d300062bb2eca9e9167d8f09b7ad92c84f5",
-    "README.md": "a3bd311cdd78e0e0e336cc4884bbb0a787baa5b6393dc6c548a07fe7691392e0",
+    "README.md": "ed1969775f16ee372a4746098e116404437247df25681ca924eb626029f3d508",
     "cmake/AscendBm25Config.cmake.in": "ec11d408ef32f39c0dadf697f97c828a12b184975995ed78947e643b687acb39",
     "cmake/Install.cmake": "e6414e4980bf184558dd5bf05d66db54dd5433036e5cc7a76ea0fb30617639e0",
     "docs/A5_ACCEPTANCE.md": "b9c7e21201f26be3d35443b4e026f66ff4d000fe82994ef0748e24a0cc26f13d",
@@ -148,7 +148,7 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "dc6248ace079496a39247fc70f18ff4227878dce8c7d5d7d77a9cbaf71df85bc",
-    "source_lock.json": "67025cecccef0427c8f75391972bda9490d9356c90751ede026466e78d0ae4f8",
+    "source_lock.json": "98e4149bcdab08638a69c96acb04a1329f4468bd9c020f97fe5962656a4b2f40",
     "standalone/beir_real.py": "ca0103064fc4b8a12842b7d32744685bf0cd502b878c9b26888ce3603018db0d",
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
@@ -183,7 +183,8 @@
     "tools/test_selector_capacity.py": "0133f3923959d711b05f68438d337640cb702cc4b11c5e77df80d4c9c4fe9acb",
     "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/capacity_profile.cpp": "ec26e641b6166e12da088ff503f7ca78a0c7a45b01f54eeb856d9cc9b7e29b02",
     "evidence/capacity_experiment_plan_20261105.json": "e214c71b505560e1c25c2712159e91e39becc1090e4485e2579660537a8911df",
-    "docs/SELECTOR_CAPACITY.md": "e3a673aa4595281ec6df0da7e3432929a946e0915dfd0163a1f2c7db7c727b5c",
-    "evidence/capacity_trace_fix_20261106.json": "7f416487db8a1130a4c9e7e1027df8a14c2bc6b79c76b89da6778b3ac4129131"
+    "docs/SELECTOR_CAPACITY.md": "eaf17c3105e43b41d6a14be16470619b1762af1c7936ffb7c6a8d9010f9a23e2",
+    "evidence/capacity_trace_fix_20261106.json": "7f416487db8a1130a4c9e7e1027df8a14c2bc6b79c76b89da6778b3ac4129131",
+    "evidence/capacity_a5_20261106.json": "c0894c4aaaa609ba46bf746471805618f96a16458d34e759ad99f1130863c898"
   }
 }
