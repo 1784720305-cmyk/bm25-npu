@@ -88,7 +88,7 @@
     "tools/check_installed_package.py": "d0ed2beedb8da1a7910a3e2a54379a31acc06f032af2d047d72d25077e2d3c52",
     "tools/check_structure.py": "7fdbe185096d9706b91c22de4dcfdc6a43f28ef9cff1117297ade7eeaba52007",
     "tools/run_a5_acceptance.py": "ee95b9a2ccd2832d07c3fb20177c94f87445ee5c8897d65ad1d5714ddb47de72",
-    "tools/run_clang_tidy.py": "0bd7d58909340aac11158c7911830b9c4c3af45f73f08d6f2b10b4bd9c024288",
+    "tools/run_clang_tidy.py": "d8e6e4b8bf413fb954d2e2717031bf95882eeccc956ac7d3eaa2a68c97eedf40",
     "tools/test_acceptance_contract.py": "f14ce5101bb4149d4029e79e6e9417bb9459d0359e587d9648d7ab67c8f4e58f",
     "tools/a5_environment.py": "f1d7923e58e2bff6b622e52022295227254b713490f2ec57c90013c9cf49a362",
     "tools/compare_cpu_builds.py": "0d8f449061796d340ea18e27d2c1f8cd3f75986e3f490ff30d97780f09e798fc",
@@ -366,17 +366,28 @@
     "evidence": "evidence/indexsdk_integration_local_20261106.json",
     "commands": "docs/INDEXSDK_MERGE.md",
     "source_sha256": {
-      "tools/indexsdk_integration.py": "dcd98180c472e1e42c358ff5ea6725c0fbc7e450488b3d6fd421af0a7a9522d0",
-      "tools/test_indexsdk_integration.py": "4336ab97b83bf2ff1ffb4fcc1e8036aa82b533ce5ec1773759f649349b690777",
+      "tools/indexsdk_integration.py": "3aaf0619189ba551d48cf9238f975aee5a79097e7b61537f3cc58fb2d97ca520",
+      "tools/test_indexsdk_integration.py": "ad127354751de8c1a884b519719c31cc4682adad73342eb7fb0b812a75fb18bd",
       "integration/indexsdk/Bm25.cmake": "0b8f264b177ba30d4142354e4b2a004a210f036fa53421af6e8d1376791bf528",
       "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/sdk_benchmark.cpp": "157870ee32a4b97e4585ec76fa7b6ee1c4644741234860288449796569f28480",
-      "tools/run_clang_tidy.py": "0bd7d58909340aac11158c7911830b9c4c3af45f73f08d6f2b10b4bd9c024288",
+      "tools/run_clang_tidy.py": "d8e6e4b8bf413fb954d2e2717031bf95882eeccc956ac7d3eaa2a68c97eedf40",
       "tools/check_structure.py": "7fdbe185096d9706b91c22de4dcfdc6a43f28ef9cff1117297ade7eeaba52007",
       "standalone/release_validation.py": "d83346d41af5ba35114ba688c737954e40226d758942c7cac503ccc8e467e8f0",
       "tools/split_sources.py": "fdd083851f087d656bc098ad9ead908c4167158a9c5a80123a158ee443439048"
     },
     "base_commit": "59213c4ca5ebb643c031c8b819e90e3a5cc21a8c",
     "actual_SDK_build_and_device_passed": false,
-    "only_modified_upstream_file": "feature_retrieval/src/ascendfaiss/ascendhost/CMakeLists.txt"
+    "only_modified_upstream_file": "feature_retrieval/src/ascendfaiss/ascendhost/CMakeLists.txt",
+    "latest_recovery_evidence": "evidence/indexsdk_tidy_recovery_20261106.json",
+    "A5_progress": {
+      "operator_build_install_passed": true,
+      "original_SDK_shared_library_build_passed": true,
+      "unit_tests_passed": true,
+      "all_five_BM25_production_clang_tidy_passed": true,
+      "test_program_clang_tidy": "failed_in_unmodified_upstream_headers_due_to_parent_path_scope_leak",
+      "static_and_install_recovery_verified_on_A5": false,
+      "postintegration_device_verified": false,
+      "recovery_mode": "resume-build"
+    }
   }
 }

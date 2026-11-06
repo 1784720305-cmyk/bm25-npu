@@ -225,6 +225,68 @@ def prepare(args):
     print('REVIEW PATCH:', output / 'indexsdk-bm25.patch', flush=True)
 
 
+def finish_build(output, integration, sdk, host, toolkit, clang_tidy, result, stage):
+    stage(
+        'clang_tidy',
+        [
+            sys.executable,
+            ROOT / 'tools/run_clang_tidy.py',
+            '--build-dir',
+            host,
+            '--source-root',
+            sdk / PREFIX,
+            '--include-tests',
+            '--clang-tidy',
+            clang_tidy,
+        ],
+    )
+    prefix = output / 'installed'
+    stage('install', ['cmake', '--install', host, '--prefix', prefix])
+    relocated = output / 'relocated'
+    shutil.copytree(prefix, relocated)
+    consumer = output / 'consumer'
+    consumer.mkdir()
+    (consumer / 'main.cpp').write_bytes(
+        b'#include "faiss/ascend/AscendIndexBm25.h"\n#include "common/ErrorCode.h"\nint main() { faiss::ascend::AscendIndexBm25 model; return model.Close() == ascend::APP_ERR_OK ? 0 : 1; }\n'
+    )
+    (consumer / 'CMakeLists.txt').write_bytes(
+        b'cmake_minimum_required(VERSION 3.17)\nproject(installed_bm25 LANGUAGES CXX)\nset(CMAKE_CXX_STANDARD 17)\nadd_executable(consumer main.cpp)\ntarget_include_directories(consumer PRIVATE "${SDK_PREFIX}/include" "${SDK_PREFIX}/include/faiss/ascend" "${TOOLKIT_HOME}/include")\ntarget_link_libraries(consumer PRIVATE "${SDK_PREFIX}/host/lib/libascendfaiss.so")\n'
+    )
+    stage(
+        'consumer_configure',
+        [
+            'cmake',
+            '-S',
+            consumer,
+            '-B',
+            consumer / 'build',
+            '-DSDK_PREFIX=' + str(relocated),
+            '-DTOOLKIT_HOME=' + str(toolkit),
+        ],
+    )
+    stage('consumer_build', ['cmake', '--build', consumer / 'build'])
+    env = os.environ.copy()
+    env['LD_LIBRARY_PATH'] = str(relocated / 'host/lib') + ':' + env.get('LD_LIBRARY_PATH', '')
+    stage('consumer_run', [consumer / 'build/consumer'], env)
+    symbols = subprocess.check_output(['nm', '-D', '-C', str(host / 'libascendfaiss.so')], text=True)
+    r.require(
+        all('AscendIndexBm25::' + name in symbols for name in ('Init(', 'Search(', 'Close(', 'GetLastError(')),
+        'Public API is not exported by the real SDK library',
+    )
+    (output / 'exported_symbols.log').write_bytes(symbols.encode())
+    verify_tree(integration)
+    result.update(
+        status='integrated_IndexSDK_build_static_UT_install_passed_device_pending',
+        host=str(host),
+        toolkit_home=str(toolkit),
+        sdk_source=str(sdk),
+        library_sha256=s.digest(host / 'libascendfaiss.so'),
+        benchmark_sha256=s.digest(host / 'bm25_sdk_benchmark'),
+        shared_check_sha256=s.digest(host / 'bm25_sdk_shared_check'),
+    )
+    result.pop('current_stage', None)
+
+
 def build(args):
     _, sdk = verify_tree(args.integration)
     output = args.output.resolve()
@@ -325,65 +387,89 @@ def build(args):
         stage('configure', command)
         stage('host_build', ['cmake', '--build', host, '--parallel', args.jobs])
         stage('unit_tests', ['ctest', '--test-dir', host, '--output-on-failure'])
-        stage(
-            'clang_tidy',
-            [
-                sys.executable,
-                ROOT / 'tools/run_clang_tidy.py',
-                '--build-dir',
-                host,
-                '--source-root',
-                sdk / PREFIX,
-                '--include-tests',
-                '--clang-tidy',
-                args.clang_tidy,
-            ],
-        )
-        prefix = output / 'installed'
-        stage('install', ['cmake', '--install', host, '--prefix', prefix])
-        relocated = output / 'relocated'
-        shutil.copytree(prefix, relocated)
-        consumer = output / 'consumer'
-        consumer.mkdir()
-        (consumer / 'main.cpp').write_bytes(
-            b'#include "faiss/ascend/AscendIndexBm25.h"\n#include "common/ErrorCode.h"\nint main() { faiss::ascend::AscendIndexBm25 model; return model.Close() == ascend::APP_ERR_OK ? 0 : 1; }\n'
-        )
-        (consumer / 'CMakeLists.txt').write_bytes(
-            b'cmake_minimum_required(VERSION 3.17)\nproject(installed_bm25 LANGUAGES CXX)\nset(CMAKE_CXX_STANDARD 17)\nadd_executable(consumer main.cpp)\ntarget_include_directories(consumer PRIVATE "${SDK_PREFIX}/include" "${SDK_PREFIX}/include/faiss/ascend" "${TOOLKIT_HOME}/include")\ntarget_link_libraries(consumer PRIVATE "${SDK_PREFIX}/host/lib/libascendfaiss.so")\n'
-        )
-        stage(
-            'consumer_configure',
-            [
-                'cmake',
-                '-S',
-                consumer,
-                '-B',
-                consumer / 'build',
-                '-DSDK_PREFIX=' + str(relocated),
-                '-DTOOLKIT_HOME=' + str(args.toolkit_home),
-            ],
-        )
-        stage('consumer_build', ['cmake', '--build', consumer / 'build'])
-        env = os.environ.copy()
-        env['LD_LIBRARY_PATH'] = str(relocated / 'host/lib') + ':' + env.get('LD_LIBRARY_PATH', '')
-        stage('consumer_run', [consumer / 'build/consumer'], env)
-        symbols = subprocess.check_output(['nm', '-D', '-C', str(host / 'libascendfaiss.so')], text=True)
+        finish_build(output, args.integration, sdk, host, args.toolkit_home, args.clang_tidy, result, stage)
+    except (Exception, KeyboardInterrupt) as error:
+        result.update(status='failed', error=str(error))
+        raise
+    finally:
+        r.write_json(output / 'build.json', result)
+    print('SDK BUILD REPORT:', output / 'build.json', flush=True)
+
+
+def resume_build(args):
+    output = args.build.resolve(strict=True)
+    r.require(output.is_relative_to(ROOT / 'results'), 'Retained SDK build must be under results')
+    result = read(output / 'build.json')
+    completed = ['operator_build', 'operator_install', 'configure', 'host_build', 'unit_tests']
+    r.require(
+        result['status'] == 'failed' and result.get('current_stage') == 'clang_tidy' and result['stages'] == completed,
+        'Resume requires the retained build that passed compilation/UT and stopped at clang_tidy',
+    )
+    integration = Path(result['integration'])
+    _, sdk = verify_tree(integration)
+    host = output / 'host'
+    cache = {}
+    for line in (host / 'CMakeCache.txt').read_text(encoding='utf-8').splitlines():
+        if line and not line.startswith(('#', '//')) and '=' in line and ':' in line.split('=', 1)[0]:
+            key, value = line.split('=', 1)
+            cache[key.split(':', 1)[0]] = value
+    r.require(
+        Path(cache['CMAKE_HOME_DIRECTORY']).resolve() == (sdk / PREFIX / 'ascendhost').resolve()
+        and cache.get('BUILD_ASCEND_BM25') == 'ON',
+        'Retained build does not belong to this integrated SDK source',
+    )
+    toolkit = Path(cache['ASCEND_TOOLKIT_PATH']).resolve(strict=True)
+    r.require(
+        package_fingerprint(Path(result['fused_vendor'])) == result['fused_files']
+        and package_fingerprint(Path(result['merge'])) == result['merge_files'],
+        'Retained operator package changed',
+    )
+    r.require(
+        not any((output / name).exists() for name in ('installed', 'relocated', 'consumer')),
+        'Installation/consumer output already exists; this recovery must start before installation',
+    )
+    binaries = {
+        name: s.digest(host / name) for name in ('libascendfaiss.so', 'bm25_sdk_benchmark', 'bm25_sdk_shared_check')
+    }
+    ordinal = 1
+    while (output / ('resume_' + str(ordinal).zfill(2))).exists():
+        ordinal += 1
+    attempt = output / ('resume_' + str(ordinal).zfill(2))
+    attempt.mkdir()
+    shutil.copyfile(output / 'build.json', attempt / 'build_before.json')
+    shutil.copyfile(output / 'clang_tidy.log', attempt / 'clang_tidy_before.log')
+    if (host / 'bm25_clang_tidy').is_dir():
+        shutil.copytree(host / 'bm25_clang_tidy', attempt / 'clang_tidy_before')
+    result.setdefault('resume_history', []).append(
+        {
+            'directory': str(attempt),
+            'from_stage': 'clang_tidy',
+            'retained_binary_sha256_before': binaries,
+            'checker_source_sha256': s.digest(ROOT / 'tools/run_clang_tidy.py'),
+            'config_sha256': s.digest(ROOT / '.clang-tidy'),
+        }
+    )
+    result.update(status='resuming_integrated_IndexSDK_from_clang_tidy')
+    result.pop('error', None)
+
+    def stage(name, command, env=None, cwd=None):
+        result['current_stage'] = name
+        r.write_json(output / 'build.json', result)
+        s.execute(command, attempt / (name + '.log'), env, cwd=cwd, timeout=14400)
+        result['stages'].append(name)
+
+    try:
+        finish_build(output, integration, sdk, host, toolkit, args.clang_tidy, result, stage)
         r.require(
-            all('AscendIndexBm25::' + name in symbols for name in ('Init(', 'Search(', 'Close(', 'GetLastError(')),
-            'Public API is not exported by the real SDK library',
+            package_fingerprint(Path(result['fused_vendor'])) == result['fused_files']
+            and package_fingerprint(Path(result['merge'])) == result['merge_files'],
+            'Retained operator package changed during static/install recovery',
         )
-        (output / 'exported_symbols.log').write_bytes(symbols.encode())
-        verify_tree(args.integration)
-        result.update(
-            status='integrated_IndexSDK_build_static_UT_install_passed_device_pending',
-            host=str(host),
-            toolkit_home=str(args.toolkit_home),
-            sdk_source=str(sdk),
-            library_sha256=s.digest(host / 'libascendfaiss.so'),
-            benchmark_sha256=s.digest(host / 'bm25_sdk_benchmark'),
-            shared_check_sha256=s.digest(host / 'bm25_sdk_shared_check'),
+        r.require(
+            all(s.digest(host / name) == sha for name, sha in binaries.items()),
+            'Retained SDK library or test binary changed during static/install recovery',
         )
-        result.pop('current_stage', None)
+        result['resume_history'][-1]['retained_binaries_unchanged'] = True
     except (Exception, KeyboardInterrupt) as error:
         result.update(status='failed', error=str(error))
         raise
@@ -647,6 +733,9 @@ def main():
     ):
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--jobs', type=int, default=8)
+    p = sub.add_parser('resume-build', help='Continue the retained compilation/UT-passed build from clang-tidy')
+    p.add_argument('--build', type=Path, required=True)
+    p.add_argument('--clang-tidy', type=Path, required=True)
     p = sub.add_parser('device')
     for name in ('build', 'host-build', 'output'):
         p.add_argument('--' + name, type=Path, required=True)
@@ -665,7 +754,7 @@ def main():
         r.require(
             sys.platform == 'linux' and os.environ.get('ASCEND_OPP_PATH'), 'Actual A5 Linux/CANN environment required'
         )
-    {'prepare': prepare, 'build': build, 'device': device}[args.mode](args)
+    {'prepare': prepare, 'build': build, 'resume-build': resume_build, 'device': device}[args.mode](args)
 
 
 if __name__ == '__main__':

@@ -2,6 +2,8 @@
 
 import contextlib
 import io
+import re
+import shutil
 import sys
 import tarfile
 import tempfile
@@ -28,6 +30,112 @@ def archive(entries):
 
 
 class IntegrationTests(unittest.TestCase):
+    def test_header_scope_covers_owned_headers_through_sdk_parent_alias_only(self):
+        with tempfile.TemporaryDirectory(dir=sdk.ROOT / 'results', prefix='sdk_header_scope_') as tmp:
+            source = Path(tmp)
+            owned = (
+                'common/bm25/index_data.h',
+                'ascendhost/src/bm25/runtime.h',
+                'ascendhost/include/index/AscendIndexBm25.h',
+                'ascendhost/include/impl/Bm25RuntimeBinding.h',
+                'test/ascendhost/bm25/reference/cpu_index_search.h',
+            )
+            upstream = (
+                'ascenddaemon/AscendResourcesProxy.h',
+                'common/utils/SocUtils.h',
+                'ascendhost/include/impl/OriginalSdk.h',
+            )
+            for name in owned + upstream:
+                path = source / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b'// fixture\n')
+            expression, names = tidy.owned_header_filter(source)
+            self.assertEqual(set(names), set(owned))
+            for name in owned + upstream:
+                for prefix in (source.as_posix() + '/', source.as_posix() + '/ascendhost/../'):
+                    for path in (prefix + name, (prefix + name).replace('/', '\\')):
+                        self.assertEqual(bool(re.search(expression, path)), name in owned, path)
+            self.assertIsNone(re.search(expression, source.as_posix() + '/common/bm25/../utils/SocUtils.h'))
+
+    def test_static_recovery_keeps_binaries_packages_sources_and_original_failure(self):
+        with tempfile.TemporaryDirectory(dir=sdk.ROOT / 'results', prefix='sdk_resume_') as tmp:
+            output = Path(tmp)
+            host = output / 'host'
+            host.mkdir()
+            tree = output / 'sdk'
+            toolkit = output / 'toolkit'
+            toolkit.mkdir()
+            (host / 'CMakeCache.txt').write_bytes(
+                (
+                    'CMAKE_HOME_DIRECTORY:INTERNAL='
+                    + str(tree / sdk.PREFIX / 'ascendhost')
+                    + '\nASCEND_TOOLKIT_PATH:UNINITIALIZED='
+                    + str(toolkit)
+                    + '\nBUILD_ASCEND_BM25:BOOL=ON\n'
+                ).encode()
+            )
+            for name in ('libascendfaiss.so', 'bm25_sdk_benchmark', 'bm25_sdk_shared_check'):
+                (host / name).write_bytes(('retained fixture ' + name).encode())
+            vendor = output / 'vendor'
+            (vendor / 'op_api/lib').mkdir(parents=True)
+            (vendor / 'op_api/lib/libcust_opapi.so').write_bytes(b'retained package fixture')
+            (vendor / 'binary_info_config.json').write_bytes(b'{}')
+            result = {
+                'status': 'failed',
+                'current_stage': 'clang_tidy',
+                'integration': str(output / 'integration'),
+                'stages': ['operator_build', 'operator_install', 'configure', 'host_build', 'unit_tests'],
+                'fused_vendor': str(vendor),
+                'merge': str(vendor),
+                'fused_files': sdk.package_fingerprint(vendor),
+                'merge_files': sdk.package_fingerprint(vendor),
+                'error': 'prior static failure fixture',
+            }
+            r.write_json(output / 'build.json', result)
+            original = (output / 'build.json').read_bytes()
+            (output / 'clang_tidy.log').write_bytes(b'prior failure log\n')
+            (host / 'bm25_clang_tidy').mkdir()
+            (host / 'bm25_clang_tidy/report.json').write_bytes(b'{"status":"failed"}\n')
+            commands = []
+
+            def execute(command, log, env=None, cwd=None, timeout=None):
+                commands.append([str(part) for part in command])
+                Path(log).write_bytes(b'mocked recovery stage, no CANN build claim\n')
+                if command[:2] == ['cmake', '--install']:
+                    target = output / 'installed/host/lib'
+                    target.mkdir(parents=True)
+                    shutil.copyfile(host / 'libascendfaiss.so', target / 'libascendfaiss.so')
+
+            with (
+                patch.object(sdk, 'verify_tree', return_value=({}, tree)),
+                patch.object(sdk.s, 'execute', side_effect=execute),
+                patch.object(
+                    sdk.subprocess,
+                    'check_output',
+                    return_value='\n'.join(
+                        'AscendIndexBm25::' + name for name in ('Init(', 'Search(', 'Close(', 'GetLastError(')
+                    ),
+                ),
+                contextlib.redirect_stdout(io.StringIO()),
+            ):
+                (vendor / 'op_api/lib/libcust_opapi.so').write_bytes(b'changed package fixture')
+                with self.assertRaisesRegex(ValueError, 'package changed'):
+                    sdk.resume_build(SimpleNamespace(build=output, clang_tidy=Path('clang-tidy')))
+                self.assertFalse((output / 'resume_01').exists())
+                self.assertEqual((output / 'build.json').read_bytes(), original)
+                (vendor / 'op_api/lib/libcust_opapi.so').write_bytes(b'retained package fixture')
+                sdk.resume_build(SimpleNamespace(build=output, clang_tidy=Path('clang-tidy')))
+            record = sdk.read(output / 'build.json')
+            self.assertEqual(record['status'], 'integrated_IndexSDK_build_static_UT_install_passed_device_pending')
+            self.assertTrue(record['resume_history'][0]['retained_binaries_unchanged'])
+            self.assertEqual((output / 'resume_01/build_before.json').read_bytes(), original)
+            self.assertEqual((output / 'resume_01/clang_tidy_before.log').read_bytes(), b'prior failure log\n')
+            self.assertTrue((output / 'resume_01/clang_tidy_before/report.json').is_file())
+            self.assertEqual(len(commands), 5)
+            self.assertTrue(commands[0][1].endswith('run_clang_tidy.py'))
+            self.assertFalse(any('build.sh' in cmd or str(host) in cmd and '--build' in cmd for cmd in commands))
+            self.assertEqual(record['fused_files'], sdk.package_fingerprint(vendor))
+
     def test_archive_cannot_escape_or_create_links(self):
         with tempfile.TemporaryDirectory(dir=sdk.ROOT / 'results', prefix='sdk_archive_') as tmp:
             base = Path(tmp)

@@ -39,6 +39,23 @@ python3 -u tools/indexsdk_integration.py build --integration results/indexsdk_in
 
 成功状态为 `integrated_IndexSDK_build_static_UT_install_passed_device_pending`。失败时保留目录，回传 `build.json` 的 `current_stage` 和对应日志末尾；不要重建原始包或重跑集中矩阵。
 
+### 已编译成功、停在 clang-tidy 的原目录恢复
+
+2026-11-06 的 `indexsdk_merged_build_01` 已通过算子构建安装、SDK 共享库编译及 UT；五个 BM25 实现均通过 clang-tidy。两个 SDK 检查程序失败于未修改的 SDK 依赖头：旧范围规则错误接纳了 `ascendhost/../ascenddaemon` 等路径。现按完整的 BM25 自有头文件名匹配，并保留其通过 `ascendhost/../` 引用时的检查覆盖；检查项和 warnings-as-errors 不变，依赖头的编译错误仍会阻断。
+
+仅对此次停在静态检查、尚未安装的构建，更新代码后执行恢复入口。**不用再次 prepare 或 build**，也不用删除旧目录：
+
+```bash
+cd /test/w50066029/bm25-npu-indexsdk
+git pull --ff-only
+python3 verify_package.py
+source /usr/local/Ascend/cann-9.2.0/set_env.sh
+export LD_LIBRARY_PATH=/usr/local/faiss/faiss1.14.1/lib:/opt/OpenBLAS/lib:/usr/local/Ascend/cann-9.2.0/x86_64-linux/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+python3 -u tools/indexsdk_integration.py resume-build --build results/indexsdk_merged_build_01 --clang-tidy /test/w50066029/bm25-tools/bin/clang-tidy
+```
+
+入口先核对合入源码、前序成功阶段、CMake 源码位置及算子包指纹，再将原报告和静态检查日志备份到 `resume_01`。它复用原 SDK 动态库和两个检查程序，执行静态检查、安装、搬迁消费及符号导出检查，并核对三个二进制前后 SHA-256 未变。新日志保存在 `resume_01`，`build.json` 更新为恢复结果；只有成功后才继续下方设备验收。
+
 ## A5：通过实际 SDK 接口复验
 
 构建成功后执行：

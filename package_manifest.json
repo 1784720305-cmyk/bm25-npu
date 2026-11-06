@@ -148,7 +148,7 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "dc6248ace079496a39247fc70f18ff4227878dce8c7d5d7d77a9cbaf71df85bc",
-    "source_lock.json": "83a4840db59299a3a4863549b24c24617d25aedb8ccf32bf1c63743f69d98374",
+    "source_lock.json": "46266821153202aeca201f6d96c5b272ccdd1b2c46868d2bee0fd83bf2d8766c",
     "standalone/beir_real.py": "ca0103064fc4b8a12842b7d32744685bf0cd502b878c9b26888ce3603018db0d",
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
@@ -168,7 +168,7 @@
     "tools/compare_cpu_builds.py": "0d8f449061796d340ea18e27d2c1f8cd3f75986e3f490ff30d97780f09e798fc",
     "tools/probe_device_allocation.py": "436c91476f1a6be3b30fe95de0a18e97d19f8eec8b34e9438f09533065567048",
     "tools/run_a5_acceptance.py": "ee95b9a2ccd2832d07c3fb20177c94f87445ee5c8897d65ad1d5714ddb47de72",
-    "tools/run_clang_tidy.py": "0bd7d58909340aac11158c7911830b9c4c3af45f73f08d6f2b10b4bd9c024288",
+    "tools/run_clang_tidy.py": "d8e6e4b8bf413fb954d2e2717031bf95882eeccc956ac7d3eaa2a68c97eedf40",
     "tools/test_a5_diagnostics.py": "5598f3f568c5f24a3f2611d85ddd23695fddd67d6b64b72ea712125b983cfc09",
     "tools/test_acceptance_contract.py": "f14ce5101bb4149d4029e79e6e9417bb9459d0359e587d9648d7ab67c8f4e58f",
     "tools/test_beir_real.py": "c00472b8e4c94326376abf46e89cd11dc39dd25086bbf430a329a03300957e41",
@@ -198,12 +198,13 @@
     "evidence/release_validation_plan_20261106.json": "4abc0cd61a3055868bfc5f3eedfc80583748cb44ce3898a385ec2e6b03398f0d",
     "docs/RELEASE_VALIDATION.md": "c10c5c61af518e7395e450b20de15443c538386f4590dcf314dc5d29bf8eda38",
     "evidence/release_validation_cli_fix_20261106.json": "c020f683ef872a5b4537dc1eae9d1f9bd12deb50b475fee30987ce1a7d28f853",
-    "docs/INDEXSDK_MERGE.md": "34aa14a4f6b74f9f208fb781941be1eb77b29d7f8324c5158895f1ab99041550",
+    "docs/INDEXSDK_MERGE.md": "f2ba92e3395de73227d89e977bbb49ca792d5d5eba1e302e09a7dc4e288ee7ea",
     "evidence/concentrated_preindex_a5_20261106.json": "a33ad9980ccd35ff76357b8e087876d5f15b2915aaea4d3ea50b341a1b128a49",
     "evidence/indexsdk_integration_local_20261106.json": "fe933d9cd94e7bda17ce80da19bccc6479646ae99953a438ac7b5c6e41963b3f",
     "feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/sdk_benchmark.cpp": "157870ee32a4b97e4585ec76fa7b6ee1c4644741234860288449796569f28480",
     "integration/indexsdk/Bm25.cmake": "0b8f264b177ba30d4142354e4b2a004a210f036fa53421af6e8d1376791bf528",
-    "tools/indexsdk_integration.py": "dcd98180c472e1e42c358ff5ea6725c0fbc7e450488b3d6fd421af0a7a9522d0",
-    "tools/test_indexsdk_integration.py": "4336ab97b83bf2ff1ffb4fcc1e8036aa82b533ce5ec1773759f649349b690777"
+    "tools/indexsdk_integration.py": "3aaf0619189ba551d48cf9238f975aee5a79097e7b61537f3cc58fb2d97ca520",
+    "tools/test_indexsdk_integration.py": "ad127354751de8c1a884b519719c31cc4682adad73342eb7fb0b812a75fb18bd",
+    "evidence/indexsdk_tidy_recovery_20261106.json": "52409de8f5f066a144eec1eb2293aa02d4c1cdcb5d6a1af19faf8836f1922a8a"
   }
 }

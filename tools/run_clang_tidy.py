@@ -22,6 +22,24 @@ def uses_stubs(entry):
     return any(marker in command for marker in ("/mock", "_stubs", "/stubs"))
 
 
+def owned_header_filter(source):
+    headers = []
+    for folder in ("common/bm25", "ascendhost/src/bm25", "test/ascendhost/bm25"):
+        headers.extend((source / folder).rglob("*.h"))
+    headers.extend((source / "ascendhost/include/impl").glob("Bm25*.h"))
+    public = source / "ascendhost/include/index/AscendIndexBm25.h"
+    if public.is_file():
+        headers.append(public)
+    names = sorted({path.relative_to(source).as_posix() for path in headers if path.is_file()})
+    # SDK's inherited -I.../ascendhost/.. leaves this spelling in diagnostics.
+    # Match complete owned file names; a directory prefix also admits unchanged
+    # ascendhost/../ascenddaemon and ascendhost/../common SDK dependencies.
+    prefix = re.escape(source.as_posix()).replace("/", r"[\\/]")
+    alias = r"[\\/](ascendhost[\\/]\.\.[\\/])?"
+    relative = "|".join(re.escape(name).replace("/", r"[\\/]") for name in names)
+    return ("^" + prefix + alias + "(" + relative + ")$" if names else "^$"), names
+
+
 def compiler_openmp_header(entry, cache):
     arguments = entry.get("arguments") or shlex.split(entry["command"], posix=os.name != "nt")
     if not any(value == "-fopenmp" or value.startswith("-fopenmp=") for value in arguments):
@@ -111,9 +129,7 @@ def main():
     version = subprocess.run([args.clang_tidy, "--version"], capture_output=True, text=True, check=True).stdout.strip()
     checks = []
     compiler_headers = {}
-    header_filter = (
-        "^" + re.escape(source.as_posix()).replace("/", r"[\\/]") + r"[\\/](common[\\/]bm25|ascendhost)[\\/]"
-    )
+    header_filter, owned_headers = owned_header_filter(source)
     for number, (file, entry) in enumerate(sorted(selected.items())):
         command = [args.clang_tidy, file, f"-p={output}", f"--config-file={config}", "--quiet"]
         command.append(f"--header-filter={header_filter}")
@@ -149,6 +165,8 @@ def main():
         "status": "passed" if passed else "failed",
         "tool": version,
         "config_sha256": digest(config),
+        "header_filter": header_filter,
+        "owned_header_sha256": {name: digest(source / name) for name in owned_headers},
         "fix_requested": args.fix,
         "allow_test_stubs": args.allow_test_stubs,
         "missing_production_files": missing,
