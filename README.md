@@ -43,7 +43,7 @@ SIMD 候选容量的 [v2 A5 六轮对照](docs/SELECTOR_CAPACITY.md#v2-a5-六轮
 
 [密集分支 SIMD 阈值候选](docs/DENSE_SELECTOR.md)已完成 A5 编译、正确性和六轮对照：容量仍为 1024、UB 声明仍为 64 KiB；SciFact A/B 完整 Search 降低 **24.43% / 29.37%**，中位延迟与 P95 均六轮全胜。A 第 8 条查询的 Top-K 降低 67.29%。四个稀疏测试项却都在 4/6 轮配对 Search 中变慢，配对变化的中位数为 **+1.70%～+2.47%**，打点 Top-K 增加 **4.32%～5.09%**。保留这些代价，候选暂不替换默认包；优先缩小稀疏路径开销，再做中、大库回归。[完整回传记录](evidence/dense_selector_a5_20261106.json)已核对，现有轮次无需重跑。
 
-优化在本次稀疏收集专用分支调整后收敛：[集中测试与 IndexSDK 合入流程](docs/RELEASE_VALIDATION.md)固定比较原包、已测密集候选及本次候选，覆盖 SciFact、TREC-COVID、MS MARCO、两档稀疏输入和原千万篇输入，CPU 使用原版 BM25S。集中结果明确后冻结一版、合入 IndexSDK、再验收实际 SDK 调用链，不继续逐数据集调参。本次工具已通过本地检查，候选编译和集中 A5 测量仍待执行。
+优化在本次稀疏收集专用分支调整后收敛：[集中测试与 IndexSDK 合入流程](docs/RELEASE_VALIDATION.md)固定比较原包、已测密集候选及本次候选，覆盖 SciFact、TREC-COVID、MS MARCO、两档稀疏输入和原千万篇输入，CPU 使用原版 BM25S。集中结果明确后冻结一版、合入 IndexSDK、再验收实际 SDK 调用链，不继续逐数据集调参。收尾候选的 A5 编译和边界检查已通过；质量检查入口的循环参数已修为符合 C++ 约束的 10 次，待复跑完整矩阵，已有算子包无需重建。
 
 固定合成语料、Q8、每查询3词、K10、FP32和严格排名。完整Search从CPU已有词ID到CPU拿到Top-K，包括每次NPU传输和同步；排除建库、首次整库上传/JIT/预热。
 

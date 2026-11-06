@@ -1,0 +1,121 @@
+{
+  "date": "2026-11-06",
+  "status": "candidate_build_and_boundary_checks_passed_quality_CLI_bug_fixed_locally_concentrated_A5_rerun_pending",
+  "provenance": {
+    "source": "User-pasted A5 build/run console and requested tail of baseline quality search.log; local source inspection and actual C++ parser reproduction.",
+    "expected_tool_revision": "c25de95",
+    "fresh_git_build_and_binary_hashes_received": false,
+    "raw_build_reports_and_boundary_reports_received": false,
+    "progress_scope": "Following stages were reached only after build and both split boundary status/call-count gates succeeded. No performance matrix process was reached."
+  },
+  "A5_progress": {
+    "build": "results/dense_release_build_01",
+    "normal_and_profile_packages_built_and_installed": true,
+    "normal_and_profile_boundary_gates_passed": true,
+    "boundary_calls_required_each": 54,
+    "failed_attempt": "results/concentrated_preindex_01",
+    "failed_stage": "quality/scifact/baseline",
+    "failed_command_numeric_args": {
+      "device": 5,
+      "k": 10,
+      "queries": 150,
+      "capacity_words": 1406,
+      "warmup": 1,
+      "repeats": 1
+    },
+    "error_log": "results/concentrated_preindex_01/quality/scifact/baseline/search.log",
+    "error": "FAILED: Invalid integer argument",
+    "performance_processes_started": 0
+  },
+  "root_cause": {
+    "introduced_by": "New release_validation.py quality call passed repeats1; prior accepted benchmark_final.py quality-only call uses10.",
+    "accepted_cpp_contract": "benchmark.cpp parses argv[11] with Number(...,10,100000). input_io.h Number throws Invalid integer argument for out-of-range values.",
+    "failure_boundary": "Argument validation occurs before LoadIndex and Session construction; no Search timing or new-kernel execution for this failed quality process."
+  },
+  "fix": {
+    "quality_warmup_cycles": 1,
+    "quality_check_cycles": 10,
+    "performance_warmup_cycles": 5,
+    "performance_measured_cycles": 30,
+    "prelaunch_argument_guard": true,
+    "new_regression": "Actual search helper builds Q150 and Q8 commands and checks warmup/repeat bounds read from production C++ source; repeats1 rejected before output creation/process launch.",
+    "optimization_round_limit": 1,
+    "new_optimization_candidate": false,
+    "candidate_rebuild_required": false,
+    "corpus_preparation_required": false,
+    "fresh_run_output": "results/concentrated_preindex_02"
+  },
+  "local_validation": {
+    "tool_tests_passed": 62,
+    "dedicated_release_tests_passed": 7,
+    "ruff_format_and_check_passed": true,
+    "Python39_AST_passed": true,
+    "actual_CPP_parser_reproduction": {
+      "scope": "Local CPU executable uses actual production input_io.h Number() and bounds extracted from benchmark.cpp; not a CANN/device run",
+      "bounds": [
+        10,
+        100000
+      ],
+      "results": [
+        {
+          "value": 1,
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Invalid integer argument"
+        },
+        {
+          "value": 9,
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Invalid integer argument"
+        },
+        {
+          "value": 10,
+          "exit_code": 0,
+          "stdout": "10",
+          "stderr": ""
+        },
+        {
+          "value": 30,
+          "exit_code": 0,
+          "stdout": "30",
+          "stderr": ""
+        },
+        {
+          "value": 100000,
+          "exit_code": 0,
+          "stdout": "100000",
+          "stderr": ""
+        },
+        {
+          "value": 100001,
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Invalid integer argument"
+        }
+      ]
+    },
+    "accepted_input_io_header_sha256": "50d46da237247ec190bf7af718d9a99cb9211f4835936d2ecbe4de426bb0936a",
+    "accepted_benchmark_cpp_sha256": "b872f9d69d9b10cdd67babc974683b3a80d813ab21d9b457701e67a6f3796f32",
+    "scope": "Local CPU driver includes actual production input_io.h and extracts repeat bounds from benchmark.cpp. It is not a CANN or A5 rerun."
+  },
+  "unchanged": [
+    "all accepted production source groups",
+    "all generated normal/profile operator sources",
+    "original-native BM25S baseline",
+    "fixed performance matrix/order/quality query coverage",
+    "one-final-adjustment then concentrated-test/freeze/IndexSDK-integration policy"
+  ],
+  "source_sha256": {
+    "standalone/release_validation.py": "d83346d41af5ba35114ba688c737954e40226d758942c7cac503ccc8e467e8f0",
+    "tools/split_sources.py": "fdd083851f087d656bc098ad9ead908c4167158a9c5a80123a158ee443439048",
+    "tools/test_release_validation.py": "64d8ae3e07ecfffd62b8e1ab38f6b7d8d84bb8e0224f03726b38c71bdc8e5ef5",
+    "standalone/dense_selector.py": "1e27117ac584542343dbc903c57ec72cbbf27036f9aefd2937a1ab148bc970fb",
+    "tools/dense_sources.py": "30545989b99fef6fdfc0e8b06c419577ac5b41ac61326d5700c6365d248b494c",
+    "tools/test_dense_selector.py": "6be596cf6be221e5ef96cbaedbaf949c30f40131f37e851ce8aedc902ef4ec72",
+    "standalone/selector_capacity.py": "d138ba45e2036d450e22a369fb267096af38c49383c8f24b2ec27b872ed30a71",
+    "tools/capacity_sources.py": "9a23cc7fd8177b2bc607b79a93abbe46eb6dd4aa090b5757eb30c968cd4cd711",
+    "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
+  },
+  "next": "Pull the tooling fix, verify package, reuse both built candidate packages and all prepared inputs; run the same matrix in new output02. Freeze a selected variant after review, then integrate IndexSDK and test the actual public interface."
+}

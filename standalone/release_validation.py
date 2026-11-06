@@ -23,6 +23,8 @@ from tools.split_sources import split_sources
 NPU_ROLES = ('baseline', 'dense_v1', 'split')
 CPU_ROLES = tuple('original_native_t' + str(w) for w in (1, 8, 32))
 DATASETS = ('scifact', 'trec-covid', 'msmarco')
+QUALITY_WARMUP = 1
+QUALITY_REPEATS = 10  # The accepted C++ runner requires at least ten measured cycles.
 
 
 def process_order(ordinal):
@@ -83,6 +85,10 @@ def verify_unchanged_input(record, rehash=False):
 
 
 def search(runner, record, vendor, output, device, warmup=5, repeats=30):
+    r.require(
+        type(warmup) is int and 1 <= warmup <= 10000 and type(repeats) is int and 10 <= repeats <= 100000,
+        'Search runner requires warmup1..10000 and repeats10..100000',
+    )
     path, description, index = (record[key] for key in ('input', 'description', 'index'))
     output.mkdir(parents=True)
     command = [
@@ -373,8 +379,8 @@ def run(args):
                     Path(variants[role]['normal']['aliases']),
                     target,
                     args.device,
-                    warmup=1,
-                    repeats=1,
+                    warmup=QUALITY_WARMUP,
+                    repeats=QUALITY_REPEATS,
                 )
                 bits.append(measured['TopK_sha256'])
                 report['quality'][name][role] = {

@@ -322,16 +322,16 @@
     "tool_update_note": "Builder accepts an explicit generator/vendor name and comparison may omit unavailable stages. Dense-v1 generated kernel/host hashes and historical A5 evidence remain unchanged; current helper/test source hashes are updated."
   },
   "release_validation": {
-    "status": "bounded_split_candidate_and_concentrated_validation_locally_checked_A5_pending",
+    "status": "candidate_build_and_boundary_checks_passed_quality_CLI_bug_fixed_locally_concentrated_A5_rerun_pending",
     "optimization_round_limit": 1,
     "candidate_promoted": false,
     "default_capacity": 1024,
     "evidence": "evidence/release_validation_plan_20261106.json",
     "commands": "docs/RELEASE_VALIDATION.md",
     "source_sha256": {
-      "standalone/release_validation.py": "73e9b886389a9bc5c1ff36cdcd5c339026bf12b0f083e0c5fef7a5f4ac894ca5",
+      "standalone/release_validation.py": "d83346d41af5ba35114ba688c737954e40226d758942c7cac503ccc8e467e8f0",
       "tools/split_sources.py": "fdd083851f087d656bc098ad9ead908c4167158a9c5a80123a158ee443439048",
-      "tools/test_release_validation.py": "023aaab76e5117641c29c3cba28802778f9ad8b31474aeeb43c297b72e93e34c",
+      "tools/test_release_validation.py": "64d8ae3e07ecfffd62b8e1ab38f6b7d8d84bb8e0224f03726b38c71bdc8e5ef5",
       "standalone/dense_selector.py": "1e27117ac584542343dbc903c57ec72cbbf27036f9aefd2937a1ab148bc970fb",
       "tools/dense_sources.py": "30545989b99fef6fdfc0e8b06c419577ac5b41ac61326d5700c6365d248b494c",
       "tools/test_dense_selector.py": "6be596cf6be221e5ef96cbaedbaf949c30f40131f37e851ce8aedc902ef4ec72",
@@ -341,6 +341,11 @@
     },
     "CANN_compile_and_device_passed": false,
     "next_phase": "concentrated_matrix_then_freeze_and_IndexSDK_integration_then_postintegration_acceptance",
-    "constraint": "One final sparse-path adjustment; once benefit is clear run concentrated tests, freeze one version, integrate IndexSDK, then test the real integrated path. Do not repeatedly optimize each dataset."
+    "constraint": "One final sparse-path adjustment; once benefit is clear run concentrated tests, freeze one version, integrate IndexSDK, then test the real integrated path. Do not repeatedly optimize each dataset.",
+    "latest_evidence": "evidence/release_validation_cli_fix_20261106.json",
+    "CANN_compile_and_boundary_passed": true,
+    "concentrated_checks_passed": false,
+    "quality_check_cycles": 10,
+    "performance_measured_cycles": 30
   }
 }

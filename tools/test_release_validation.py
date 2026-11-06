@@ -4,6 +4,7 @@ import contextlib
 import copy
 import io
 import itertools
+import re
 import tempfile
 import unittest
 from array import array
@@ -27,6 +28,54 @@ def summary(wall):
 
 
 class ReleaseTests(unittest.TestCase):
+    def test_real_search_helper_respects_cpp_cli_limits_before_launch(self):
+        cpp = (v.ROOT / 'feature_retrieval/src/ascendfaiss/test/ascendhost/bm25/benchmark.cpp').read_text(
+            encoding='utf-8'
+        )
+        bounds = {
+            position: tuple(
+                map(int, re.search(r'Number\(argv\[' + str(position) + r'\],\s*(\d+),\s*(\d+)\)', cpp).groups())
+            )
+            for position in (10, 11)
+        }
+        with tempfile.TemporaryDirectory(dir=v.ROOT / 'results', prefix='release_cli_') as tmp:
+            base = Path(tmp)
+            for ordinal, (queries, words, warmup, repeats) in enumerate(
+                ((150, 1406, v.QUALITY_WARMUP, v.QUALITY_REPEATS), (8, 24, 5, 30))
+            ):
+                target = base / str(ordinal)
+                record = {
+                    'input': base / 'input',
+                    'description': {'k': 10, 'queries': queries, 'capacity_words': words},
+                    'index': {},
+                }
+
+                def execute(command, log, env=None, timeout=None):
+                    for position, (minimum, maximum) in bounds.items():
+                        self.assertLessEqual(minimum, command[position])
+                        self.assertLessEqual(command[position], maximum)
+                    actual = Path(command[4])
+                    for case in ('A', 'B'):
+                        (actual / ('before_' + case)).mkdir(parents=True)
+                        for kind in ('ids', 'scores'):
+                            (actual / ('before_' + case) / ('top_' + kind + '.bin')).write_bytes(b'contract fixture')
+
+                with (
+                    patch.object(v.s, 'execute', side_effect=execute) as launched,
+                    patch.object(v.s, 'environment', return_value={}),
+                    patch.object(v.s, 'verify_run', return_value={'summary': summary(1.0)}) as verified,
+                ):
+                    v.search(base / 'runner', record, base / 'vendor', target, 5, warmup=warmup, repeats=repeats)
+                    self.assertEqual(launched.call_args.args[0][8:12], [queries, words, warmup, repeats])
+                    self.assertEqual(verified.call_args.kwargs, {'warmup': warmup, 'repeats': repeats})
+            with patch.object(v.s, 'execute') as launched:
+                for warmup, repeats in ((1, 1), (0, 30), (1, 9), (1, 100001)):
+                    target = base / ('invalid_' + str(warmup) + '_' + str(repeats))
+                    with self.assertRaisesRegex(ValueError, 'requires warmup'):
+                        v.search(base / 'runner', record, base / 'vendor', target, 5, warmup=warmup, repeats=repeats)
+                    self.assertFalse(target.exists())
+                launched.assert_not_called()
+
     def test_compact_body_and_dense_threshold_are_preserved(self):
         for instrumented in (False, True):
             host, kernel, plan = split_sources(instrumented)
@@ -225,7 +274,7 @@ class ReleaseTests(unittest.TestCase):
                     _fail=fail,
                     _bits=bits,
                 ):
-                    key = 'quality' if repeats == 1 else 'search'
+                    key = 'quality' if repeats == v.QUALITY_REPEATS else 'search'
                     _counters[key] += 1
                     if _fail and key == 'search':
                         raise ValueError('injected failure')
