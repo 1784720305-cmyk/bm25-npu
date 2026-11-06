@@ -14,6 +14,7 @@ from standalone.selector_capacity import TRACE_CONTRACT
 from standalone.test_final import collect_streams
 from tools.capacity_sources import sources
 from tools.dense_sources import dense_sources
+from tools.split_sources import split_sources
 
 
 def threshold(bits, k):
@@ -195,6 +196,24 @@ class DenseTests(unittest.TestCase):
             del broken['variants']['dense']
             with self.assertRaises(ValueError):
                 check_setup(broken)
+            args.output = base / 'split_candidate'
+            with (
+                patch('standalone.dense_selector.s.execute', side_effect=execute),
+                patch('standalone.dense_selector.s.aliases'),
+            ):
+                build(args, source_generator=split_sources, vendor_base='bm25_dense_split_1024')
+            specialized = json.loads((args.output / 'build.json').read_text())
+            self.assertEqual(len(installs), 4)
+            self.assertEqual(specialized['candidate_generator'], 'tools.split_sources')
+            self.assertEqual(specialized['variants']['baseline'], setup['variants']['baseline'])
+            for mode, variant in specialized['variants']['dense'].items():
+                expected = split_sources(mode == 'profile')[1]
+                self.assertEqual(
+                    variant['source_sha256']['op_kernel/bm25_fused_score_top_k.cpp'], r.digest(expected.encode())
+                )
+                self.assertTrue(variant['vendor_name'].startswith('bm25_dense_split_1024'))
+            for path, content in original.items():
+                self.assertEqual(path.read_bytes(), content)
 
 
 if __name__ == '__main__':

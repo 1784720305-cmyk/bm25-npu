@@ -282,9 +282,9 @@
     "evidence": "evidence/dense_selector_plan_20261106.json",
     "commands": "docs/DENSE_SELECTOR.md",
     "source_sha256": {
-      "standalone/dense_selector.py": "3446c3ac5846bfc404f4c8937bc2fc7d83b616536299ae0f0579a2651fcf7f2a",
+      "standalone/dense_selector.py": "1e27117ac584542343dbc903c57ec72cbbf27036f9aefd2937a1ab148bc970fb",
       "tools/dense_sources.py": "30545989b99fef6fdfc0e8b06c419577ac5b41ac61326d5700c6365d248b494c",
-      "tools/test_dense_selector.py": "1fb0c4bc822b33666f8cf99dab2d2c8e7145ba4633c32bd2634d4e59a3744aae",
+      "tools/test_dense_selector.py": "6be596cf6be221e5ef96cbaedbaf949c30f40131f37e851ce8aedc902ef4ec72",
       "standalone/selector_capacity.py": "d138ba45e2036d450e22a369fb267096af38c49383c8f24b2ec27b872ed30a71",
       "tools/capacity_sources.py": "9a23cc7fd8177b2bc607b79a93abbe46eb6dd4aa090b5757eb30c968cd4cd711",
       "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
@@ -318,6 +318,29 @@
       }
     },
     "conclusion": "Both SciFact cases improve Search median/P95 in6/6 paired rounds; A query8 TopK improves67.29%. Each sparse case is slower in4/6 Search median pairs, with median paired changes+1.70%-+2.47% and profile TopK costs+4.32%-+5.09%. Keep original1024 default; isolate compact-path overhead before broader regression.",
-    "evidence_scope": "User A5 console and requested run/source-hash/per-query readback; local arithmetic, sequence and generated-source audit. Raw installed packages and task records not received."
+    "evidence_scope": "User A5 console and requested run/source-hash/per-query readback; local arithmetic, sequence and generated-source audit. Raw installed packages and task records not received.",
+    "tool_update_note": "Builder accepts an explicit generator/vendor name and comparison may omit unavailable stages. Dense-v1 generated kernel/host hashes and historical A5 evidence remain unchanged; current helper/test source hashes are updated."
+  },
+  "release_validation": {
+    "status": "bounded_split_candidate_and_concentrated_validation_locally_checked_A5_pending",
+    "optimization_round_limit": 1,
+    "candidate_promoted": false,
+    "default_capacity": 1024,
+    "evidence": "evidence/release_validation_plan_20261106.json",
+    "commands": "docs/RELEASE_VALIDATION.md",
+    "source_sha256": {
+      "standalone/release_validation.py": "73e9b886389a9bc5c1ff36cdcd5c339026bf12b0f083e0c5fef7a5f4ac894ca5",
+      "tools/split_sources.py": "fdd083851f087d656bc098ad9ead908c4167158a9c5a80123a158ee443439048",
+      "tools/test_release_validation.py": "023aaab76e5117641c29c3cba28802778f9ad8b31474aeeb43c297b72e93e34c",
+      "standalone/dense_selector.py": "1e27117ac584542343dbc903c57ec72cbbf27036f9aefd2937a1ab148bc970fb",
+      "tools/dense_sources.py": "30545989b99fef6fdfc0e8b06c419577ac5b41ac61326d5700c6365d248b494c",
+      "tools/test_dense_selector.py": "6be596cf6be221e5ef96cbaedbaf949c30f40131f37e851ce8aedc902ef4ec72",
+      "standalone/selector_capacity.py": "d138ba45e2036d450e22a369fb267096af38c49383c8f24b2ec27b872ed30a71",
+      "tools/capacity_sources.py": "9a23cc7fd8177b2bc607b79a93abbe46eb6dd4aa090b5757eb30c968cd4cd711",
+      "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
+    },
+    "CANN_compile_and_device_passed": false,
+    "next_phase": "concentrated_matrix_then_freeze_and_IndexSDK_integration_then_postintegration_acceptance",
+    "constraint": "One final sparse-path adjustment; once benefit is clear run concentrated tests, freeze one version, integrate IndexSDK, then test the real integrated path. Do not repeatedly optimize each dataset."
   }
 }

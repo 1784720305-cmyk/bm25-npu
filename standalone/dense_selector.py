@@ -47,7 +47,7 @@ def check_setup(setup, baseline_only=False):
             )
 
 
-def build(args):
+def build(args, source_generator=dense_sources, vendor_base='bm25_dense_vector_1024'):
     baseline_path = args.baseline_build.resolve(strict=True)
     old = read(baseline_path / 'build.json')
     r.require(
@@ -81,6 +81,7 @@ def build(args):
         'current_source_lock_sha256': s.digest(ROOT / 'source_lock.json'),
         'capacity': 1024,
         'candidate_promoted': False,
+        'candidate_generator': source_generator.__module__,
     }
     check_setup(setup, baseline_only=True)
     output.mkdir(parents=True)
@@ -90,10 +91,10 @@ def build(args):
         for mode in ('normal', 'profile'):
             project = output / ('project_' + mode)
             build_final.prepare(args.template.resolve(), project, 'fused')
-            host, kernel, plan = dense_sources(mode == 'profile')
+            host, kernel, plan = source_generator(mode == 'profile')
             for folder, text in (('op_host', host), ('op_kernel', kernel)):
                 (project / folder / 'bm25_fused_score_top_k.cpp').write_bytes(text.encode('utf-8'))
-            vendor_name = 'bm25_dense_vector_1024' + ('_profile' if mode == 'profile' else '')
+            vendor_name = vendor_base + ('_profile' if mode == 'profile' else '')
             preset_vendor(project / 'CMakePresets.json', vendor_name)
             source_hashes = {
                 p.relative_to(project).as_posix(): s.digest(p)
@@ -130,7 +131,7 @@ def build(args):
     print('BUILD REPORT:', output / 'build.json', flush=True)
 
 
-def compare(rows, names):
+def compare(rows, names, include_stages=True):
     r.require(len(rows) == 6, 'Six complete paired rounds required')
     result = {}
     for name in names:
@@ -140,9 +141,6 @@ def compare(rows, names):
             candidate = [x[name]['dense']['search'][case] for x in rows]
             b, c = ([x['median_batch_ms'] for x in group] for group in (base, candidate))
             bp, cp = ([x['p95_batch_ms'] for x in group] for group in (base, candidate))
-            bt, ct = (
-                [x[name][role]['stages'][case]['topk_ticks']['median'] for x in rows] for role in ('baseline', 'dense')
-            )
             result[name][case] = {
                 'baseline_ms': statistics.median(b),
                 'dense_ms': statistics.median(c),
@@ -151,8 +149,15 @@ def compare(rows, names):
                 'paired_change_percent': [100 * (v / ref - 1) for v, ref in zip(c, b)],
                 'median_wins': sum(v < ref for v, ref in zip(c, b)),
                 'P95_wins': sum(v < ref for v, ref in zip(cp, bp)),
-                'topk_ticks_change_percent': 100 * (statistics.median(ct) / statistics.median(bt) - 1),
             }
+            if include_stages:
+                bt, ct = (
+                    [x[name][role]['stages'][case]['topk_ticks']['median'] for x in rows]
+                    for role in ('baseline', 'dense')
+                )
+                result[name][case]['topk_ticks_change_percent'] = 100 * (
+                    statistics.median(ct) / statistics.median(bt) - 1
+                )
     return result
 
 

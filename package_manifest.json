@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "IndexSDK-aligned BM25 package. Existing host/device acceptance, huge-first allocation fix and original-native BM25S/real-data evidence remain historical records. V2 capacity study and the separate capacity1024 dense SIMD candidate completed A5 checks. Dense candidate improves fixed SciFact A/B full Search by24.43%/29.37%, while sparse paired median costs+1.70%-+2.47% and profile TopK costs+4.32%-+5.09% remain explicit. Default operator and security flags are unchanged; candidate is not promoted. This update only archives supplied A5 measurements, fingerprints and review findings.",
+  "scope": "IndexSDK-aligned BM25 package. Accepted operator/host/security sources remain unchanged. Dense-v1 A5 gains and sparse costs remain archived. One final isolated collector specialization and a fixed six-workload matrix with original-native BM25S are locally checked; CANN/device results are pending. After concentrated review, freeze one version, integrate IndexSDK and test the real public interface. No further per-dataset tuning loop or automatic promotion.",
   "text_line_endings": "LF",
   "reference_commits": {
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -12,7 +12,7 @@
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
     ".pre-commit-config.yaml": "d18cae61fe460685d6b3e1721bf9aa30aa2e4d249388df7c8fdf9a5657f99a57",
     "CMakeLists.txt": "efbb01dc2062aae2a92fc873e4663d300062bb2eca9e9167d8f09b7ad92c84f5",
-    "README.md": "61dc18fd13c2a6b24be61f86030a965349cb02ca39ff4d7a5f83dc569249ea40",
+    "README.md": "f3c6b1b2a20fbe89cfc23d66c14c21f673a5fb5ca5bdb2d40b488464ef5cc5b6",
     "cmake/AscendBm25Config.cmake.in": "ec11d408ef32f39c0dadf697f97c828a12b184975995ed78947e643b687acb39",
     "cmake/Install.cmake": "e6414e4980bf184558dd5bf05d66db54dd5433036e5cc7a76ea0fb30617639e0",
     "docs/A5_ACCEPTANCE.md": "b9c7e21201f26be3d35443b4e026f66ff4d000fe82994ef0748e24a0cc26f13d",
@@ -148,7 +148,7 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "dc6248ace079496a39247fc70f18ff4227878dce8c7d5d7d77a9cbaf71df85bc",
-    "source_lock.json": "c8718a7166ae049ebf8112ee9d262535cce26e6a9a8d6318388e6ff987a19b0d",
+    "source_lock.json": "f034a91e06d51aa24ca463e01d7de94c3df1a899e44e8ef0ebe89f3ec0389c3c",
     "standalone/beir_real.py": "ca0103064fc4b8a12842b7d32744685bf0cd502b878c9b26888ce3603018db0d",
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
@@ -186,11 +186,16 @@
     "docs/SELECTOR_CAPACITY.md": "eaf17c3105e43b41d6a14be16470619b1762af1c7936ffb7c6a8d9010f9a23e2",
     "evidence/capacity_trace_fix_20261106.json": "7f416487db8a1130a4c9e7e1027df8a14c2bc6b79c76b89da6778b3ac4129131",
     "evidence/capacity_a5_20261106.json": "c0894c4aaaa609ba46bf746471805618f96a16458d34e759ad99f1130863c898",
-    "standalone/dense_selector.py": "3446c3ac5846bfc404f4c8937bc2fc7d83b616536299ae0f0579a2651fcf7f2a",
+    "standalone/dense_selector.py": "1e27117ac584542343dbc903c57ec72cbbf27036f9aefd2937a1ab148bc970fb",
     "tools/dense_sources.py": "30545989b99fef6fdfc0e8b06c419577ac5b41ac61326d5700c6365d248b494c",
-    "tools/test_dense_selector.py": "1fb0c4bc822b33666f8cf99dab2d2c8e7145ba4633c32bd2634d4e59a3744aae",
+    "tools/test_dense_selector.py": "6be596cf6be221e5ef96cbaedbaf949c30f40131f37e851ce8aedc902ef4ec72",
     "evidence/dense_selector_plan_20261106.json": "2d9a8035893c20ccd932f62fbef31125106a8e9b51bd011e77ebd667a5325a09",
-    "docs/DENSE_SELECTOR.md": "88e207b284041e2e47ea2a379fd490440638134321c146771d4ab74bd490984b",
-    "evidence/dense_selector_a5_20261106.json": "66567fd60f73bcc1cf55b9aaed8cc0ff8232e2fb12213a8efdba181d0e229850"
+    "docs/DENSE_SELECTOR.md": "f963c131fbca2e54f865498aa91506444243ce2f606ed2cba245cd8d7c87f416",
+    "evidence/dense_selector_a5_20261106.json": "66567fd60f73bcc1cf55b9aaed8cc0ff8232e2fb12213a8efdba181d0e229850",
+    "standalone/release_validation.py": "73e9b886389a9bc5c1ff36cdcd5c339026bf12b0f083e0c5fef7a5f4ac894ca5",
+    "tools/split_sources.py": "fdd083851f087d656bc098ad9ead908c4167158a9c5a80123a158ee443439048",
+    "tools/test_release_validation.py": "023aaab76e5117641c29c3cba28802778f9ad8b31474aeeb43c297b72e93e34c",
+    "evidence/release_validation_plan_20261106.json": "4abc0cd61a3055868bfc5f3eedfc80583748cb44ce3898a385ec2e6b03398f0d",
+    "docs/RELEASE_VALIDATION.md": "2165c84279b0a724daf214c6869bf1ea9ec37f972833eaf7b0964256513fdad8"
   }
 }

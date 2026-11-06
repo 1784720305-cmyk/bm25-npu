@@ -1,0 +1,116 @@
+{
+  "date": "2026-11-06",
+  "status": "bounded_split_candidate_and_concentrated_validation_locally_checked_A5_pending",
+  "user_constraint": "One final sparse-path adjustment; once benefit is clear run concentrated tests, freeze one version, integrate IndexSDK, then test the real integrated path. Do not repeatedly optimize each dataset.",
+  "optimization_round_limit": 1,
+  "candidate_promoted": false,
+  "CANN_compile_and_device_passed": false,
+  "prior_dense_evidence": "evidence/dense_selector_a5_20261106.json",
+  "change": "Restore byte-identical accepted compact collector as its own VF; specialize full-row dense collector with compact=false. Return the known route from threshold code and dispatch without another UB route read or added barrier.",
+  "unchanged": [
+    "original production operators and host C++",
+    "accepted compact collector body",
+    "dense SIMD threshold arithmetic",
+    "score/append and legacy zero/few path",
+    "1024 candidate capacity and UB layout",
+    "Merge and security flags",
+    "original-native BM25S source and CPU timing boundary"
+  ],
+  "generated_variants": {
+    "normal": {
+      "capacity": 1024,
+      "scratch_bytes": 16736,
+      "buffer_bytes": 50848,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "b06ccdec83c2a0a9c7bb20f48f6c74d1ddd34c698d62793b47f13293a68692ba",
+      "kernel_sha256": "d7bd438887798cd693c90599866dac45891b86e03ff6c99907358feedcc45948"
+    },
+    "profile": {
+      "capacity": 1024,
+      "scratch_bytes": 16736,
+      "buffer_bytes": 50848,
+      "dynamic_ub_bytes": 65536,
+      "host_sha256": "544a05ee1a17e50062e1a926fb1ea3d23800b204b0a390fd48da33459b6e952e",
+      "kernel_sha256": "9db62f67bfe1d6b73aa9f2a84a1c483b741f961fdf4d5f4356facddf263f46e5"
+    }
+  },
+  "protocol": {
+    "NPU_variants": [
+      "baseline",
+      "dense_v1",
+      "split"
+    ],
+    "input_names": [
+      "scifact",
+      "trec_covid",
+      "msmarco",
+      "sparse8192",
+      "sparse65536",
+      "synthetic10m"
+    ],
+    "full_query_quality_counts": {
+      "scifact": 300,
+      "trec_covid": 50,
+      "msmarco": 43
+    },
+    "full_quality_CPU_scope": "New full-query NPU quality on strict oracle/qrels; no duplicate full-query native CPU quality run. Native CPU formula/tie checks remain in the new Q8 performance measurements.",
+    "rounds": 6,
+    "warmup_AB_cycles": 5,
+    "measured_samples_per_case_per_process": 30,
+    "primary_CPU_baseline": "Frozen original-native BM25S workers1/8/32; strict adapter excluded",
+    "NPU_performance_processes": 108,
+    "CPU_performance_processes": 108,
+    "profile_processes": 54,
+    "full_query_NPU_quality_processes": 9,
+    "new_boundary_packages": 2,
+    "new_boundary_calls_each": 54,
+    "profile_workloads": [
+      "scifact",
+      "sparse8192",
+      "sparse65536"
+    ],
+    "profile_trace_contract": "simt_gm_cacheline64_nonce_v2",
+    "ordering": "All six NPU permutations; each position twice and every pair3/3. CPU-before/after block balanced3/3.",
+    "profile_order": "Separate profile subprocess after each applicable normal Search process; profile output never substitutes for normal Search timing.",
+    "fresh_output_required": true,
+    "automatic_retry_or_optimization_loop": false
+  },
+  "local_validation": {
+    "tool_suite_tests_passed": 61,
+    "dedicated_release_tests": 6,
+    "latest_metadata_additions_followup_release_tests_passed": 6,
+    "mocked_complete_matrix_counts_verified": true,
+    "injected_failure_saved_without_retry": true,
+    "two_package_custom_generator_build_mock_verified": true,
+    "quality_padding_and_coverage_checked": true,
+    "balanced_pair_order_checked": true,
+    "mathematical_and_corpus_suite_passed": true,
+    "structure_CPP_files_checked": 58,
+    "ruff_format_and_check_passed": true,
+    "Python39_AST_passed": true,
+    "scope": "Local mathematical, source and mocked workflow checks; not CANN compilation or device evidence."
+  },
+  "freeze_and_integration": [
+    "Review fixed full Search/quality results and every paired/P95 regression; choose one version without another tuning round.",
+    "Freeze chosen source/package fingerprints, then integrate source/build/install rules in a separate IndexSDK59213c4 working copy.",
+    "Run actual CANN/SDK build, static/unit/install/resource-lifetime checks and matching input quality/performance through AscendIndexBm25 public interface.",
+    "Compare postintegration results with the selected preintegration snapshot; do not replace SDK path evidence with standalone runner timing."
+  ],
+  "source_sha256": {
+    "standalone/release_validation.py": "73e9b886389a9bc5c1ff36cdcd5c339026bf12b0f083e0c5fef7a5f4ac894ca5",
+    "tools/split_sources.py": "fdd083851f087d656bc098ad9ead908c4167158a9c5a80123a158ee443439048",
+    "tools/test_release_validation.py": "023aaab76e5117641c29c3cba28802778f9ad8b31474aeeb43c297b72e93e34c",
+    "standalone/dense_selector.py": "1e27117ac584542343dbc903c57ec72cbbf27036f9aefd2937a1ab148bc970fb",
+    "tools/dense_sources.py": "30545989b99fef6fdfc0e8b06c419577ac5b41ac61326d5700c6365d248b494c",
+    "tools/test_dense_selector.py": "6be596cf6be221e5ef96cbaedbaf949c30f40131f37e851ce8aedc902ef4ec72",
+    "standalone/selector_capacity.py": "d138ba45e2036d450e22a369fb267096af38c49383c8f24b2ec27b872ed30a71",
+    "tools/capacity_sources.py": "9a23cc7fd8177b2bc607b79a93abbe46eb6dd4aa090b5757eb30c968cd4cd711",
+    "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
+  },
+  "commands": "docs/RELEASE_VALIDATION.md",
+  "limitations": [
+    "New specialization may still alter compiler layout/register use; zero sparse overhead is not promised.",
+    "CPU placement is specified, exclusive core reservation is not verified.",
+    "No current concentrated A5 result or completed IndexSDK source merge is claimed."
+  ]
+}
