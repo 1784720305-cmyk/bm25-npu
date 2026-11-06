@@ -276,7 +276,7 @@
     "conclusion": "Keep 1024 as default. Capacity 4096 improves fixed SciFact B by 38.10%, while A is unchanged and sparse8192 median/P95 regressions remain. Per-query summaries identify A query8 (4399 positive candidates) as the remaining dense-path tail task."
   },
   "experimental_dense_study": {
-    "status": "isolated_dense_SIMD_threshold_candidate_locally_checked_A5_pending",
+    "status": "all_36_requested_cells_and_v2_trace_checks_completed_performance_acceptance_pending",
     "candidate_promoted": false,
     "default_capacity": 1024,
     "evidence": "evidence/dense_selector_plan_20261106.json",
@@ -289,6 +289,35 @@
       "tools/capacity_sources.py": "9a23cc7fd8177b2bc607b79a93abbe46eb6dd4aa090b5757eb30c968cd4cd711",
       "standalone/build_final.py": "3a4e4345dff4fa124d7e8a3532543b670f2d48a5a5408c45641acd5e4223c364"
     },
-    "A5_compile_and_device_passed": false
+    "A5_compile_and_device_passed": true,
+    "latest_evidence": "evidence/dense_selector_a5_20261106.json",
+    "profile_trace_contract": "simt_gm_cacheline64_nonce_v2",
+    "performance_acceptance": "not_promoted_pending_sparse_path_overhead_reduction_and_broader_regression",
+    "full_Search_median_change_percent": {
+      "scifact": {
+        "A": -24.431307180543328,
+        "B": -29.36744803001099
+      },
+      "sparse8192": {
+        "A": -0.29451707380924175,
+        "B": 0.8936766339790125
+      },
+      "sparse65536": {
+        "A": 0.3324780909484515,
+        "B": 0.682694432847919
+      }
+    },
+    "sparse_median_paired_change_percent": {
+      "sparse8192": {
+        "A": 2.0221708246408676,
+        "B": 2.4701282902871324
+      },
+      "sparse65536": {
+        "A": 1.7031673550487292,
+        "B": 2.3251788636052817
+      }
+    },
+    "conclusion": "Both SciFact cases improve Search median/P95 in6/6 paired rounds; A query8 TopK improves67.29%. Each sparse case is slower in4/6 Search median pairs, with median paired changes+1.70%-+2.47% and profile TopK costs+4.32%-+5.09%. Keep original1024 default; isolate compact-path overhead before broader regression.",
+    "evidence_scope": "User A5 console and requested run/source-hash/per-query readback; local arithmetic, sequence and generated-source audit. Raw installed packages and task records not received."
   }
 }

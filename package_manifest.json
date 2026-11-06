@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "scope": "IndexSDK-aligned BM25 package. Huge-first allocation fix passed real A5 host/device and MS MARCO checks. Subsequent SciFact/TREC-COVID repeats reproduce prior role-specific quality; observed NPU median changes are -0.49% to +0.78%, median-of-round-P95 changes -0.40% to +1.40%. SciFact A still fails the native-CPU median win gate; other real cases retain their reported gates. Original-native BM25S, mixed small-corpus timing, cross-session limits and the MS MARCO slower first round remain explicit. Archive-only update; implementation unchanged. Retained 8192-document synthetic input also checked: NPU medians are 17.03%/14.41% below historical session, with six median/P95 wins against original native BM25S; real-input stage attribution remains unprofiled. Isolated 1024/2048/4096 capacity tools are locally checked; all experimental CANN builds/device timings remain pending and default capacity is unchanged. The original six capacity packages passed A5 build/boundary checks but v1 traces have a DCache/record-sharing defect. V1 stage evidence is withdrawn; fixed v2 SIMT trace writer and normal-package reuse passed local checks, A5 revalidation pending. V2 capacity A5 study completed all54 cells and trace checks.4096 improves SciFact B Search by38.10% but not A and regresses sparse8192 median/P95;1024 stays default. Archive-only update, implementation unchanged. A separate dense-row SIMD threshold candidate keeps capacity1024 and the existing UB layout. Local checks passed; candidate CANN compilation, correctness and speed remain A5-pending. Default operators are unchanged.",
+  "scope": "IndexSDK-aligned BM25 package. Existing host/device acceptance, huge-first allocation fix and original-native BM25S/real-data evidence remain historical records. V2 capacity study and the separate capacity1024 dense SIMD candidate completed A5 checks. Dense candidate improves fixed SciFact A/B full Search by24.43%/29.37%, while sparse paired median costs+1.70%-+2.47% and profile TopK costs+4.32%-+5.09% remain explicit. Default operator and security flags are unchanged; candidate is not promoted. This update only archives supplied A5 measurements, fingerprints and review findings.",
   "text_line_endings": "LF",
   "reference_commits": {
     "BM25S": "03eac5a8fb3aa4958ce37415a4cf2220d35157f7"
@@ -12,7 +12,7 @@
     ".gitignore": "faf78361c835649e2286cbd3dfe5b3e4ab39019275e0accb8d0e6aaf74d5abe4",
     ".pre-commit-config.yaml": "d18cae61fe460685d6b3e1721bf9aa30aa2e4d249388df7c8fdf9a5657f99a57",
     "CMakeLists.txt": "efbb01dc2062aae2a92fc873e4663d300062bb2eca9e9167d8f09b7ad92c84f5",
-    "README.md": "8cf82db002da6665943b79546e333b8047ecf50faf82cf23ce7f75940abe5a7d",
+    "README.md": "61dc18fd13c2a6b24be61f86030a965349cb02ca39ff4d7a5f83dc569249ea40",
     "cmake/AscendBm25Config.cmake.in": "ec11d408ef32f39c0dadf697f97c828a12b184975995ed78947e643b687acb39",
     "cmake/Install.cmake": "e6414e4980bf184558dd5bf05d66db54dd5433036e5cc7a76ea0fb30617639e0",
     "docs/A5_ACCEPTANCE.md": "b9c7e21201f26be3d35443b4e026f66ff4d000fe82994ef0748e24a0cc26f13d",
@@ -148,7 +148,7 @@
     "reference_only/bm25s_original/setup.py": "a9a92f87da3e8d01d37b7b7afb5b78b335e4f9b85932a1a120079e6e9b2a47ca",
     "reference_only/bm25s_original/source.json": "aca6ef5e81aa03956d340f741d65124b7f2e0c48f89229f4f34b44577769d93b",
     "requirements.txt": "dc6248ace079496a39247fc70f18ff4227878dce8c7d5d7d77a9cbaf71df85bc",
-    "source_lock.json": "9bbf7e904c31e4901df731168a6b52abc1ee9c5cfc615fc9e59d5e24016f5aea",
+    "source_lock.json": "c8718a7166ae049ebf8112ee9d262535cce26e6a9a8d6318388e6ff987a19b0d",
     "standalone/beir_real.py": "ca0103064fc4b8a12842b7d32744685bf0cd502b878c9b26888ce3603018db0d",
     "standalone/benchmark_final.py": "9cff9a032f0c7fcfdf2ad40edbee25ebdfbb5eb42b68a67df70ab29ee60deb4e",
     "standalone/bm25s_benchmark.py": "fa0aa0270d294a70350bb633120d5ed1275c77a48a761b8b78352d5077da7b4c",
@@ -190,6 +190,7 @@
     "tools/dense_sources.py": "30545989b99fef6fdfc0e8b06c419577ac5b41ac61326d5700c6365d248b494c",
     "tools/test_dense_selector.py": "1fb0c4bc822b33666f8cf99dab2d2c8e7145ba4633c32bd2634d4e59a3744aae",
     "evidence/dense_selector_plan_20261106.json": "2d9a8035893c20ccd932f62fbef31125106a8e9b51bd011e77ebd667a5325a09",
-    "docs/DENSE_SELECTOR.md": "d587458a85156463551679919915b27d8c845ba5473f8e8031f5cc3f90d7a228"
+    "docs/DENSE_SELECTOR.md": "88e207b284041e2e47ea2a379fd490440638134321c146771d4ab74bd490984b",
+    "evidence/dense_selector_a5_20261106.json": "66567fd60f73bcc1cf55b9aaed8cc0ff8232e2fb12213a8efdba181d0e229850"
   }
 }
